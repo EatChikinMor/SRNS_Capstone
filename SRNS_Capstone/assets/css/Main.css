@@ -1,0 +1,15 @@
+﻿html {
+    background-color:#d0d0d0;
+}
+
+body {
+}
+
+.navbar-brand {
+    padding:0px;
+}
+
+.navbar-brand img {
+    max-height:42px;
+    margin-top:5px;
+}
