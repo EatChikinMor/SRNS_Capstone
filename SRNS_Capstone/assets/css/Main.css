@@ -1,8 +1,11 @@
 ﻿html {
-    background-color:#d0d0d0;
+    background-color:#E7E7E7;
 }
 
 body {
+    background-color:#E7E7E7;
+    font-family: 'Arial Unicode MS', 'Arial';
+    color:#333;
 }
 
 .navbar-brand {
@@ -12,4 +15,18 @@ body {
 .navbar-brand img {
     max-height:42px;
     margin-top:5px;
+}
+
+select.form-control {
+    max-width:20%
+}
+
+.text-center {
+    text-align: center;
+}
+.text-left {
+    text-align: left;
+}
+.text-right{
+    text-align: right;
 }
