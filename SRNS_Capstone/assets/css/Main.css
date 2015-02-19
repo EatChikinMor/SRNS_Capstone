@@ -30,3 +30,80 @@ select.form-control {
 .text-right{
     text-align: right;
 }
+
+#home-login, 
+#homeIMG {
+    -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+       -moz-animation: fadein 2s; /* Firefox < 16 */
+        -ms-animation: fadein 2s; /* Internet Explorer */
+         -o-animation: fadein 2s; /* Opera < 12.1 */
+            animation: fadein 2s;
+}
+
+@-webkit-keyframes fadein {
+    0% {
+        top: 20px;
+        opacity: 0;
+    }
+
+    50% {
+        top: 20px;
+        opacity: 0;
+    }
+
+    100% {
+        top: 0;
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes fadein {
+    0% {
+        top: 20px;
+        opacity: 0;
+    }
+
+    50% {
+        top: 20px;
+        opacity: 0;
+    }
+
+    100% {
+        top: 0;
+        opacity: 1;
+    }
+}
+
+@-o-keyframes fadein {
+    0% {
+        top: 20px;
+        opacity: 0;
+    }
+
+    50% {
+        top: 20px;
+        opacity: 0;
+    }
+
+    100% {
+        top: 0;
+        opacity: 1;
+    }
+}
+
+@keyframes fadein {
+    0% {
+        top: 20px;
+        opacity: 0;
+    }
+
+    50% {
+        top: 20px;
+        opacity: 0;
+    }
+
+    100% {
+        top: 0;
+        opacity: 1;
+    }
+}
