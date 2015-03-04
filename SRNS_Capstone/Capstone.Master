@@ -1,0 +1,72 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Capstone.master.cs" Inherits="SRNS_Capstone.Capstone" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <script src="assets/js/jquery-2.3.1.js"></script>
+    <script src="assets/js/bootstrap/bootstrap.min.js"></script>
+    <script src="assets/js/jasny/jasny-bootstrap.min.js"></script>
+    <link rel="stylesheet" href="assets/css/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="assets/css/jasny/jasny-bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/Main.css" />
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>    
+    <form runat="server">
+    <nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/Default.aspx"><img src="assets/img/SRNS_manager.png" /></a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home<span class="sr-only">(current)</span></a></li>
+        <li><a href="AddLicense.aspx">Add License</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reports <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">License Count by Software</a></li>
+            <li><a href="#">Available Licenses</a></li>
+            <li><a href="#">Manager's License Holders</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Pending Chargebacks</a></li>
+          </ul>
+        </li>
+      </ul>
+
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="#" onclick="logout()">Logout</a></li>
+        <asp:Button runat="server" ID="btnLogout" Style="display:none" OnClick="btnLogout_Click" />
+    </ul>
+
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+        <asp:ContentPlaceHolder ID="MainContent" runat="server">
+        
+        </asp:ContentPlaceHolder>
+    </form>
+</body>
+
+    <script>
+        function logout(sender, eventArgs) {
+            document.getElementById("<%=btnLogout.ClientID %>").click();
+            return false;
+        }
+    </script>
+
+</html>

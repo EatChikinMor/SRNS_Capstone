@@ -81,6 +81,7 @@
     <Content Include="assets\js\jasny\jasny-bootstrap.js" />
     <Content Include="assets\js\jasny\jasny-bootstrap.min.js" />
     <Content Include="assets\js\jquery-2.3.1.js" />
+    <Content Include="Capstone.Master" />
     <Content Include="Default.aspx" />
     <Content Include="Home.aspx" />
     <Content Include="Scripts\jquery-1.7.1.intellisense.js" />
@@ -123,7 +124,6 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Capstone.Master" />
     <Content Include="assets\fonts\glyphicons\glyphicons-halflings-regular.eot" />
     <Content Include="assets\fonts\glyphicons\glyphicons-halflings-regular.ttf" />
     <Content Include="assets\fonts\glyphicons\glyphicons-halflings-regular.woff" />
