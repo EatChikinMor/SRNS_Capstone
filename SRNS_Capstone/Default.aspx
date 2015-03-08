@@ -10,24 +10,100 @@
     <title></title>
 </head>
 <body>
+    <asp:Panel runat="server" ID="pnlHomeCss" Visible="true">
+        <style>
+        .homeIMG {
+            -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+               -moz-animation: fadein 2s; /* Firefox < 16 */
+                -ms-animation: fadein 2s; /* Internet Explorer */
+                 -o-animation: fadein 2s; /* Opera < 12.1 */
+                    animation: fadein 2s;
+        }
+        @-webkit-keyframes fadein {
+            0% {
+                top: 20px;
+                opacity: 0;
+            }
+            50% {
+                top: 20px;
+                opacity: 0;
+            }
+            100% {
+                top: 0;
+                opacity: 1;
+            }
+        }
+        @-moz-keyframes fadein {
+            0% {
+                top: 20px;
+                opacity: 0;
+            }
+            50% {
+                top: 20px;
+                opacity: 0;
+            }
+            100% {
+                top: 0;
+                opacity: 1;
+            }
+        }
+
+        @-o-keyframes fadein {
+            0% {
+                top: 20px;
+                opacity: 0;
+            }
+            50% {
+                top: 20px;
+                opacity: 0;
+            }
+            100% {
+                top: 0;
+                opacity: 1;
+            }
+        }
+        @keyframes fadein {
+            0% {
+                top: 20px;
+                opacity: 0;
+            }
+            50% {
+                top: 20px;
+                opacity: 0;
+            }
+            100% {
+                top: 0;
+                opacity: 1;
+            }
+        }
+    </style>
+    </asp:Panel>
     <form id="form1" runat="server">
-        <div id="homeIMG" class="container" style="align-items:center;">
-            <div class="row text-center">
-                <div class="col-lg-6 col-lg-offset-3" style="margin-top:25vh">
-                    <img src="assets/img/hd_srns-mast01-cut-2.svg" alt="SRNS License Manager" style="width:100%;"/>
-                    <br />
-                    <span style="font-family:Arial; font-size:25px;"><strong>Software License Manager</strong></span>
+        <asp:ScriptManager runat="server" ID="scriptManager"></asp:ScriptManager>
+        <asp:Panel runat="server" ID="pnlMain" CssClass="homeIMG">
+            <div class="container" style="align-items:center;">
+                <div class="row text-center">
+                    <div class="col-lg-6 col-lg-offset-3" style="margin-top:25vh">
+                        <img src="assets/img/hd_srns-mast01-cut-2.svg" alt="SRNS License Manager" style="width:100%;"/>
+                        <br />
+                        <span style="font-family:Arial; font-size:25px;"><strong>Software License Manager</strong></span>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col-lg-4 col-lg-offset-4">
+                        <asp:TextBox CssClass="form-control text-center" placeholder="Username" runat="server" ID="txtUsername"></asp:TextBox>
+                        <asp:TextBox CssClass="form-control text-center" placeholder="Password" runat="server" ID="txtPassword" TextMode="Password" Style="margin-top:7px;"></asp:TextBox>
+                        <asp:Button CssClass="btn btn-default btn-block" runat="server" ID="btnLogin" Text="Login" Style="margin-top:7px;" OnClick="btnLogin_Click" />
+                        <asp:Panel runat="server" ID="pnlError" Visible="false">
+                                <div class="alert alert-danger" role="alert" style="margin-top:10px;"><h4>Invalid Username or password</h4></div>
+                        </asp:Panel>
+                        <%--<a href="#">Forgot your password?</a>--%>
+                        <%--<a class="btn btn-lg btn-default" onclick="showInvalid(); return false;"></a>--%>
+                    </div>
                 </div>
             </div>
-            <div class="row text-center">
-                <div class="col-lg-4 col-lg-offset-4">
-                    <asp:TextBox CssClass="form-control text-center" placeholder="Username" runat="server" ID="txtUsername"></asp:TextBox>
-                    <asp:TextBox CssClass="form-control text-center" placeholder="Password" runat="server" ID="txtPassword" TextMode="Password" Style="margin-top:7px;"></asp:TextBox>
-                    <asp:Button CssClass="btn btn-default btn-block" runat="server" ID="btnLogin" Text="Login" Style="margin-top:7px;" OnClick="btnLogin_Click" />
-                    <a href="#">Forgot your password?</a>
-                </div>
-            </div>
-        </div>
+        </asp:Panel>
     </form>
 </body>
+
 </html>

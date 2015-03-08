@@ -15,58 +15,66 @@
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>
-<body>    
+<body>
     <form runat="server">
-    <nav class="navbar navbar-default navbar-static-top">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="/Default.aspx"><img src="assets/img/SRNS_manager.png" /></a>
-    </div>
+        <asp:Panel runat="server" ID="pnlAdminNav" Visible="false">
+            <nav class="navbar navbar-default navbar-static-top">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="/Default.aspx">
+                            <img src="assets/img/SRNS_manager.png" /></a>
+                    </div>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="navbar-collapse-1">
 
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home<span class="sr-only">(current)</span></a></li>
-        <li><a href="AddLicense.aspx">Add License</a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reports <span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">License Count by Software</a></li>
-            <li><a href="#">Available Licenses</a></li>
-            <li><a href="#">Manager's License Holders</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Pending Chargebacks</a></li>
-          </ul>
-        </li>
-      </ul>
+                        <ul class="nav navbar-nav">
 
-    <ul class="nav navbar-nav navbar-right">
-        <li><a href="#" onclick="logout()">Logout</a></li>
-        <asp:Button runat="server" ID="btnLogout" Style="display:none" OnClick="btnLogout_Click" />
-    </ul>
+                            <li class="active" runat="server" id="lstRequests" visible="true"><a href="#">Requests<span class="sr-only">(current)</span></a></li>
+                            <li runat="server" id="lstAddLicense" visible="false"><a href="AddLicense.aspx">Add License</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reports <span class="caret"></span></a>
+                                <ul runat="server" id="lstReports" class="dropdown-menu" role="menu">
+                                    <li runat="server" id="lstLicCount" visible="false"><a href="#">License Count by Software</a></li>
+                                    <li runat="server" id="lstAvailLic" visible="false"><a href="#">Available Licenses</a></li>
+                                    <li runat="server" id="lstManagLic" visible="false"><a href="#">Manager's License Holders</a></li>
+                                    <li runat="server" id="lstLicExp" visible="false"><a href="#">Licenses Expiring</a></li>
+                                    <li class="divider"></li>
+                                    <li runat="server" id="lstPendCharg"><a href="#">Pending Chargebacks</a></li>
+                                </ul>
+                            </li>
+                        </ul>
 
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li runat="server" id="admin" visible="false"><a href="Administration.aspx">Administration</a></li>
+                            <li><a href="#" onclick="logout()">Logout</a></li>
+                            <asp:Button runat="server" ID="btnLogout" Style="display: none" OnClick="btnLogout_Click" />
+                        </ul>
+
+                    </div>
+                    <!-- /.navbar-collapse -->
+                </div>
+                <!-- /.container-fluid -->
+            </nav>
+        </asp:Panel>
+
         <asp:ContentPlaceHolder ID="MainContent" runat="server">
-        
         </asp:ContentPlaceHolder>
     </form>
 </body>
 
-    <script>
-        function logout(sender, eventArgs) {
-            document.getElementById("<%=btnLogout.ClientID %>").click();
+<script>
+    function logout(sender, eventArgs) {
+        document.getElementById("<%=btnLogout.ClientID %>").click();
             return false;
         }
-    </script>
+</script>
 
 </html>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Data.SQLite;
@@ -13,7 +14,67 @@ namespace SQLiteDataHelpers
     {
         SQLiteHelper SQLiteDataHelper = new SQLiteHelper();
 
-        public string InsertUser(User user)
+        #region SELECTS
+
+        public int getTableRowCount(string table)
+        {
+            string SQL = "SELECT COUNT(ID) FROM " + table;
+
+            return Convert.ToInt32(SQLiteDataHelper.ExecuteScalar(SQL));
+        }
+
+        public DataTable selectAllTableColumns(string table, string whereClause)
+        {
+            string SQL = "SELECT * FROM " + table + " " + whereClause;
+
+            DataTable result = SQLiteDataHelper.GetDataTable(SQL);
+
+            return result;
+        }
+
+        public bool DoesUsernameExist(string username)
+        {
+            String SQL = "SELECT COUNT(LoginID) FROM Users WHERE LoginID = '" + username + "'";
+
+            string result = SQLiteDataHelper.ExecuteScalar(SQL);
+
+            return Convert.ToBoolean(Convert.ToInt32(result));
+        }
+
+        public DataTable getUser(string username, string password)
+        {
+            string SQL = "SELECT Salt FROM USERS WHERE LoginID = '" + username + "'";
+
+            string Salt = SQLiteDataHelper.ExecuteScalar(SQL);
+
+            string passHash;
+
+            using (MD5 md5Hash = MD5.Create())
+            {
+                passHash = GenerateMd5Hash(md5Hash, Salt + password);
+            }
+
+            SQL = "SELECT ID, FirstName, LastName, IsAdmin, LoginID, ManagerID FROM Users WHERE LoginID = '" + username + "'" + " AND PassHash = '" + passHash + "'";
+
+            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
+
+            return dt;
+        }
+
+        public DataTable getUserPriviledges(int UserID)
+        {
+            string SQL = "SELECT Requests, AddLicense, LicenseCountReport, AvailLicenseReport, ManagLicenseReport, LicenseExpReport, PendChargeReport FROM UserAccess WHERE UserID =" + UserID;
+
+            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
+
+            return dt;
+        }
+
+        #endregion
+
+        #region INSERTS
+
+        public string InsertUser(User user, UserAccess userA)
         {
             //////////// Manually Add user \\\\\\\\\\\\
             User a = new User();
@@ -26,6 +87,20 @@ namespace SQLiteDataHelpers
             a.Salt = GenerateRandomString();
 
             user = a;
+
+            UserAccess b = new UserAccess()
+            {
+                UserID = 0,
+                Requests = true,
+                AddLicense = true,
+                AvailLicenseReport = true,
+                LicenseCountReport = true,
+                LicenseExpReport = true,
+                ManagLicenseReport = true,
+                PendChargeReport = false
+            };
+
+            userA = b;
             //-----------------------------------------
 
             if (!DoesUsernameExist(user.LoginID))
@@ -34,21 +109,8 @@ namespace SQLiteDataHelpers
                 {
                     user.PassHash = GenerateMd5Hash(md5Hash, user.Salt + user.PassHash);
                 }
-                //StringBuilder sql = new StringBuilder();
 
-                //sql.Append(SQL.insertInto("USERS", SQL.TableColumns.Users, true));
-                //sql.Append(
-                //    " '"+ user.FirstName + "'," +
-                //    " '"+ user.LastName + "'," +
-                //     Convert.ToInt32(user.IsAdmin) + "," +
-                //    " '"+ user.LoginID + "'," +
-                //    " '" + user.PassHash + "'," +
-                //     user.ManagerID + "," +
-                //    " '"+ user.Salt + "'"
-                //    );
-                //sql.Append(")");
-
-                Dictionary<String, String> Users = SQL.TableColumns.Users;
+                Dictionary<String, String> Users = SQLTables.TableColumns.Users;
 
                 Users["FirstName"] = user.FirstName;
                 Users["LastName"] = user.LastName;
@@ -58,10 +120,36 @@ namespace SQLiteDataHelpers
                 Users["ManagerID"] = user.ManagerID.ToString();
                 Users["Salt"] = user.Salt;
 
-                string Error = "";
-                if (SQLiteDataHelper.Insert("USERS", Users, ref Error))
+                string Error = "", retError = "";
+                if (!SQLiteDataHelper.Insert("USERS", Users, ref Error))
                 {
-                    return "User successfully created";
+                    retError = Error;
+                }
+
+                if (Error.Length < 1)
+                {
+                    userA.UserID = getMaxID("Users");
+
+                    Dictionary<String, String> userAccess = SQLTables.TableColumns.UserAccess;
+
+                    userAccess["UserID"] = userA.UserID.ToString();
+                    userAccess["Requests"] = userA.Requests.ToString();
+                    userAccess["AddLicense"] = userA.AddLicense.ToString();
+                    userAccess["LicenseCountReport"] = userA.LicenseCountReport.ToString();
+                    userAccess["AvailLicenseReport"] = userA.AvailLicenseReport.ToString();
+                    userAccess["ManagLicenseReport"] = userA.ManagLicenseReport.ToString();
+                    userAccess["LicenseExpReport"] = userA.LicenseCountReport.ToString();
+                    userAccess["PendChargeReport"] = userA.PendChargeReport.ToString();
+
+                    Error = "";
+                    if (SQLiteDataHelper.Insert("UserAccess", Users, ref Error))
+                    {
+                        return "User successfully created";
+                    }
+                    else
+                    {
+                        return "User Access insert failed - " + Error + "- try updating user access or deleting and recreating the user";
+                    }
                 }
                 else
                 {
@@ -74,25 +162,20 @@ namespace SQLiteDataHelpers
             }
         }
 
-        public bool DoesUsernameExist(string username)
+        public int getMaxID(string tableName)
         {
-            String SQL = "SELECT COUNT(LoginID) FROM Users WHERE LoginID = '" + username + "'";
+            string SQL = "SELECT MAX(ID) FROM " + tableName;
 
-            string result = SQLiteDataHelper.ExecuteScalar(SQL);
+            int ID = Convert.ToInt32(SQLiteDataHelper.ExecuteScalar(SQL));
 
-            return Convert.ToBoolean(Convert.ToInt32(result));
+            return ID;
         }
 
-        public bool validateUser(string username, string password)
-        {
-            string SQL = "SELECT Salt FROM USERS WHERE LoginID = '" + username + "'";
+        #endregion
 
-            string Salt = SQLiteDataHelper.ExecuteScalar(SQL);
+        #region DELETES
 
-
-
-            return true;
-        }
+        #endregion
 
         static string GenerateMd5Hash(MD5 md5Hash, string input)
         {

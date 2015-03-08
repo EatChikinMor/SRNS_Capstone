@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SQLiteDataHelpers
 {
-    class SQL
+    class SQLTables
     {
         public static class TableColumns
         {
@@ -32,6 +32,20 @@ namespace SQLiteDataHelpers
                 {
                     Dictionary<String, String> columns = new Dictionary<String, String>()  
                     {{"Organization", ""}};
+                    return columns;
+                }
+            }
+
+            public static Dictionary<String, String> Requests
+            {
+                get
+                {
+                    Dictionary<String, String> columns = new Dictionary<String, String>()
+                    {
+                        {"RequestingUser",""},
+                        {"RequestedSoftware",""},
+                        {"RequestedDate",""}
+                    };
                     return columns;
                 }
             }
@@ -73,39 +87,29 @@ namespace SQLiteDataHelpers
                         {"PassHash", ""},
                         {"ManagerID", ""},
                         {"Salt", ""}
-                    };                    
-                    //columns[0] = "ID";
-                    //columns[1] = "FirstName";
-                    //columns[2] = "LastName";
-                    //columns[3] = "IsAdmin";
-                    //columns[4] = "LoginID";
-                    //columns[5] = "PassHash";
-                    //columns[6] = "ManagerID";
-                    //columns[7] = "Salt";
+                    };
                     return columns;
                 }
             }
-        }
 
-        public static string insertInto(string table, string[] columns, bool skipFirst)
-        {
-            ///Currently returns half the statement - "INSERT INTO [TABLE] ([COLUMN1], [COLUMN2], ...) VALUES ("
-            int index = skipFirst ? 1 : 0;
-            StringBuilder SQLStatement = new StringBuilder("INSERT INTO " + table + " (");
-
-            for (int i = index; i < columns.Length; i++)
+            public static Dictionary<String, String> UserAccess
             {
-                SQLStatement.Append(columns[i]);
-
-                if (i != columns.Length - 1)
+                get
                 {
-                    SQLStatement.Append(", ");
+                    Dictionary<String, String> columns = new Dictionary<String, String>() 
+                    {                         
+                        {"UserID", ""},
+                        {"Requests", ""},
+                        {"AddLicense", ""},
+                        {"LicenseCountReport", ""},
+                        {"AvailLicenseReport", ""},
+                        {"ManagLicenseReport", ""},
+                        {"LicenseExpReport", ""},
+                        {"PendChargeReport", ""}
+                    };
+                    return columns;
                 }
             }
-
-            SQLStatement.Append(") VALUES(");
-
-            return SQLStatement.ToString();
         }
     }
 

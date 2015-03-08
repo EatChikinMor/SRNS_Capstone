@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -14,28 +16,58 @@ namespace SRNS_Capstone
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            var aClass = new SQLiteDataHelpers.DBConnector();
 
-            //txtPassword.Text = aClass.InsertUser(new User()).ToString();
         }
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            if( validateUser(txtUsername.Text, txtPassword.Text))
+            DataTable user = getUserInformation(txtUsername.Text, txtPassword.Text);
+
+            if (user.Rows.Count > 0)
             {
-                //Store Session Values
+                User userSession = buildUser(user.Rows[0]);
+
+                Session["User"] = userSession;
+                
+                Response.Redirect("~/Home.aspx");
+            }
+            else
+            {
+                pnlError.Visible = true;
+                //pnlFailedLogin.Update();
             }
             
-            Response.Redirect("~/Home.aspx");
+            //Response.Redirect("~/Home.aspx");
         }
 
-        protected bool validateUser(string username, string password)
+        private DataTable getUserInformation(string username, string password)
         {
-            bool valid = false;
+            DataTable user = new DBConnector().getUser(username, password);
 
+            return user;
+        }
 
+        private User buildUser(DataRow row)
+        {
+            User user = new User() 
+            { 
+                ID = Convert.ToInt32(row["ID"].ToString()),
+                LoginID = row["LoginID"].ToString(),
+                FirstName = row["FirstName"].ToString(),
+                LastName = row["LastName"].ToString(),
+                IsAdmin = Convert.ToBoolean(Convert.ToInt32(row["IsAdmin"].ToString())),
+                ManagerID = Convert.ToInt32(row["ManagerID"].ToString())
+            };
+            
+            return user;
+        }
 
-            return valid;
+        protected void pnlFailedLogin_Unload(object sender, EventArgs e)
+        {
+            MethodInfo methodInfo = typeof(ScriptManager).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+            .Where(i => i.Name.Equals("System.Web.UI.IScriptManagerInternal.RegisterUpdatePanel")).First();
+            methodInfo.Invoke(ScriptManager.GetCurrent(Page),
+                new object[] { sender as UpdatePanel });
         }
     }
 }

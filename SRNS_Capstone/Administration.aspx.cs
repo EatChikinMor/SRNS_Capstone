@@ -7,11 +7,11 @@ using System.Web.UI.WebControls;
 
 namespace SRNS_Capstone
 {
-    public partial class Home : System.Web.UI.Page
+    public partial class Administration : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //Check for session timeout
+
         }
     }
 }

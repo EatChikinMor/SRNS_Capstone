@@ -10,6 +10,6 @@
 namespace SRNS_Capstone {
     
     
-    public partial class Home {
+    public partial class Administration {
     }
 }
