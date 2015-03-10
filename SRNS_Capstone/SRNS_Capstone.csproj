@@ -64,6 +64,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\SQLiteDataHelpers.dll" />
+    <Content Include="bin\System.Data.SQLite.dll" />
     <Content Include="Reports\AddLicense.aspx" />
     <Content Include="Administration.aspx" />
     <Content Include="assets\css\bootstrap\bootstrap-theme.css" />
@@ -130,7 +132,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="bin\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\fonts\glyphicons\glyphicons-halflings-regular.eot" />
