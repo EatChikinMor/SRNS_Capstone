@@ -30,3 +30,14 @@ select.form-control {
 .text-right{
     text-align: right;
 }
+
+#btnAdminTrue.active, #btnAdminTrue:active,
+#btnManagerTrue.active, #btnManagerTrue:active {
+    background-color:#2f790d;
+    border-color:#23580a;
+}
+#btnAdminFalse.active, #btnAdminFalse:active,
+#btnManagerFalse.active, #btnManagerFalse:active {
+    background-color:#900808;
+    border-color:#630c0c;
+}
