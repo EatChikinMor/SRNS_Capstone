@@ -32,6 +32,8 @@ namespace SQLiteDataHelpers
             return result;
         }
 
+        #region Table Users
+
         public bool DoesUsernameExist(string username)
         {
             String SQL = "SELECT COUNT(LoginID) FROM Users WHERE LoginID = '" + username + "'";
@@ -61,7 +63,7 @@ namespace SQLiteDataHelpers
             return dt;
         }
 
-        public DataTable getUserPriviledges(int UserID)
+        public DataTable getUserPrivileges(int UserID)
         {
             string SQL = "SELECT Requests, AddLicense, LicenseCountReport, AvailLicenseReport, ManagLicenseReport, LicenseExpReport, PendChargeReport FROM UserAccess WHERE UserID =" + UserID;
 
@@ -69,6 +71,30 @@ namespace SQLiteDataHelpers
 
             return dt;
         }
+
+        public List<ComboboxItem> populateUserList()
+        {
+            /// TODO: Alter OrderBy to Sort alphabetically by First, Last name
+            string SQL = "Select ID, FirstName, LastName, LoginID FROM Users ORDER BY ID DESC";
+
+            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
+
+            List<ComboboxItem> users = new List<ComboboxItem>();
+
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                ComboboxItem item = new ComboboxItem()
+                {
+                    Value = dt.Rows[i]["ID"].ToString(),
+                    Text = (string)dt.Rows[i]["FirstName"] + " " + (string)dt.Rows[i]["LastName"] + " - " + (string)dt.Rows[i]["LoginID"]
+                };
+
+                users.Add(item);
+            }
+
+            return users;
+        }
+        #endregion
 
         #endregion
 

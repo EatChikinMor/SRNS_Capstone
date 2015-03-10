@@ -95,7 +95,6 @@
   <ItemGroup>
     <Compile Include="Reports\AddLicense.aspx.cs">
       <DependentUpon>AddLicense.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Reports\AddLicense.aspx.designer.cs">
       <DependentUpon>AddLicense.aspx</DependentUpon>

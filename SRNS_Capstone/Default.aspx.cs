@@ -29,7 +29,7 @@ namespace SRNS_Capstone
 
                 Session["User"] = userSession;
                 
-                Response.Redirect("~/Home.aspx");
+                Response.Redirect("~/Requests.aspx");
             }
             else
             {

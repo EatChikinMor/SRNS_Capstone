@@ -17,7 +17,6 @@
 </head>
 <body>
     <form runat="server">
-        <asp:Panel runat="server" ID="pnlAdminNav" Visible="false">
             <nav class="navbar navbar-default navbar-static-top">
                 <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->
@@ -63,7 +62,6 @@
                 </div>
                 <!-- /.container-fluid -->
             </nav>
-        </asp:Panel>
 
         <asp:ContentPlaceHolder ID="MainContent" runat="server">
         </asp:ContentPlaceHolder>

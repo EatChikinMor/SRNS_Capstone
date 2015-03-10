@@ -25,6 +25,7 @@ namespace SRNS_Capstone
         protected void btnLogout_Click(object sender, EventArgs e)
         {
             /* TODO: Logout Logic Here */
+            Session.Abandon();
             Response.Redirect("~/Default.aspx");
         }
 
@@ -32,6 +33,7 @@ namespace SRNS_Capstone
         {
             if (IsAdmin)
             {
+                admin.Visible =
                 lstAddLicense.Visible =
                 lstReports.Visible =
                 lstAvailLic.Visible = 

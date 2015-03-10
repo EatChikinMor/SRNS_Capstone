@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DBConnector.cs" />
+    <Compile Include="Objects\ComboboxItem.cs" />
     <Compile Include="Objects\User.cs" />
     <Compile Include="Objects\UserAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
