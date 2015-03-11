@@ -42,7 +42,7 @@ namespace SRNS_Capstone
 
         private DataTable getUserInformation(string username, string password)
         {
-            DataTable user = new DBConnector().getUser(username, password);
+            DataTable user = new DBConnector().getUserOnLogin(username, password);
 
             return user;
         }

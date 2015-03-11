@@ -4,11 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using SQLiteDataHelpers;
 using SQLiteDataHelpers.Objects;
 
 namespace SRNS_Capstone
 {
-    public partial class AddLicense : System.Web.UI.Page
+    public partial class Home : System.Web.UI.Page
     {
         #region Private Members
 
@@ -48,7 +49,7 @@ namespace SRNS_Capstone
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!Page.IsPostBack)
+            if(!Page.IsPostBack)
             {
                 User user = (User)Session["User"];
 
@@ -68,6 +69,8 @@ namespace SRNS_Capstone
                     if (_IsAdmin)
                     {
                         ((Capstone)Page.Master).showMenuOptions(_IsAdmin, _userID);
+                        pnlPendingRequests.Visible = true;
+                        IsAdmin();
                     }
                 }
                 else
@@ -75,7 +78,26 @@ namespace SRNS_Capstone
                     Response.Redirect("~/Default.aspx");
                 }
             }
-            //Check for session timeout
+        }
+
+        protected void IsAdmin()
+        {
+            int RequestCount = new DBConnector().getTableRowCount("Requests");
+
+            switch (RequestCount)
+            {
+                case 0:
+                    lblPendingRequests.Text = "There are no pending requests";
+                    break;
+
+                case 1:
+                    lblPendingRequests.Text = "There is 1 pending software request";
+                    break;
+                default:
+                    lblPendingRequests.Text = "There are " + RequestCount.ToString() + " pending software request";
+                    break;
+
+            }
         }
     }
 }
