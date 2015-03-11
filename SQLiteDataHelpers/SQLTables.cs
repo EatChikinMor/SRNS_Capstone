@@ -86,7 +86,8 @@ namespace SQLiteDataHelpers
                         {"LoginID", ""},
                         {"PassHash", ""},
                         {"ManagerID", ""},
-                        {"Salt", ""}
+                        {"Salt", ""},
+                        {"IsManager",""}
                     };
                     return columns;
                 }

@@ -18,6 +18,7 @@ namespace SQLiteDataHelpers.Objects
         private string _PassHash;
         private int _ManagerID;
         private string _Salt;
+        private bool _IsManager;
         #endregion
 
         #region public members
@@ -106,6 +107,17 @@ namespace SQLiteDataHelpers.Objects
                 if (_Salt != value)
                 {
                     _Salt = value;
+                }
+            }
+        }
+        public bool IsManager
+        {
+            get { return _IsManager; }
+            set
+            {
+                if (_IsManager != value)
+                {
+                    _IsManager = value;
                 }
             }
         }

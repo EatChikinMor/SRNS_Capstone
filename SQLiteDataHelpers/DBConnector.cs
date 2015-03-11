@@ -43,7 +43,7 @@ namespace SQLiteDataHelpers
             return Convert.ToBoolean(Convert.ToInt32(result));
         }
 
-        public DataTable getUser(string username, string password)
+        public DataTable getUserOnLogin(string username, string password)
         {
             string SQL = "SELECT Salt FROM USERS WHERE LoginID = '" + username + "'";
 
@@ -59,6 +59,15 @@ namespace SQLiteDataHelpers
             SQL = "SELECT ID, FirstName, LastName, IsAdmin, LoginID, ManagerID FROM Users WHERE LoginID = '" + username + "'" + " AND PassHash = '" + passHash + "'";
 
             DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
+
+            return dt;
+        }
+
+        public DataTable getUserByID(int userID)
+        {
+            String SQL = "SELECT * FROM Users WHERE ID = " + userID;
+
+            DataTable dt =  SQLiteDataHelper.GetDataTable(SQL);
 
             return dt;
         }
@@ -94,6 +103,15 @@ namespace SQLiteDataHelpers
 
             return users;
         }
+
+        public DataTable getManagers()
+        {
+            String SQL = "SELECT ID, FirstName, LastName FROM Users WHERE IsManager = 1";
+
+            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
+
+            return dt;
+        }
         #endregion
 
         #endregion
@@ -103,34 +121,37 @@ namespace SQLiteDataHelpers
         public string InsertUser(User user, UserAccess userA)
         {
             //////////// Manually Add user \\\\\\\\\\\\
-            User a = new User();
-            a.FirstName = "Austin";
-            a.LastName = "Rich";
-            a.IsAdmin = true;
-            a.LoginID = "arich";
-            a.PassHash = "123456a";
-            a.ManagerID = 1;
-            a.Salt = GenerateRandomString();
+            //User a = new User();
+            //a.FirstName = "Austin";
+            //a.LastName = "Rich";
+            //a.IsAdmin = true;
+            //a.LoginID = "arich";
+            //a.PassHash = "123456a";
+            //a.ManagerID = 1;
+            //a.Salt = GenerateRandomString();
+            //a.IsManager = true;
 
-            user = a;
+            //user = a;
 
-            UserAccess b = new UserAccess()
-            {
-                UserID = 0,
-                Requests = true,
-                AddLicense = true,
-                AvailLicenseReport = true,
-                LicenseCountReport = true,
-                LicenseExpReport = true,
-                ManagLicenseReport = true,
-                PendChargeReport = false
-            };
+            //UserAccess b = new UserAccess()
+            //{
+            //    UserID = 0,
+            //    Requests = true,
+            //    AddLicense = true,
+            //    AvailLicenseReport = true,
+            //    LicenseCountReport = true,
+            //    LicenseExpReport = true,
+            //    ManagLicenseReport = true,
+            //    PendChargeReport = false
+            //};
 
-            userA = b;
+            //userA = b;
             //-----------------------------------------
 
             if (!DoesUsernameExist(user.LoginID))
             {
+                user.Salt = GenerateRandomString();
+
                 using (MD5 md5Hash = MD5.Create())
                 {
                     user.PassHash = GenerateMd5Hash(md5Hash, user.Salt + user.PassHash);
@@ -145,6 +166,7 @@ namespace SQLiteDataHelpers
                 Users["PassHash"] = user.PassHash;
                 Users["ManagerID"] = user.ManagerID.ToString();
                 Users["Salt"] = user.Salt;
+                Users["IsManager"] = user.IsManager.ToString();
 
                 string Error = "", retError = "";
                 if (!SQLiteDataHelper.Insert("USERS", Users, ref Error))
@@ -179,12 +201,12 @@ namespace SQLiteDataHelpers
                 }
                 else
                 {
-                    return "Database insert failed - " + Error;
+                    return "Insert into Database failed - " + Error;
                 }
             }
             else
             {
-                return "Username already exists.";
+                return "The chosen username already exists.";
             }
         }
 
