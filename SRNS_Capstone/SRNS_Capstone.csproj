@@ -67,7 +67,6 @@
     <Content Include="AddLicense.aspx" />
     <Content Include="bin\SQLiteDataHelpers.dll" />
     <Content Include="bin\System.Data.SQLite.dll" />
-    <Content Include="Reports\AddLicense.aspx" />
     <Content Include="Administration.aspx" />
     <Content Include="assets\css\bootstrap\bootstrap-theme.css" />
     <Content Include="assets\css\bootstrap\bootstrap-theme.min.css" />
@@ -96,14 +95,9 @@
   <ItemGroup>
     <Compile Include="AddLicense.aspx.cs">
       <DependentUpon>AddLicense.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="AddLicense.aspx.designer.cs">
-      <DependentUpon>AddLicense.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Reports\AddLicense.aspx.cs">
-      <DependentUpon>AddLicense.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Reports\AddLicense.aspx.designer.cs">
       <DependentUpon>AddLicense.aspx</DependentUpon>
     </Compile>
     <Compile Include="Administration.aspx.cs">
@@ -130,6 +124,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requests.aspx.cs">
       <DependentUpon>Requests.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Requests.aspx.designer.cs">
       <DependentUpon>Requests.aspx</DependentUpon>

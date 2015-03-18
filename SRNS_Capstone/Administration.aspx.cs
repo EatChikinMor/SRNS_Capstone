@@ -182,25 +182,25 @@ namespace SRNS_Capstone
             //Validate
             User user = new User()
             {
-                FirstName = txtFirstName.Text,
-                LastName = txtLastName.Text,
-                LoginID = txtLoginID.Text,
-                IsAdmin = Convert.ToBoolean(hdnIsAdmin.Value),
-                IsManager = Convert.ToBoolean(hdnIsManager.Value),
-                ManagerID = Convert.ToInt32(ddlManagers.SelectedItem.Value),
-                PassHash = txtPassword.Text, //Converted to hash on insert to DB
-                Salt = "" //Added on insert
+                //FirstName = txtFirstName.Text,
+                //LastName = txtLastName.Text,
+                //LoginID = txtLoginID.Text,
+                //IsAdmin = Convert.ToBoolean(hdnIsAdmin.Value),
+                //IsManager = Convert.ToBoolean(hdnIsManager.Value),
+                //ManagerID = Convert.ToInt32(ddlManagers.SelectedItem.Value),
+                //PassHash = txtPassword.Text, //Converted to hash on insert to DB
+                //Salt = "" //Added on insert
             };
 
             UserAccess access = new UserAccess()
             {
-                Requests = chkRequests.Checked,
-                AddLicense = chkAddLicense.Checked,
-                AvailLicenseReport = chkAvailableLicense.Checked,
-                LicenseCountReport = chkLicenseCount.Checked,
-                LicenseExpReport = chkLicensesExpiring.Checked,
-                ManagLicenseReport = chkManagerLicenseHolders.Checked,
-                PendChargeReport = chkPendingChargebacks.Checked
+                //Requests = chkRequests.Checked,
+                //AddLicense = chkAddLicense.Checked,
+                //AvailLicenseReport = chkAvailableLicense.Checked,
+                //LicenseCountReport = chkLicenseCount.Checked,
+                //LicenseExpReport = chkLicensesExpiring.Checked,
+                //ManagLicenseReport = chkManagerLicenseHolders.Checked,
+                //PendChargeReport = chkPendingChargebacks.Checked
             };
 
             string response = new DBConnector().InsertUser(user, access);

@@ -118,95 +118,102 @@ namespace SQLiteDataHelpers
 
         #region INSERTS
 
-        public string InsertUser(User user, UserAccess userA)
+        public string InsertUser(User user, UserAccess userA, Boolean updateUser) //Change to Upsert
         {
-            //////////// Manually Add user \\\\\\\\\\\\
-            //User a = new User();
-            //a.FirstName = "Austin";
-            //a.LastName = "Rich";
-            //a.IsAdmin = true;
-            //a.LoginID = "arich";
-            //a.PassHash = "123456a";
-            //a.ManagerID = 1;
-            //a.Salt = GenerateRandomString();
-            //a.IsManager = true;
-
-            //user = a;
-
-            //UserAccess b = new UserAccess()
-            //{
-            //    UserID = 0,
-            //    Requests = true,
-            //    AddLicense = true,
-            //    AvailLicenseReport = true,
-            //    LicenseCountReport = true,
-            //    LicenseExpReport = true,
-            //    ManagLicenseReport = true,
-            //    PendChargeReport = false
-            //};
-
-            //userA = b;
-            //-----------------------------------------
-
-            if (!DoesUsernameExist(user.LoginID))
+            if (updateUser)
             {
-                user.Salt = GenerateRandomString();
+                //Update goes here
+                return "failed update";
+            }
+            else
+            {
+                //////////// Manually Add user \\\\\\\\\\\\
+                //User a = new User();
+                //a.FirstName = "Austin";
+                //a.LastName = "Rich";
+                //a.IsAdmin = true;
+                //a.LoginID = "user";
+                //a.PassHash = "123456a";
+                //a.ManagerID = 1;
+                //a.Salt = GenerateRandomString();
+                //a.IsManager = true;
 
-                using (MD5 md5Hash = MD5.Create())
+                //user = a;
+
+                //UserAccess b = new UserAccess()
+                //{
+                //    UserID = 0,
+                //    Requests = true,
+                //    AddLicense = true,
+                //    AvailLicenseReport = true,
+                //    LicenseCountReport = true,
+                //    LicenseExpReport = true,
+                //    ManagLicenseReport = true,
+                //    PendChargeReport = false
+                //};
+
+                //userA = b;
+                //-----------------------------------------
+
+                if (!DoesUsernameExist(user.LoginID))
                 {
-                    user.PassHash = GenerateMd5Hash(md5Hash, user.Salt + user.PassHash);
-                }
+                    user.Salt = GenerateRandomString();
 
-                Dictionary<String, String> Users = SQLTables.TableColumns.Users;
-
-                Users["FirstName"] = user.FirstName;
-                Users["LastName"] = user.LastName;
-                Users["IsAdmin"] = user.IsAdmin.ToString();
-                Users["LoginID"] = user.LoginID;
-                Users["PassHash"] = user.PassHash;
-                Users["ManagerID"] = user.ManagerID.ToString();
-                Users["Salt"] = user.Salt;
-                Users["IsManager"] = user.IsManager.ToString();
-
-                string Error = "", retError = "";
-                if (!SQLiteDataHelper.Insert("USERS", Users, ref Error))
-                {
-                    retError = Error;
-                }
-
-                if (Error.Length < 1)
-                {
-                    userA.UserID = getMaxID("Users");
-
-                    Dictionary<String, String> userAccess = SQLTables.TableColumns.UserAccess;
-
-                    userAccess["UserID"] = userA.UserID.ToString();
-                    userAccess["Requests"] = userA.Requests.ToString();
-                    userAccess["AddLicense"] = userA.AddLicense.ToString();
-                    userAccess["LicenseCountReport"] = userA.LicenseCountReport.ToString();
-                    userAccess["AvailLicenseReport"] = userA.AvailLicenseReport.ToString();
-                    userAccess["ManagLicenseReport"] = userA.ManagLicenseReport.ToString();
-                    userAccess["LicenseExpReport"] = userA.LicenseCountReport.ToString();
-                    userAccess["PendChargeReport"] = userA.PendChargeReport.ToString();
-
-                    Error = "";
-                    if (SQLiteDataHelper.Insert("UserAccess", Users, ref Error))
+                    using (MD5 md5Hash = MD5.Create())
                     {
-                        return "User successfully created";
+                        user.PassHash = GenerateMd5Hash(md5Hash, user.Salt + user.PassHash);
+                    }
+
+                    Dictionary<String, String> Users = SQLTables.TableColumns.Users;
+                    Users["FirstName"] = user.FirstName;
+                    Users["LastName"] = user.LastName;
+                    Users["IsAdmin"] = user.IsAdmin.ToString();
+                    Users["LoginID"] = user.LoginID;
+                    Users["PassHash"] = user.PassHash;
+                    Users["ManagerID"] = user.ManagerID.ToString();
+                    Users["Salt"] = user.Salt;
+                    Users["IsManager"] = user.IsManager.ToString();
+
+                    string Error = "", retError = "";
+                    if (!SQLiteDataHelper.Insert("USERS", Users, ref Error))
+                    {
+                        retError = Error;
+                    }
+
+                    if (Error.Length < 1)
+                    {
+                        userA.UserID = getMaxID("Users");
+
+                        Dictionary<String, String> userAccess = SQLTables.TableColumns.UserAccess;
+
+                        userAccess["UserID"] = userA.UserID.ToString();
+                        userAccess["Requests"] = userA.Requests.ToString();
+                        userAccess["AddLicense"] = userA.AddLicense.ToString();
+                        userAccess["LicenseCountReport"] = userA.LicenseCountReport.ToString();
+                        userAccess["AvailLicenseReport"] = userA.AvailLicenseReport.ToString();
+                        userAccess["ManagLicenseReport"] = userA.ManagLicenseReport.ToString();
+                        userAccess["LicenseExpReport"] = userA.LicenseCountReport.ToString();
+                        userAccess["PendChargeReport"] = userA.PendChargeReport.ToString();
+
+                        Error = "";
+                        if (SQLiteDataHelper.Insert("UserAccess", Users, ref Error))
+                        {
+                            return "User successfully created";
+                        }
+                        else
+                        {
+                            return "User Access insert failed - " + Error + "- try updating user access or deleting and recreating the user";
+                        }
                     }
                     else
                     {
-                        return "User Access insert failed - " + Error + "- try updating user access or deleting and recreating the user";
+                        return "Insert into Database failed - " + Error;
                     }
                 }
                 else
                 {
-                    return "Insert into Database failed - " + Error;
+                    return "The chosen username already exists.";
                 }
-            }
-            else
-            {
-                return "The chosen username already exists.";
             }
         }
 
@@ -218,6 +225,10 @@ namespace SQLiteDataHelpers
 
             return ID;
         }
+
+        #endregion
+
+        #region UPDATES
 
         #endregion
 
