@@ -41,3 +41,12 @@ select.form-control {
     background-color:#900808;
     border-color:#630c0c;
 }
+
+
+.server-action-menu {
+    background-color: transparent;
+    background-image: linear-gradient(to bottom, rgba(30, 87, 153, 0.2) 0%, rgba(125, 185, 232, 0) 100%);
+    background-repeat: repeat;
+    border-radius:10px;
+    padding: 5px;
+}

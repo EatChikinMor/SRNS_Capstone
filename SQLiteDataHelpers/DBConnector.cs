@@ -104,9 +104,45 @@ namespace SQLiteDataHelpers
             return users;
         }
 
+        /// <summary>
+        /// Jessica added to populate Software names from database
+        /// </summary>
+        /// <returns></returns>
+        public List<ComboboxItem> populateSoftwareList()
+        {
+            /// TODO: Alter OrderBy to Sort alphabetically 
+            string SQL = "Select ID, SoftwareName FROM Software ORDER BY SoftwareName ASC";
+
+            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
+
+            List<ComboboxItem> software = new List<ComboboxItem>();
+
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                ComboboxItem item = new ComboboxItem()
+                {
+                    Value = dt.Rows[i]["ID"].ToString(),
+                    Text = (string)dt.Rows[i]["SoftwareName"]
+                };
+
+                software.Add(item);
+            }
+
+            return software;
+        }
+
         public DataTable getManagers()
         {
             String SQL = "SELECT ID, FirstName, LastName FROM Users WHERE IsManager = 1";
+
+            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
+
+            return dt;
+        }
+        //Jessica - to get Software Names
+        public DataTable getSoftwareName()
+        {
+            String SQL = "SELECT ID, SoftwareName FROM Software Where SoftwareName = 1";
 
             DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
 
@@ -117,6 +153,8 @@ namespace SQLiteDataHelpers
         #endregion
 
         #region INSERTS
+
+       
 
         public string InsertUser(User user, UserAccess userA, Boolean updateUser) //Change to Upsert
         {

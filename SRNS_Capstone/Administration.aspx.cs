@@ -88,6 +88,7 @@ namespace SRNS_Capstone
                 ddlManagers.Items.Add(item);
             }
         }
+        
 
         protected void clearForm()
         {
@@ -203,23 +204,23 @@ namespace SRNS_Capstone
                 //PendChargeReport = chkPendingChargebacks.Checked
             };
 
-            string response = new DBConnector().InsertUser(user, access);
+            //string response = new DBConnector().InsertUser(user, access);
 
-            if (response.Length > 25)
-            {
-                //Error
-                lblError.Text = response;
-                pnlError.Visible = true;
-            }
-            else
-            {
-                //Success
-                clearForm();
-                pnlForm.Visible = false;
-                pnlSelection.Visible = true;
-                pnlSuccess.Visible = true;
-                lblSuccess.Text = response;
-            }
+            //if (response.Length > 25)
+            //{
+            //    //Error
+            //    lblError.Text = response;
+            //    pnlError.Visible = true;
+            //}
+            //else
+            //{
+            //    //Success
+            //    clearForm();
+            //    pnlForm.Visible = false;
+            //    pnlSelection.Visible = true;
+            //    pnlSuccess.Visible = true;
+            //    lblSuccess.Text = response;
+            //}
         }
 
         protected void btnUpdateUser_Click(object sender, EventArgs e)

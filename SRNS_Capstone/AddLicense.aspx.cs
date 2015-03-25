@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SQLiteDataHelpers.Objects;
+using SQLiteDataHelpers;
 
 namespace SRNS_Capstone
 {
@@ -64,6 +65,7 @@ namespace SRNS_Capstone
                 {
                     _IsAdmin = user.IsAdmin;
                     _userID = user.ID;
+                    ddlSoftwarePopulate();
 
                     if (_IsAdmin)
                     {
@@ -75,7 +77,17 @@ namespace SRNS_Capstone
                     Response.Redirect("~/Default.aspx");
                 }
             }
+        }
             //Check for session timeout
+        protected void ddlSoftwarePopulate()
+        {
+            List<ComboboxItem> software = new DBConnector().populateSoftwareList();
+
+            for (int i = 0; i < software.Count; i++)
+            {
+                ListItem item = new ListItem(software[i].Text, software[i].Value);
+                ddlSoftwareSelect.Items.Add(item);
+            }
         }
     }
 }

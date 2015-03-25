@@ -18,7 +18,7 @@
                 <div class="row">
                     <h3>Select User to Edit</h3>
                     <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4">
-                        <asp:DropDownList runat="server" ID="ddlUserSelect" CssClass="form-control" Style="width: 100%; max-width: 100%;" AutoPostBack="true" OnSelectedIndexChanged="ddlUserSelect_SelectedIndexChanged">
+                        <asp:DropDownList runat="server" ID="ddlUserSelect" CssClass="form-control" Style="width: 100%; max-width: 100%;">
                             <asp:ListItem Enabled="true" Text="" Value="0"></asp:ListItem>
                         </asp:DropDownList>
                     </div>
