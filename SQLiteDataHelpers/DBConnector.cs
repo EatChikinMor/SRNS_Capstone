@@ -12,7 +12,7 @@ namespace SQLiteDataHelpers
 {
     public class DBConnector
     {
-        SQLiteHelper SQLiteDataHelper = new SQLiteHelper();
+        readonly SQLiteHelper SQLiteDataHelper = new SQLiteHelper();
 
         #region SELECTS
 
@@ -34,13 +34,22 @@ namespace SQLiteDataHelpers
 
         #region Table Users
 
-        public bool DoesUsernameExist(string username)
+        public bool IsUsernameAvailable(string username)
         {
             String SQL = "SELECT COUNT(LoginID) FROM Users WHERE LoginID = '" + username + "'";
 
             string result = SQLiteDataHelper.ExecuteScalar(SQL);
 
-            return Convert.ToBoolean(Convert.ToInt32(result));
+            return Convert.ToInt32(result) == 0;
+        }
+
+        public bool IsThisTheCurrentUsername(string username, string userId)
+        {
+            String SQL = "SELECT LoginID FROM Users WHERE ID = '" + userId + "'";
+
+            string result = SQLiteDataHelper.ExecuteScalar(SQL);
+
+            return String.CompareOrdinal(username, result) == 0;
         }
 
         public DataTable getUserOnLogin(string username, string password)
@@ -83,16 +92,16 @@ namespace SQLiteDataHelpers
 
         public List<ComboboxItem> populateUserList()
         {
-            /// TODO: Alter OrderBy to Sort alphabetically by First, Last name
-            string SQL = "Select ID, FirstName, LastName, LoginID FROM Users ORDER BY ID DESC";
+            // TODO: Alter OrderBy to Sort alphabetically by First, Last name
+            const string SQL = "Select ID, FirstName, LastName, LoginID FROM Users ORDER BY ID DESC";
 
-            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
+            var dt = SQLiteDataHelper.GetDataTable(SQL);
 
-            List<ComboboxItem> users = new List<ComboboxItem>();
+            var users = new List<ComboboxItem>();
 
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                ComboboxItem item = new ComboboxItem()
+                var item = new ComboboxItem()
                 {
                     Value = dt.Rows[i]["ID"].ToString(),
                     Text = (string)dt.Rows[i]["FirstName"] + " " + (string)dt.Rows[i]["LastName"] + " - " + (string)dt.Rows[i]["LoginID"]
@@ -154,17 +163,8 @@ namespace SQLiteDataHelpers
 
         #region INSERTS
 
-       
-
-        public string InsertUser(User user, UserAccess userA, Boolean updateUser) //Change to Upsert
+        public string InsertUser(User user, UserAccess userA)
         {
-            if (updateUser)
-            {
-                //Update goes here
-                return "failed update";
-            }
-            else
-            {
                 //////////// Manually Add user \\\\\\\\\\\\
                 //User a = new User();
                 //a.FirstName = "Austin";
@@ -191,10 +191,10 @@ namespace SQLiteDataHelpers
                 //};
 
                 //userA = b;
-                //-----------------------------------------
+            //-----------------------------------------\\
 
-                if (!DoesUsernameExist(user.LoginID))
-                {
+            if (!IsUsernameAvailable(user.LoginID)) return "The chosen username already exists.";
+
                     user.Salt = GenerateRandomString();
 
                     using (MD5 md5Hash = MD5.Create())
@@ -205,57 +205,46 @@ namespace SQLiteDataHelpers
                     Dictionary<String, String> Users = SQLTables.TableColumns.Users;
                     Users["FirstName"] = user.FirstName;
                     Users["LastName"] = user.LastName;
-                    Users["IsAdmin"] = user.IsAdmin.ToString();
+            Users["IsAdmin"] = Convert.ToInt32(user.IsAdmin).ToString();
                     Users["LoginID"] = user.LoginID;
                     Users["PassHash"] = user.PassHash;
-                    Users["ManagerID"] = user.ManagerID.ToString();
+            Users["ManagerID"] = Convert.ToInt32(user.ManagerID).ToString();
                     Users["Salt"] = user.Salt;
-                    Users["IsManager"] = user.IsManager.ToString();
+            Users["IsManager"] = Convert.ToInt32(user.IsManager).ToString();
 
-                    string Error = "", retError = "";
-                    if (!SQLiteDataHelper.Insert("USERS", Users, ref Error))
+            string error = "", retError = "";
+            if (!SQLiteDataHelper.Insert("USERS", Users, ref error))
                     {
-                        retError = Error;
+                retError = error + ",";
                     }
 
-                    if (Error.Length < 1)
+            if (error.Length < 1)
                     {
-                        userA.UserID = getMaxID("Users");
+                userA.UserID = GetMaxId("Users");
 
                         Dictionary<String, String> userAccess = SQLTables.TableColumns.UserAccess;
 
                         userAccess["UserID"] = userA.UserID.ToString();
-                        userAccess["Requests"] = userA.Requests.ToString();
-                        userAccess["AddLicense"] = userA.AddLicense.ToString();
-                        userAccess["LicenseCountReport"] = userA.LicenseCountReport.ToString();
-                        userAccess["AvailLicenseReport"] = userA.AvailLicenseReport.ToString();
-                        userAccess["ManagLicenseReport"] = userA.ManagLicenseReport.ToString();
-                        userAccess["LicenseExpReport"] = userA.LicenseCountReport.ToString();
-                        userAccess["PendChargeReport"] = userA.PendChargeReport.ToString();
+                userAccess["Requests"] = Convert.ToInt32(userA.Requests).ToString();
+                userAccess["AddLicense"] = Convert.ToInt32(userA.AddLicense).ToString();
+                userAccess["LicenseCountReport"] = Convert.ToInt32(userA.LicenseCountReport).ToString();
+                userAccess["AvailLicenseReport"] = Convert.ToInt32(userA.AvailLicenseReport).ToString();
+                userAccess["ManagLicenseReport"] = Convert.ToInt32(userA.ManagLicenseReport).ToString();
+                userAccess["LicenseExpReport"] = Convert.ToInt32(userA.LicenseCountReport).ToString();
+                userAccess["PendChargeReport"] = Convert.ToInt32(userA.PendChargeReport).ToString();
 
-                        Error = "";
-                        if (SQLiteDataHelper.Insert("UserAccess", Users, ref Error))
-                        {
-                            return "User successfully created";
-                        }
-                        else
-                        {
-                            return "User Access insert failed - " + Error + "- try updating user access or deleting and recreating the user";
-                        }
-                    }
-                    else
-                    {
-                        return "Insert into Database failed - " + Error;
-                    }
-                }
-                else
-                {
-                    return "The chosen username already exists.";
-                }
+                error = "";
+
+                return SQLiteDataHelper.Insert("UserAccess", userAccess, ref error)
+                    ? "User successfully created"
+                    : "User Access insert failed - " + retError + error +
+                      "- try updating user access or deleting and recreating the user";
             }
+
+            return "Insert into Database failed - " + error;
         }
 
-        public int getMaxID(string tableName)
+        public int GetMaxId(string tableName)
         {
             string SQL = "SELECT MAX(ID) FROM " + tableName;
 
@@ -266,7 +255,56 @@ namespace SQLiteDataHelpers
 
         #endregion
 
+        #region UPSERTS
+
+        #endregion
+
         #region UPDATES
+
+        public string UpdateUser(string UserID, User user, UserAccess userA)
+        {
+            if (!IsUsernameAvailable(user.LoginID) && !IsThisTheCurrentUsername(user.LoginID, UserID))
+                return "The chosen username already exists.";
+
+            user.Salt = GenerateRandomString();
+
+            using (MD5 md5Hash = MD5.Create())
+            {
+                user.PassHash = GenerateMd5Hash(md5Hash, user.Salt + user.PassHash);
+            }
+
+            var Users = SQLTables.TableColumns.Users;
+            Users["FirstName"] = user.FirstName;
+            Users["LastName"] = user.LastName;
+            Users["IsAdmin"] = user.IsAdmin.ToString();
+            Users["LoginID"] = user.LoginID;
+            Users["PassHash"] = user.PassHash;
+            Users["ManagerID"] = user.ManagerID.ToString();
+            Users["Salt"] = user.Salt;
+            Users["IsManager"] = user.IsManager.ToString();
+
+            string where = "ID = " + UserID;
+
+            if (!SQLiteDataHelper.Update("USERS", Users, @where)) 
+                return "User Update failed";
+
+            userA.UserID = GetMaxId("Users");
+
+            var userAccess = SQLTables.TableColumns.UserAccess;
+
+            userAccess["UserID"] = userA.UserID.ToString();
+            userAccess["Requests"] = userA.Requests.ToString();
+            userAccess["AddLicense"] = userA.AddLicense.ToString();
+            userAccess["LicenseCountReport"] = userA.LicenseCountReport.ToString();
+            userAccess["AvailLicenseReport"] = userA.AvailLicenseReport.ToString();
+            userAccess["ManagLicenseReport"] = userA.ManagLicenseReport.ToString();
+            userAccess["LicenseExpReport"] = userA.LicenseCountReport.ToString();
+            userAccess["PendChargeReport"] = userA.PendChargeReport.ToString();
+
+            return SQLiteDataHelper.Update("UserAccess", Users, @where) 
+                ? "User successfully updated" 
+                : "Access control update failed - User information successfully updated";
+        }
 
         #endregion
 
@@ -287,7 +325,7 @@ namespace SQLiteDataHelpers
             // and format each one as a hexadecimal string. 
             for (int i = 0; i < data.Length; i++)
             {
-                sBuilder.Append(data[i].ToString("x2"));
+                sBuilder.Append(i.ToString("x2"));
             }
 
             // Return the hexadecimal string. 
@@ -296,9 +334,9 @@ namespace SQLiteDataHelpers
 
         public string GenerateRandomString()
         {
-            char[] charArr = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".ToCharArray();
-            string randomString = string.Empty;
-            Random objRandom = new Random();
+            var charArr = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".ToCharArray();
+            var randomString = string.Empty;
+            var objRandom = new Random();
             for (int i = 0; i < 10; i++)
             {
                 //Don't Allow Repetation of Characters

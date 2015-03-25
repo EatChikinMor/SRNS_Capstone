@@ -9,7 +9,6 @@ namespace SQLiteDataHelpers
 {
     public class SQLiteHelper
     {
-
         String dbConnection = @"data source=" + AppDomain.CurrentDomain.BaseDirectory + "\\DB\\SQLiteDB" + "";
 
         /// <summary>
@@ -87,15 +86,12 @@ namespace SQLiteDataHelpers
             Boolean returnCode = true;
             if (data.Count >= 1)
             {
-                foreach (KeyValuePair<String, String> val in data)
-                {
-                    vals += String.Format(" {0} = '{1}',", val.Key.ToString(), val.Value.ToString());
-                }
+                vals = data.Aggregate(vals, (current, val) => current + String.Format(" {0} = '{1}',", val.Key.ToString(), val.Value.ToString()));
                 vals = vals.Substring(0, vals.Length - 1);
             }
             try
             {
-                this.ExecuteNonQuery(String.Format("update {0} set {1} where {2};", tableName, vals, where));
+                ExecuteNonQuery(String.Format("update {0} set {1} where {2};", tableName, vals, where));
             }
             catch
             {
@@ -115,7 +111,7 @@ namespace SQLiteDataHelpers
             Boolean returnCode = true;
             try
             {
-                this.ExecuteNonQuery(String.Format("delete from {0} where {1};", tableName, where));
+                ExecuteNonQuery(String.Format("delete from {0} where {1};", tableName, where));
             }
             catch (Exception fail)
             {
@@ -145,7 +141,7 @@ namespace SQLiteDataHelpers
             values = values.Substring(0, values.Length - 1);
             try
             {
-                this.ExecuteNonQuery(String.Format("INSERT INTO {0}({1}) VALUES({2});", tableName, columns, values));
+                ExecuteNonQuery(String.Format("INSERT INTO {0}({1}) VALUES({2});", tableName, columns, values));
             }
             catch (Exception fail)
             {

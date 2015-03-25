@@ -65,7 +65,7 @@ namespace SRNS_Capstone
         protected void pnlFailedLogin_Unload(object sender, EventArgs e)
         {
             MethodInfo methodInfo = typeof(ScriptManager).GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
-            .Where(i => i.Name.Equals("System.Web.UI.IScriptManagerInternal.RegisterUpdatePanel")).First();
+                .First(i => i.Name.Equals("System.Web.UI.IScriptManagerInternal.RegisterUpdatePanel"));
             methodInfo.Invoke(ScriptManager.GetCurrent(Page),
                 new object[] { sender as UpdatePanel });
         }

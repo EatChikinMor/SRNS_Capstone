@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="assets/css/bootstrap/bootstrap-theme.min.css" />
     <link rel="stylesheet" href="assets/css/jasny/jasny-bootstrap.min.css" />
     <link rel="stylesheet" href="assets/css/Main.css" />
+    <script src="assets/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" href="assets/datetimepicker/bootstrap-datetimepicker.min.css"/>
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>

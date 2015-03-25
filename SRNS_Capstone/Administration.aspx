@@ -7,10 +7,12 @@
     <div class="row">
         <asp:Panel runat="server" ID="pnlSelection" Visible="true">
             <asp:Panel runat="server" ID="pnlSuccess" Visible="false">
-                    <div class="alert alert-success" role="alert" style="margin-top:10px;">
-                        <h4>
-                            <asp:Label runat="server" ID="lblSuccess" Text="Database Changes Successful"></asp:Label>
-                        </h4>
+                    <div class="col-lg-6 col-lg-offset-3">
+                        <div class="alert alert-success" role="alert" style="margin-top:10px;">
+                            <h4>
+                                <asp:Label runat="server" ID="lblSuccess" Text="Database Changes Successful"></asp:Label>
+                            </h4>
+                        </div>
                     </div>
             </asp:Panel>
             <div class="col-lg-12 col-md-12 text-center">
@@ -23,7 +25,7 @@
                         </asp:DropDownList>
                     </div>
                 </div>
-                <div class="row center">
+                <div class="row text-center">
                     <h3>or</h3>
                 </div>
                 <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4">
@@ -33,14 +35,16 @@
         </asp:Panel>
         <asp:Panel runat="server" ID="pnlForm" Visible="false">
             <div class="container">
-                <div class="col-lg-4 col-lg-offset-4">
-                    <asp:Panel runat="server" ID="pnlError" Visible="false">
-                            <div class="alert alert-danger" role="alert" style="margin-top:10px;">
-                                <h4>
-                                    <asp:Label runat="server" ID="lblError" Text="Changes not made"></asp:Label>
-                                </h4>
-                            </div>
-                    </asp:Panel>
+                <div class="row">
+                    <div class="col-lg-4 col-lg-offset-4">
+                        <asp:Panel runat="server" ID="pnlError" Visible="false">
+                                <div class="alert alert-danger" role="alert" style="margin-top:10px;">
+                                    <h4>
+                                        <asp:Label runat="server" ID="lblError" Text="Changes not made"></asp:Label>
+                                    </h4>
+                                </div>
+                        </asp:Panel>
+                    </div>
                 </div>
                 <br />
                 <div class="row hidden-sm hidden-xs">
@@ -56,13 +60,13 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-4 col-md-4">
-                        <asp:TextBox CssClass="form-control" placeholder="First Name" runat="server" ID="txtFirstName"></asp:TextBox>
+                        <asp:TextBox CssClass="form-control" placeholder="First Name" runat="server" ID="txtFirstName" autocomplete="off" ></asp:TextBox>
                     </div>
                     <div class="col-lg-4 col-md-4">
-                        <asp:TextBox CssClass="form-control" placeholder="Last Name" runat="server" ID="txtLastName"></asp:TextBox>
+                        <asp:TextBox CssClass="form-control" placeholder="Last Name" runat="server" ID="txtLastName" autocomplete="off" ></asp:TextBox>
                     </div>
                     <div class="col-lg-4 col-md-4">
-                        <asp:TextBox CssClass="form-control" placeholder="Username" runat="server" ID="txtLoginID"></asp:TextBox>
+                        <asp:TextBox CssClass="form-control" placeholder="Username" runat="server" ID="txtLoginID" autocomplete="off" ></asp:TextBox>
                     </div>
                 </div>
                 <br />
@@ -118,17 +122,18 @@
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4">
-                        <asp:TextBox CssClass="form-control" placeholder="Password" runat="server" ID="txtPassword"></asp:TextBox>
+                        <asp:TextBox CssClass="form-control" placeholder="Password" runat="server" ID="txtPassword" autocomplete="off" ></asp:TextBox>
                         <span runat="server" id="labelPasswordInfo" visible="false" style="font-size:x-small; color:#051874;">Leaving the password field blank will keep the user's current password</span>
                     </div>
                 </div>
                 <br />
                 <div class="row text-center">
                     <h3>Access Control</h3>
+                    <a class="btn btn-sm btn-default" onclick="checkAllReports();">Check All Reports</a>
                 </div>
                 <br />
                 <div class="row text-center">
-                    <div class="col-lg-12 col-md-12 center">
+                    <div class="col-lg-12 col-md-12">
                         <label class="checkbox-inline">
                           <asp:CheckBox runat="server" type="checkbox" id="chkRequests" value="option1" /> Requests
                         </label>
@@ -171,41 +176,62 @@
             </div>
         </asp:Panel>
     </div>
-
+    
+    <asp:HiddenField runat="server" ID="hdnUserToUpdate"/>
     <asp:HiddenField runat="server" id="hdnIsPostBack" />
     <asp:HiddenField runat="server" id="hdnIsAdmin" />
     <asp:HiddenField runat="server" id="hdnIsManager" />
     <asp:Button href="#" runat="server" ID="btnCancelNewUser" style="display:none;" OnClick="btnCancelNewUser_Click" />
     
 <script type="text/javascript">
-    <%--$('#btnManagerFalse').click(function () {
-        enableDropDown(false);
-    });
-
-    $('#btnManagerTrue').click(function () {
-        enableDropDown(true);
-    });
-
-    var enableDropDown = (function () {
-        return function (status) {
-            $('#<%=ddlManagers.ClientID%>').attr('disabled', status);
-        }
-    })();--%>
-
     var isPostback = $("#<%=hdnIsPostBack.ClientID%>").val();
 
     if (isPostback === "False") {
         $('#btnManagerFalse').click();
         $('#btnAdminFalse').click();
-        $("#<%=hdnIsPostBack%>").val('true');
+        $("#<%=hdnIsPostBack.ClientID%>").val('true');
+        $("#<%=hdnIsAdmin.ClientID%>").val('false');
+        $("#<%=hdnIsManager.ClientID%>").val('false');
     } else {
-        var Admin = $("#<%=hdnIsAdmin.ClientID%>").val() === "true" ? $('#btnAdminTrue').click() : $('#btnAdminFalse').click()
-        var Manager = $("#<%=hdnIsManager.ClientID%>").val() === "true" ? $('#btnManagerTrue').click() : $('#btnManagerFalse').click()
+        $("#<%=hdnIsAdmin.ClientID%>").val() === "true" ? $('#btnAdminTrue').click() : $('#btnAdminFalse').click();
+        $("#<%=hdnIsManager.ClientID%>").val() === "true" ? $('#btnManagerTrue').click() : $('#btnManagerFalse').click();
     }
 
     var cancelNewUser = (function () {
         return function () {
             $("#<%=btnCancelNewUser.ClientID%>").click();
+        }
+    })();
+
+    $("#btnManagerTrue").keypress(function () {
+        $('#managerTrue').click();
+    });
+
+    $("#btnAdminTrue").keypress(function () {
+        $('#adminTrue').click();
+    });
+
+    var checkAllReports = (function () {
+
+        return function() {
+            $('#<%=chkPendingChargebacks.ClientID%>').attr('checked', true);
+            $('#<%=chkAvailableLicense.ClientID%>').attr('checked', true);
+            $('#<%=chkLicenseCount.ClientID%>').attr('checked', true);
+            $('#<%=chkLicensesExpiring.ClientID%>').attr('checked', true);
+            $('#<%=chkManagerLicenseHolders.ClientID%>').attr('checked', true);
+        }
+
+    })();
+
+    var countChecked = (function() {
+        return function() {
+            var count = 0;
+            count = $('#<%=chkPendingChargebacks.ClientID%>').is(':checked') ? count + 1 : count;
+            count = $('#<%=chkAvailableLicense.ClientID%>').is(':checked') ? count + 1 : count;
+            count = $('#<%=chkLicenseCount.ClientID%>').is(':checked') ? count + 1 : count;
+            count = $('#<%=chkLicensesExpiring.ClientID%>').is(':checked') ? count + 1 : count;
+            count = $('#<%=chkManagerLicenseHolders.ClientID%>').is(':checked') ? count + 1 : count;
+            return count;
         }
     })();
 </script>

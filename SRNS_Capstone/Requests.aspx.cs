@@ -77,7 +77,10 @@ namespace SRNS_Capstone
                 {
                     Response.Redirect("~/Default.aspx");
                 }
+                //anything here
             }
+
+            //This will run everytime the page loads
         }
 
         protected void IsAdmin()
