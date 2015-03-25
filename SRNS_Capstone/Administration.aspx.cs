@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
+using System.Text;
 using System.Web.UI.WebControls;
 using SQLiteDataHelpers.Objects;
 using SQLiteDataHelpers;
+using System.Text.RegularExpressions;
 
 namespace SRNS_Capstone
 {
@@ -61,20 +62,17 @@ namespace SRNS_Capstone
             }
             
             hdnIsPostBack.Value = Page.IsPostBack.ToString();
-            hdnIsManager.Value = managerTrue.Checked == true ? "true" : "false";
-            hdnIsAdmin.Value = adminTrue.Checked == true ? "true" : "false";
+            hdnIsManager.Value = managerTrue.Checked ? "true" : "false";
+            hdnIsAdmin.Value = adminTrue.Checked  ? "true" : "false";
         }
 
         protected void ddlUsersPopulate()
         {
             List<ComboboxItem> users = new DBConnector().populateUserList();
 
-            for (int i = 0; i < users.Count; i++)
+            foreach (ListItem item in users.Select(t => new ListItem(t.Text, t.Value)))
             {
-                ListItem item = new ListItem(users[i].Text, users[i].Value);
                 ddlUserSelect.Items.Add(item);
-                //ddlUserSelect.Items[i].Text = users[i].Text;
-                //ddlUserSelect.Items[i].Value = users[i].Value;
             }
         }
 
@@ -86,6 +84,7 @@ namespace SRNS_Capstone
             {
                 ListItem item = new ListItem((string)dt.Rows[i]["FirstName"] + " " + (string)dt.Rows[i]["LastName"], dt.Rows[i]["ID"].ToString());
                 ddlManagers.Items.Add(item);
+                ddlManagers.Items[0].Value = dt.Rows[i]["ID"].ToString();
             }
         }
 
@@ -103,6 +102,7 @@ namespace SRNS_Capstone
             pnlForm.Visible = true;
             pnlBtnAddUser.Visible = true;
             pnlBtnUpdateUser.Visible = false;
+            pnlError.Visible = false;
 
             clearForm();
         }
@@ -111,14 +111,15 @@ namespace SRNS_Capstone
         {
             DataRow user = new DBConnector().getUserByID(Convert.ToInt32(ddlUserSelect.SelectedValue)).Rows[0];
             DataRow access = new DBConnector().getUserPrivileges(Convert.ToInt32(user["ID"].ToString())).Rows[0];
+            hdnUserToUpdate.Value = ddlUserSelect.SelectedValue;
 
             txtFirstName.Text = user["FirstName"].ToString();
-            txtLastName.Text = user["FirstName"].ToString();
+            txtLastName.Text = user["LastName"].ToString();
             txtLoginID.Text = user["LoginID"].ToString();
             hdnIsAdmin.Value = Convert.ToInt32(user["IsAdmin"].ToString()) == 1 ? "true" : "false";
             hdnIsManager.Value = Convert.ToInt32(user["IsAdmin"].ToString()) == 1 ? "true" : "false";
             int manager = Convert.ToInt32(user["ManagerID"].ToString());
-            if(manager > 0)
+            if (manager > 0)
             {
                 try
                 {
@@ -147,23 +148,15 @@ namespace SRNS_Capstone
             pnlForm.Visible = true;
             pnlBtnAddUser.Visible = false;
             pnlBtnUpdateUser.Visible = true;
+            pnlError.Visible = false;
         }
 
         protected void ddlManagers_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-            String something = ddlManagers.SelectedIndex.ToString();
+            //String something = ddlManagers.SelectedIndex.ToString();
 
-            DBConnector a = new DBConnector();
-
-            //txtFirstName.Text = a.getMaxID("Users").ToString() + " " + something;
-        }
-
-        protected void btnOne_Click(object sender, EventArgs e)
-        {
-            String something = ddlManagers.SelectedIndex.ToString();
-
-            DBConnector a = new DBConnector();
+            //DBConnector a = new DBConnector();
 
             //txtFirstName.Text = a.getMaxID("Users").ToString() + " " + something;
         }
@@ -179,52 +172,212 @@ namespace SRNS_Capstone
 
         protected void btnNewUser_Click(object sender, EventArgs e)
         {
-            //Validate
-            User user = new User()
-            {
-                //FirstName = txtFirstName.Text,
-                //LastName = txtLastName.Text,
-                //LoginID = txtLoginID.Text,
-                //IsAdmin = Convert.ToBoolean(hdnIsAdmin.Value),
-                //IsManager = Convert.ToBoolean(hdnIsManager.Value),
-                //ManagerID = Convert.ToInt32(ddlManagers.SelectedItem.Value),
-                //PassHash = txtPassword.Text, //Converted to hash on insert to DB
-                //Salt = "" //Added on insert
-            };
+            var errors = ValidateInput();
 
-            UserAccess access = new UserAccess()
+            if (errors.Count == 0)
             {
-                //Requests = chkRequests.Checked,
-                //AddLicense = chkAddLicense.Checked,
-                //AvailLicenseReport = chkAvailableLicense.Checked,
-                //LicenseCountReport = chkLicenseCount.Checked,
-                //LicenseExpReport = chkLicensesExpiring.Checked,
-                //ManagLicenseReport = chkManagerLicenseHolders.Checked,
-                //PendChargeReport = chkPendingChargebacks.Checked
-            };
+                User user = new User()
+                {
+                    FirstName = txtFirstName.Text,
+                    LastName = txtLastName.Text,
+                    LoginID = txtLoginID.Text,
+                    IsAdmin = adminTrue.Checked,
+                    IsManager = managerTrue.Checked,
+                    ManagerID = managerTrue.Checked ? 0 : Convert.ToInt32(ddlManagers.SelectedItem.Value),
+                    PassHash = txtPassword.Text //Converted to hash on insert to DB
+                };
 
-            string response = new DBConnector().InsertUser(user, access);
+                UserAccess access = new UserAccess()
+                {
+                    Requests = chkRequests.Checked,
+                    AddLicense = chkAddLicense.Checked,
+                    AvailLicenseReport = chkAvailableLicense.Checked,
+                    LicenseCountReport = chkLicenseCount.Checked,
+                    LicenseExpReport = chkLicensesExpiring.Checked,
+                    ManagLicenseReport = chkManagerLicenseHolders.Checked,
+                    PendChargeReport = chkPendingChargebacks.Checked
+                };
 
-            if (response.Length > 25)
-            {
-                //Error
-                lblError.Text = response;
-                pnlError.Visible = true;
+                string response = new DBConnector().InsertUser(user, access);
+
+                if (response.Length > 25)
+                {
+                    //Error
+                    lblError.Text = response;
+                    pnlError.Visible = true;
+                }
+                else
+                {
+                    //Success
+                    clearForm();
+                    pnlForm.Visible = false;
+                    pnlSelection.Visible = true;
+                    pnlSuccess.Visible = true;
+                    lblSuccess.Text = response;
+                    ddlUsersPopulate();
+                }
             }
             else
             {
-                //Success
-                clearForm();
-                pnlForm.Visible = false;
-                pnlSelection.Visible = true;
-                pnlSuccess.Visible = true;
-                lblSuccess.Text = response;
+                lblError.Visible = true;
+                lblError.ForeColor = Color.Red;
+
+                var E  = new StringBuilder();
+
+                foreach (var error in errors)
+                {
+                    E.Append(error);
+                }
+
+                lblError.Text = "Input Required for the following fields:" + E;
             }
         }
 
         protected void btnUpdateUser_Click(object sender, EventArgs e)
         {
+            var errors = ValidateInput(true);
 
+            if (errors.Count == 0)
+            {
+                User user = new User()
+                {
+                    FirstName = txtFirstName.Text,
+                    LastName = txtLastName.Text,
+                    LoginID = txtLoginID.Text,
+                    IsAdmin = adminTrue.Checked,
+                    IsManager = managerTrue.Checked,
+                    ManagerID = Convert.ToInt32(ddlManagers.SelectedItem.Value),
+                    PassHash = txtPassword.Text //Converted to hash on insert to DB
+                };
+
+                UserAccess access = new UserAccess()
+                {
+                    Requests = chkRequests.Checked,
+                    AddLicense = chkAddLicense.Checked,
+                    AvailLicenseReport = chkAvailableLicense.Checked,
+                    LicenseCountReport = chkLicenseCount.Checked,
+                    LicenseExpReport = chkLicensesExpiring.Checked,
+                    ManagLicenseReport = chkManagerLicenseHolders.Checked,
+                    PendChargeReport = chkPendingChargebacks.Checked
+                };
+
+
+                string response = new DBConnector().UpdateUser(ddlUserSelect.SelectedValue, user, access);
+
+                if (response.Length > 25)
+                {
+                    //Error
+                    lblError.Text = response;
+                    pnlError.Visible = true;
+                }
+                else
+                {
+                    //Success
+                    clearForm();
+                    pnlForm.Visible = false;
+                    pnlSelection.Visible = true;
+                    pnlSuccess.Visible = true;
+                    lblSuccess.Text = response;
+                }
+            }
+            else
+            {
+                lblError.Visible = true;
+                lblError.ForeColor = Color.Red;
+
+                var E  = new StringBuilder();
+
+                foreach (var error in errors)
+                {
+                    E.Append(error);
+                }
+
+                lblError.Text = "Input Required for the following fields:" + E;
+                pnlError.Visible = true;
+            }
+        }
+
+        private List<String> ValidateEmptyInput(ref bool[] valid, bool update = false)
+        {
+            pnlError.Visible = false;
+
+            var errors = new List<string>();
+
+            if (String.IsNullOrEmpty(txtFirstName.Text))
+            {
+                txtFirstName.BackColor = ColorTranslator.FromHtml("#FFD8D8");
+                lblFirstName.ForeColor = Color.Red;
+                errors.Add("First Name Empty");
+                valid[0] = false;
+            }
+            if (String.IsNullOrEmpty(txtLastName.Text))
+            {
+                txtLastName.BackColor = ColorTranslator.FromHtml("#FFD8D8");
+                lblLastName.ForeColor = Color.Red;
+                errors.Add(errors.Count > 0 ? ", Last Name Empty" : "Last Name Empty");
+                valid[1] = false;
+            }
+            if (String.IsNullOrEmpty(txtLoginID.Text))
+            {
+                txtLoginID.BackColor = ColorTranslator.FromHtml("#FFD8D8");
+                lblUsername.ForeColor = Color.Red;
+                errors.Add(errors.Count > 0 ? ", Username Empty" : "Username Empty");
+                valid[2] = false;
+            }
+            if (String.IsNullOrEmpty(txtPassword.Text) && !update)
+            {
+                txtPassword.BackColor = ColorTranslator.FromHtml("#FFD8D8");
+                lblPassword.ForeColor = Color.Red;
+                errors.Add(errors.Count > 0 ? ", Password Empty" : "Password Empty");
+            }
+            if (ddlManagers.SelectedIndex == 0 && !Convert.ToBoolean(hdnIsManager.Value) && !update)
+            {
+                ddlManagers.BackColor = ColorTranslator.FromHtml("#FFD8D8");
+                lblManager.ForeColor = Color.Red;
+                errors.Add(errors.Count > 0 ? ", Select a Manager" : "Select a Manager");
+            }
+
+            pnlError.Visible = true;
+
+            return errors;
+        }
+
+        private List<String> ValidateInput(bool update = false)
+        {
+            var valid = new [] {true, true, true};
+            var errors = ValidateEmptyInput(ref valid, update);
+            if (valid[0] && !IsAlpha(txtFirstName.Text))
+            {
+                txtFirstName.BackColor = ColorTranslator.FromHtml("#FFD8D8");
+                lblFirstName.ForeColor = Color.Red;
+                errors.Add("First Name Invalid");
+            }
+            if (valid[1] && !IsAlpha((txtLastName.Text)))
+            {
+                txtLastName.BackColor = ColorTranslator.FromHtml("#FFD8D8");
+                lblLastName.ForeColor = Color.Red;
+                errors.Add(errors.Count > 0 ? ", Last Name Invalid" : "Last Name Invalid");
+            }
+            if (valid[2] && !IsAlphaNumeric(txtLoginID.Text))
+            {
+                txtLoginID.BackColor = ColorTranslator.FromHtml("#FFD8D8");
+                lblUsername.ForeColor = Color.Red;
+                errors.Add(errors.Count > 0 ? ", Username Can Only contain A-Z,a-z,0-9" : "Username Can Only contain A-Z,a-z,0-9");
+            }
+
+            return errors;
+        }
+
+        public static Boolean IsAlphaNumeric(string strToCheck)
+        {
+            Regex rg = new Regex(@"^[a-zA-Z0-9\s,]*$");
+            return rg.IsMatch(strToCheck);
+        }
+
+        public static Boolean IsAlpha(string strToCheck)
+        {
+            Regex rg = new Regex(@"^[a-zA-Z\s,]*$");
+            return rg.IsMatch(strToCheck);
         }
     }
 }

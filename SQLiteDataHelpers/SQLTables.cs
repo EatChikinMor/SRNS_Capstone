@@ -13,10 +13,10 @@ namespace SQLiteDataHelpers
             {
                 get
                 {
-                    Dictionary<String, String> columns = new Dictionary<String, String>() 
+                    var columns = new Dictionary<String, String>() 
                     { 
                         {"SoftwareID", ""},
-                        {"Key", ""},
+                        {"LicenseKey", ""},
                         {"DateModified", ""},
                         {"ExpirationDate", ""},
                         {"KeyOwnerID", ""},
@@ -26,11 +26,11 @@ namespace SQLiteDataHelpers
                 }
             }
 
-            public static Dictionary<String, String> Organizations
+            public static Dictionary<String, String> Providers
             {
                 get
                 {
-                    Dictionary<String, String> columns = new Dictionary<String, String>()  
+                    var columns = new Dictionary<String, String>()  
                     {{"Organization", ""}};
                     return columns;
                 }
@@ -40,7 +40,7 @@ namespace SQLiteDataHelpers
             {
                 get
                 {
-                    Dictionary<String, String> columns = new Dictionary<String, String>()
+                    var columns = new Dictionary<String, String>()
                     {
                         {"RequestingUser",""},
                         {"RequestedSoftware",""},
@@ -54,7 +54,7 @@ namespace SQLiteDataHelpers
             {
                 get
                 {
-                    Dictionary<String, String> columns = new Dictionary<String, String>()
+                    var columns = new Dictionary<String, String>()
                     {{"SoftwareName", ""}};
                     return columns;
                 }
@@ -64,7 +64,7 @@ namespace SQLiteDataHelpers
             {
                 get
                 {
-                    Dictionary<String, String> columns = new Dictionary<String, String>()
+                    var columns = new Dictionary<String, String>()
                     {
                         {"KeyChargedAgainst",""},
                         {"SpeedChart",""},
@@ -78,7 +78,7 @@ namespace SQLiteDataHelpers
             {
                 get
                 {
-                    Dictionary<String, String> columns = new Dictionary<String, String>() 
+                    var columns = new Dictionary<String, String>() 
                     {                         
                         {"FirstName", ""},
                         {"LastName", ""},
@@ -97,7 +97,7 @@ namespace SQLiteDataHelpers
             {
                 get
                 {
-                    Dictionary<String, String> columns = new Dictionary<String, String>() 
+                    var columns = new Dictionary<String, String>() 
                     {                         
                         {"UserID", ""},
                         {"Requests", ""},
