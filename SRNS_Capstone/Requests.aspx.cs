@@ -17,10 +17,6 @@ namespace SRNS_Capstone
         {
             get
             {
-                if (ViewState["IsAdmin"] == null)
-                {
-                    ViewState["IsAdmin"] = false;
-                }
                 return Convert.ToBoolean(ViewState["IsAdmin"]);
             }
             set
@@ -33,15 +29,11 @@ namespace SRNS_Capstone
         {
             get
             {
-                if (ViewState["userID"] == null)
-                {
-                    ViewState["userID"] = 0;
-                }
                 return (int)ViewState["userID"];
             }
             set
             {
-                ViewState["IsAdmin"] = value;
+                ViewState["userID"] = value;
             }
         }
 
@@ -54,11 +46,11 @@ namespace SRNS_Capstone
                 User user = (User)Session["User"];
 
                 //Remove before release
-                if ("localhost" == Request.Url.DnsSafeHost)
-                {
-                    User a = new User() { ID = 1, FirstName = "Austin", LastName = "Rich", IsAdmin = true, LoginID = "arich", ManagerID = 0 };
-                    user = a;
-                }
+                //if ("localhost" == Request.Url.DnsSafeHost)
+                //{
+                //    User a = new User() { ID = 1, FirstName = "Austin", LastName = "Rich", IsAdmin = true, LoginID = "arich", ManagerID = 0 };
+                //    user = a;
+                //}
                 //Remove before release
 
                 if (user != null)
@@ -66,9 +58,10 @@ namespace SRNS_Capstone
                     _IsAdmin = user.IsAdmin;
                     _userID = user.ID;
 
+                    ((Capstone)Page.Master).showMenuOptions(_IsAdmin, _userID);
+
                     if (_IsAdmin)
                     {
-                        ((Capstone)Page.Master).showMenuOptions(_IsAdmin, _userID);
                         pnlPendingRequests.Visible = true;
                         IsAdmin();
                     }

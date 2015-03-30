@@ -60,11 +60,8 @@ namespace SQLiteDataHelpers
 
             string passHash;
 
-            using (MD5 md5Hash = MD5.Create())
-            {
-                passHash = GenerateMd5Hash(md5Hash, Salt + password);
-            }
-
+            passHash = GenerateMd5Hash(Salt + password);
+            
             SQL = "SELECT ID, FirstName, LastName, IsAdmin, LoginID, ManagerID FROM Users WHERE LoginID = '" + username + "'" + " AND PassHash = '" + passHash + "'";
 
             DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
@@ -77,15 +74,6 @@ namespace SQLiteDataHelpers
             String SQL = "SELECT * FROM Users WHERE ID = " + userID;
 
             DataTable dt =  SQLiteDataHelper.GetDataTable(SQL);
-
-            return dt;
-        }
-
-        public DataTable getUserPrivileges(int UserID)
-        {
-            string SQL = "SELECT Requests, AddLicense, LicenseCountReport, AvailLicenseReport, ManagLicenseReport, LicenseExpReport, PendChargeReport FROM UserAccess WHERE UserID =" + UserID;
-
-            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
 
             return dt;
         }
@@ -121,6 +109,19 @@ namespace SQLiteDataHelpers
 
             return dt;
         }
+        #endregion
+
+        #region Table UserAccess
+
+        public DataTable getUserPrivileges(int UserID)
+        {
+            string SQL = "SELECT Requests, AddLicense, LicenseCountReport, AvailLicenseReport, ManagLicenseReport, LicenseExpReport, PendChargeReport FROM UserAccess WHERE UserID =" + UserID;
+
+            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
+
+            return dt;
+        }
+
         #endregion
 
         #endregion
@@ -161,10 +162,7 @@ namespace SQLiteDataHelpers
 
             user.Salt = GenerateRandomString();
 
-            using (MD5 md5Hash = MD5.Create())
-            {
-                user.PassHash = GenerateMd5Hash(md5Hash, user.Salt + user.PassHash);
-            }
+            user.PassHash = GenerateMd5Hash(user.Salt + user.PassHash);
 
             Dictionary<String, String> Users = SQLTables.TableColumns.Users;
             Users["FirstName"] = user.FirstName;
@@ -232,10 +230,7 @@ namespace SQLiteDataHelpers
 
             user.Salt = GenerateRandomString();
 
-            using (MD5 md5Hash = MD5.Create())
-            {
-                user.PassHash = GenerateMd5Hash(md5Hash, user.Salt + user.PassHash);
-            }
+            user.PassHash = GenerateMd5Hash(user.Salt + user.PassHash);
 
             var Users = SQLTables.TableColumns.Users;
             Users["FirstName"] = user.FirstName;
@@ -252,20 +247,22 @@ namespace SQLiteDataHelpers
             if (!SQLiteDataHelper.Update("USERS", Users, @where)) 
                 return "User Update failed";
 
-            userA.UserID = GetMaxId("Users");
+            userA.UserID = Convert.ToInt32(UserID);
 
             var userAccess = SQLTables.TableColumns.UserAccess;
 
             userAccess["UserID"] = userA.UserID.ToString();
-            userAccess["Requests"] = userA.Requests.ToString();
-            userAccess["AddLicense"] = userA.AddLicense.ToString();
-            userAccess["LicenseCountReport"] = userA.LicenseCountReport.ToString();
-            userAccess["AvailLicenseReport"] = userA.AvailLicenseReport.ToString();
-            userAccess["ManagLicenseReport"] = userA.ManagLicenseReport.ToString();
-            userAccess["LicenseExpReport"] = userA.LicenseCountReport.ToString();
-            userAccess["PendChargeReport"] = userA.PendChargeReport.ToString();
+            userAccess["Requests"] = Convert.ToInt32(userA.Requests).ToString();
+            userAccess["AddLicense"] = Convert.ToInt32(userA.AddLicense).ToString();
+            userAccess["LicenseCountReport"] = Convert.ToInt32(userA.LicenseCountReport).ToString();
+            userAccess["AvailLicenseReport"] = Convert.ToInt32(userA.AvailLicenseReport).ToString();
+            userAccess["ManagLicenseReport"] = Convert.ToInt32(userA.ManagLicenseReport).ToString();
+            userAccess["LicenseExpReport"] = Convert.ToInt32(userA.LicenseCountReport).ToString();
+            userAccess["PendChargeReport"] = Convert.ToInt32(userA.PendChargeReport).ToString();
 
-            return SQLiteDataHelper.Update("UserAccess", Users, @where) 
+            where = "UserID = " + UserID;
+
+            return SQLiteDataHelper.Update("UserAccess", userAccess, @where) 
                 ? "User successfully updated" 
                 : "Access control update failed - User information successfully updated";
         }
@@ -276,24 +273,36 @@ namespace SQLiteDataHelpers
 
         #endregion
 
-        static string GenerateMd5Hash(MD5 md5Hash, string input)
+        static string GenerateMd5Hash(string input)
         {
-            // Convert the input string to a byte array and compute the hash. 
-            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+            //// Convert the input string to a byte array and compute the hash. 
+            //byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
 
-            // Create a new Stringbuilder to collect the bytes 
-            // and create a string.
-            StringBuilder sBuilder = new StringBuilder();
+            //// Create a new Stringbuilder to collect the bytes 
+            //// and create a string.
+            //StringBuilder sBuilder = new StringBuilder();
 
-            // Loop through each byte of the hashed data  
-            // and format each one as a hexadecimal string. 
-            for (int i = 0; i < data.Length; i++)
+            //// Loop through each byte of the hashed data  
+            //// and format each one as a hexadecimal string. 
+            //for (int i = 0; i < data.Length; i++)
+            //{
+            //    sBuilder.Append(i.ToString("x2"));
+            //}
+
+            //// Return the hexadecimal string. 
+            //return sBuilder.ToString();
+
+            MD5 md5 = MD5.Create();
+            byte[] inputBytes = Encoding.ASCII.GetBytes(input);
+            byte[] hash = md5.ComputeHash(inputBytes);
+
+            // step 2, convert byte array to hex string
+            StringBuilder sb = new StringBuilder();
+            foreach (byte t in hash)
             {
-                sBuilder.Append(i.ToString("x2"));
+                sb.Append(t.ToString("x2"));
             }
-
-            // Return the hexadecimal string. 
-            return sBuilder.ToString();
+            return sb.ToString();
         }
 
         public string GenerateRandomString()

@@ -60,13 +60,13 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-4 col-md-4">
-                        <asp:TextBox CssClass="form-control" placeholder="First Name" runat="server" ID="txtFirstName" autocomplete="off" ></asp:TextBox>
+                        <asp:TextBox CssClass="form-control" placeholder="First Name" runat="server" ID="txtFirstName" autocomplete="off" TabIndex="1"></asp:TextBox>
                     </div>
                     <div class="col-lg-4 col-md-4">
-                        <asp:TextBox CssClass="form-control" placeholder="Last Name" runat="server" ID="txtLastName" autocomplete="off" ></asp:TextBox>
+                        <asp:TextBox CssClass="form-control" placeholder="Last Name" runat="server" ID="txtLastName" autocomplete="off"  TabIndex="2" ></asp:TextBox>
                     </div>
                     <div class="col-lg-4 col-md-4">
-                        <asp:TextBox CssClass="form-control" placeholder="Username" runat="server" ID="txtLoginID" autocomplete="off" ></asp:TextBox>
+                        <asp:TextBox CssClass="form-control" placeholder="Username" runat="server" ID="txtLoginID" autocomplete="off"  TabIndex="3"></asp:TextBox>
                     </div>
                 </div>
                 <br />
@@ -85,30 +85,14 @@
                     <div class="col-lg-4 col-md-4 col-sm-12">
                         <div class="row">
                             <label style="margin-left:52px;">This user is a Manager &nbsp;</label>
-                            <div class="btn-group" data-toggle="buttons">
-                                <label id="btnManagerTrue" class="btn btn-primary">
-                                    <asp:RadioButton runat="server" type="radio" name="options" id="managerTrue" />
-                                    Yes
-                                </label>
-                                <label id="btnManagerFalse" class="btn btn-primary">
-                                    <asp:RadioButton runat="server" type="radio" name="options" id="managerFalse" />
-                                    No
-                                </label>
-                            </div>
+                            <asp:RadioButton runat="server" type="radio" name="options" id="rdManagerTrue" Text="Yes" GroupName="manager"  TabIndex="4" />
+                            <asp:RadioButton runat="server" type="radio" name="options" id="rdManagerFalse" Text="No" GroupName="manager"  TabIndex="5" />
                         </div>
                         <br />
                         <div class="row">
                             <label style="margin-left:15px;">This user is an Administrator &nbsp;</label>
-                            <div class="btn-group" data-toggle="buttons">
-                                <label id="btnAdminTrue" class="btn btn-primary">
-                                    <asp:RadioButton runat="server" type="radio" name="options" id="adminTrue" />
-                                    Yes
-                                </label>
-                                <label id="btnAdminFalse" class="btn btn-primary">
-                                    <asp:RadioButton runat="server" type="radio" name="options" id="adminFalse" />
-                                    No
-                                </label>
-                            </div>
+                            <asp:RadioButton runat="server" type="radio" name="options" id="rdAdminTrue" Text="Yes" GroupName="admin" OnCheckedChanged="adminTrue_OnCheckedChanged" AutoPostBack="true" TabIndex="6" />
+                            <asp:RadioButton runat="server" type="radio" name="options" id="rdAdminFalse" Text="No" GroupName="admin" OnCheckedChanged="adminTrue_OnCheckedChanged" AutoPostBack="true"  TabIndex="7" />
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4">
@@ -116,61 +100,66 @@
                             <label>Manager</label>
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-10 col-xs-7">
-                            <asp:DropDownList runat="server" ID="ddlManagers" CssClass="form-control" style="width:100%; max-width:100%;" OnSelectedIndexChanged="ddlManagers_SelectedIndexChanged">
+                            <asp:DropDownList runat="server" ID="ddlManagers" CssClass="form-control" style="width:100%; max-width:100%;" OnSelectedIndexChanged="ddlManagers_SelectedIndexChanged" TabIndex="8">
                                 <asp:ListItem Enabled="true" Text=""></asp:ListItem>
                             </asp:DropDownList>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4">
-                        <asp:TextBox CssClass="form-control" placeholder="Password" runat="server" ID="txtPassword" autocomplete="off" ></asp:TextBox>
+                        <asp:TextBox CssClass="form-control" placeholder="Password" runat="server" ID="txtPassword" autocomplete="off" TabIndex="9" ></asp:TextBox>
                         <span runat="server" id="labelPasswordInfo" visible="false" style="font-size:x-small; color:#051874;">Leaving the password field blank will keep the user's current password</span>
                     </div>
                 </div>
                 <br />
-                <div class="row text-center">
-                    <h3>Access Control</h3>
-                    <a class="btn btn-sm btn-default" onclick="checkAllReports();">Check All Reports</a>
-                </div>
-                <br />
-                <div class="row text-center">
-                    <div class="col-lg-12 col-md-12">
+                <asp:Panel runat="server" ID="pnlAccessControl" Visible="true">
+                    <div class="row text-center">
+                        <h3>Access Control</h3>
+                        <a class="btn btn-sm btn-default" onclick="checkAllReports();"  TabIndex="10">Check All Reports</a>
+                    </div>
+                    <br />
+                    <div class="row text-center">
+                        <div class="col-lg-12 col-md-12">
+                            <label class="checkbox-inline">
+                              <asp:CheckBox runat="server" type="checkbox" id="chkRequests" value="option1"  TabIndex="11" /> Requests
+                            </label>
+                            <label class="checkbox-inline">
+                              <asp:CheckBox runat="server" type="checkbox" id="chkAddLicense" value="option2" TabIndex="12" />Add License
+                            </label>
+                            <label class="checkbox-inline">
+                              <asp:CheckBox runat="server" type="checkbox" id="chkLicenseCount" value="option3" TabIndex="13" />License Count Report
+                            </label>
+                            <label class="checkbox-inline">
+                              <asp:CheckBox runat="server" type="checkbox" id="chkAvailableLicense" value="option3" TabIndex="14" />Available Licenses Report
+                            </label>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row text-center">
                         <label class="checkbox-inline">
-                          <asp:CheckBox runat="server" type="checkbox" id="chkRequests" value="option1" /> Requests
+                            <asp:CheckBox runat="server" type="checkbox" id="chkManagerLicenseHolders" value="option3" TabIndex="15" />Managers License Holders Report
                         </label>
                         <label class="checkbox-inline">
-                          <asp:CheckBox runat="server" type="checkbox" id="chkAddLicense" value="option2" />Add License
+                            <asp:CheckBox runat="server" type="checkbox" id="chkLicensesExpiring" value="option3" TabIndex="16" />Licenses Expiring Report
                         </label>
                         <label class="checkbox-inline">
-                          <asp:CheckBox runat="server" type="checkbox" id="chkLicenseCount" value="option3" />License Count Report
-                        </label>
-                        <label class="checkbox-inline">
-                          <asp:CheckBox runat="server" type="checkbox" id="chkAvailableLicense" value="option3" />Available Licenses Report
+                            <asp:CheckBox runat="server" type="checkbox" id="chkPendingChargebacks" value="option3" TabIndex="17" />Pending Chargebacks Report
                         </label>
                     </div>
-                </div>
-                <br />
-                <div class="row text-center">
-                    <label class="checkbox-inline">
-                        <asp:CheckBox runat="server" type="checkbox" id="chkManagerLicenseHolders" value="option3" />Managers License Holders Report
-                    </label>
-                    <label class="checkbox-inline">
-                        <asp:CheckBox runat="server" type="checkbox" id="chkLicensesExpiring" value="option3" />Licenses Expiring Report
-                    </label>
-                    <label class="checkbox-inline">
-                        <asp:CheckBox runat="server" type="checkbox" id="chkPendingChargebacks" value="option3" />Pending Chargebacks Report
-                    </label>
-                </div>
+                </asp:Panel>
                 <br />
                 <div class="row">
                     <div class="col-lg-2 col-md-2 col-lg-offset-5 text-center">
                         <asp:Panel runat="server" ID="pnlBtnAddUser">
-                            <asp:Button CssClass="btn btn-lg btn-primary" runat="server" ID="btnNewUser" Text="Add User" OnClick="btnNewUser_Click" />
+                            <asp:Button CssClass="btn btn-lg btn-primary" runat="server" ID="btnNewUser" Text="Add User" OnClick="btnNewUser_Click" TabIndex="18" />
                         </asp:Panel>
                         <asp:Panel runat="server" ID="pnlBtnUpdateUser">
-                            <asp:Button CssClass="btn btn-lg btn-primary" runat="server" ID="btnUpdateUser" Text="Update User" OnClick="btnUpdateUser_Click"/>
+                            <asp:Button CssClass="btn btn-lg btn-primary" runat="server" ID="btnUpdateUser" Text="Update User" OnClick="btnUpdateUser_Click" TabIndex="19" />
+                            <br/>
+                            <br/>
+                            <asp:Button CssClass="btn btn-sm btn-danger" runat="server" ID="btnDeleteUser" Text="Update User" OnClick="btnUpdateUser_Click" TabIndex="19" />
                         </asp:Panel>
                         <br />
-                        <a onclick="cancelNewUser();">Cancel</a>
+                        <a onclick="cancelNewUser();" TabIndex="20" >Cancel</a>
                     </div>
                 </div>
             </div>
@@ -204,11 +193,11 @@
     })();
 
     $("#btnManagerTrue").keypress(function () {
-        $('#managerTrue').click();
+        $('#rdManagerTrue').click();
     });
 
     $("#btnAdminTrue").keypress(function () {
-        $('#adminTrue').click();
+        $('#rdAdminTrue').click();
     });
 
     var checkAllReports = (function () {
