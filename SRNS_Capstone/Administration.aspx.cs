@@ -60,7 +60,8 @@ namespace SRNS_Capstone
                     Response.Redirect("~/Default.aspx");
                 }
             }
-            
+
+
             hdnIsPostBack.Value = Page.IsPostBack.ToString();
             hdnIsManager.Value = managerTrue.Checked ? "true" : "false";
             hdnIsAdmin.Value = adminTrue.Checked  ? "true" : "false";
@@ -260,7 +261,6 @@ namespace SRNS_Capstone
                     ManagLicenseReport = chkManagerLicenseHolders.Checked,
                     PendChargeReport = chkPendingChargebacks.Checked
                 };
-
 
                 string response = new DBConnector().UpdateUser(ddlUserSelect.SelectedValue, user, access);
 

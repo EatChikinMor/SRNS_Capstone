@@ -11,7 +11,7 @@
 </head>
 <body>
     <asp:Panel runat="server" ID="pnlHomeCss" Visible="true">
-        <style>
+    <style>
         .homeIMG {
             -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
                -moz-animation: fadein 2s; /* Firefox < 16 */
@@ -47,7 +47,6 @@
                 opacity: 1;
             }
         }
-
         @-o-keyframes fadein {
             0% {
                 top: 20px;
