@@ -28,7 +28,7 @@ namespace SRNS_Capstone
             }
             set
             {
-                ViewState["IsAdmin"] = value;
+                ViewState["userID"] = value;
             }
         }
 
@@ -89,7 +89,6 @@ namespace SRNS_Capstone
             {
                 ListItem item = new ListItem((string)dt.Rows[i]["FirstName"] + " " + (string)dt.Rows[i]["LastName"], dt.Rows[i]["ID"].ToString());
                 ddlManagers.Items.Add(item);
-                ddlManagers.Items[0].Value = dt.Rows[i]["ID"].ToString();
             }
         }
 

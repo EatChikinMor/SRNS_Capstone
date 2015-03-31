@@ -25,7 +25,7 @@ namespace SRNS_Capstone
 
         protected void btnLogout_Click(object sender, EventArgs e)
         {
-            /* TODO: Logout Logic Here */
+            /* TODO: Any Further Logout Logic Here */
             Session.Abandon();
             Response.Redirect("~/Default.aspx");
         }

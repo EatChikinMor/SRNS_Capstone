@@ -167,7 +167,7 @@
     </div>
     
     <asp:HiddenField runat="server" ID="hdnUserToUpdate"/>
-    <asp:HiddenField runat="server" id="hdnIsPostBack" />
+    <asp:HiddenField runat="server" id="hdnIsPostBack" />   
     <asp:HiddenField runat="server" id="hdnIsAdmin" />
     <asp:HiddenField runat="server" id="hdnIsManager" />
     <asp:Button href="#" runat="server" ID="btnCancelNewUser" style="display:none;" OnClick="btnCancelNewUser_Click" />

@@ -109,6 +109,7 @@ namespace SQLiteDataHelpers
 
             return dt;
         }
+
         #endregion
 
         #region Table UserAccess
@@ -116,6 +117,34 @@ namespace SQLiteDataHelpers
         public DataTable getUserPrivileges(int UserID)
         {
             string SQL = "SELECT Requests, AddLicense, LicenseCountReport, AvailLicenseReport, ManagLicenseReport, LicenseExpReport, PendChargeReport FROM UserAccess WHERE UserID =" + UserID;
+
+            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
+
+            return dt;
+        }
+
+        #endregion
+
+        #region Table Software
+
+        public DataTable getAllSoftware()
+        {
+            string SQL =
+                "SELECT  soft.[ID], [SoftwareName], [Organization] " +
+                "FROM Software soft " +
+                "JOIN Providers pro on soft.Provider = pro.ID";
+
+            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
+
+            return dt;
+        }
+
+        public DataTable getLicenseCountReport(string SoftwareID)
+        {
+            string SQL =
+                "SELECT [KeyOwnerID], [ExpirationDate], [LicenseKey] " +
+                "FROM LicenseKeys WHERE SoftwareID = 1 " +
+                "ORDER BY KeyOwnerID, ExpirationDate";
 
             DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
 
