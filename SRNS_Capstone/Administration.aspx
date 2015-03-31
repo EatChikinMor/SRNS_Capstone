@@ -156,7 +156,7 @@
                             <asp:Button CssClass="btn btn-lg btn-primary" runat="server" ID="btnUpdateUser" Text="Update User" OnClick="btnUpdateUser_Click" TabIndex="19" />
                             <br/>
                             <br/>
-                            <asp:Button CssClass="btn btn-sm btn-danger" runat="server" ID="btnDeleteUser" Text="Update User" OnClick="btnUpdateUser_Click" TabIndex="19" />
+                            <a class="btn btn-sm btn-danger" id="btnDeleteUser" onclick="if(confirm('Are you Sure?')){ deleteThisUser(); }" TabIndex="19">Delete User</a>
                         </asp:Panel>
                         <br />
                         <a onclick="cancelNewUser();" TabIndex="20" >Cancel</a>
@@ -171,6 +171,7 @@
     <asp:HiddenField runat="server" id="hdnIsAdmin" />
     <asp:HiddenField runat="server" id="hdnIsManager" />
     <asp:Button href="#" runat="server" ID="btnCancelNewUser" style="display:none;" OnClick="btnCancelNewUser_Click" />
+    <asp:Button href="#" runat="server" ID="btnHdnDelete" style="display:none;" OnClick="btnDeleteUser_OnClick"/>
     
 <script type="text/javascript">
     var isPostback = $("#<%=hdnIsPostBack.ClientID%>").val();
@@ -189,6 +190,12 @@
     var cancelNewUser = (function () {
         return function () {
             $("#<%=btnCancelNewUser.ClientID%>").click();
+        }
+    })();
+
+    var deleteThisUser = (function () {
+        return function () {
+            $("#<%=btnHdnDelete.ClientID%>").click();
         }
     })();
 

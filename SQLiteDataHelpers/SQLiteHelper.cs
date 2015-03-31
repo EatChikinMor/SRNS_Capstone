@@ -115,7 +115,6 @@ namespace SQLiteDataHelpers
             }
             catch (Exception fail)
             {
-                //MessageBox.Show(fail.Message);
                 returnCode = false;
             }
             return returnCode;
@@ -145,7 +144,6 @@ namespace SQLiteDataHelpers
             }
             catch (Exception fail)
             {
-                //MessageBox.Show(fail.Message);
                 ErrorString = fail.Message;
                 returnCode = false;
             }

@@ -328,15 +328,6 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.Button btnUpdateUser;
         
         /// <summary>
-        /// btnDeleteUser control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnDeleteUser;
-        
-        /// <summary>
         /// hdnUserToUpdate control.
         /// </summary>
         /// <remarks>
@@ -380,5 +371,14 @@ namespace SRNS_Capstone {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCancelNewUser;
+        
+        /// <summary>
+        /// btnHdnDelete control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnHdnDelete;
     }
 }

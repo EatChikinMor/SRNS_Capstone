@@ -397,5 +397,21 @@ namespace SRNS_Capstone
         {
             pnlAccessControl.Visible = !rdAdminTrue.Checked;
         }
+
+        protected void btnDeleteUser_OnClick(object sender, EventArgs e)
+        {
+            string userId = ddlUserSelect.SelectedValue;
+
+            if (new DBConnector().DeleteUser(userId) > 1)
+            {
+                lblSuccess.Text = "User Successfully Deleted";
+                clearForm();
+                pnlForm.Visible = false;
+                pnlSelection.Visible = true;
+                pnlSuccess.Visible = true;
+                ddlUsersPopulate();
+                ddlManagersPopulate();
+            }
+        }
     }
 }

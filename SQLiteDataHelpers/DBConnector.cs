@@ -271,6 +271,24 @@ namespace SQLiteDataHelpers
 
         #region DELETES
 
+        public int DeleteUser(string UserId)
+        {
+            string whereUsers = "ID = " + UserId;
+            string whereUserA = "UserID = " + UserId;
+            int ret = 0;
+
+            if (SQLiteDataHelper.Delete("Users", whereUsers))
+            {
+                ret = 1;
+                if (SQLiteDataHelper.Delete("UserAccess", whereUserA))
+                {
+                    ret = 2;
+                }
+            }
+
+            return ret;
+        }
+
         #endregion
 
         static string GenerateMd5Hash(string input)
