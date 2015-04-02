@@ -127,28 +127,67 @@ namespace SQLiteDataHelpers
 
         #region Table Software
 
-        public DataTable getAllSoftware()
+        public DataTable getSoftwareById(string ID)
         {
             string SQL =
-                "SELECT  soft.[ID], [SoftwareName], [Organization] " +
-                "FROM Software soft " +
-                "JOIN Providers pro on soft.Provider = pro.ID";
+                "SELECT S.[ID], [SoftwareName], [Provider], [Organization] " +
+                "FROM Software S " +
+                "INNER JOIN Providers P ON Provider =  P.ID " +
+                "WHERE S.ID = " + ID;
+
+            return SQLiteDataHelper.GetDataTable(SQL);
+        }
+
+        public DataTable getAllSoftware()
+        {
+            const string SQL = "SELECT  soft.[ID], [SoftwareName], [Organization] " +
+                               "FROM Software soft " +
+                               "JOIN Providers pro on soft.Provider = pro.ID";
 
             DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
 
             return dt;
         }
 
-        public DataTable getLicenseCountReport(string SoftwareID)
+        public DataTable getLicenseCountReport(bool showProvider = true)
+        {
+            string SQL;
+            if (showProvider)
+            {
+
+                SQL ="SELECT [Provider] || '_' || S.[ID] AS [SoftCode], [Organization] ||' '|| [SoftwareName] AS [SoftName], " +
+                     "COALESCE(COUNT(L.SoftwareID), 0) AS [LicCount] " +
+                     "FROM Software S " +
+                     "INNER JOIN Providers P ON Provider =  P.ID " +
+                     "LEFT JOIN LicenseKeys L ON L.SoftwareID = S.ID " +
+                     "GROUP BY SoftCode, SoftName " +
+                     "ORDER BY Organization, SoftwareName";
+            }
+            else
+            {
+                SQL =
+                    "SELECT [Provider] || '_' || S.[ID] AS [SoftCode], [SoftwareName] AS [SoftName], " +
+                     "COALESCE(COUNT(L.SoftwareID), 0) AS [LicCount] " +
+                     "FROM Software S " +
+                     "INNER JOIN Providers P ON Provider =  P.ID " +
+                     "LEFT JOIN LicenseKeys L ON L.SoftwareID = S.ID " +
+                     "GROUP BY SoftCode, SoftName " +
+                     "ORDER BY Organization, SoftwareName";
+            }
+
+            return SQLiteDataHelper.GetDataTable(SQL);
+        }
+
+        public DataTable getLicenseCountReportDetail(string SoftwareId)
         {
             string SQL =
-                "SELECT [KeyOwnerID], [ExpirationDate], [LicenseKey] " +
-                "FROM LicenseKeys WHERE SoftwareID = 1 " +
+                "SELECT COALESCE(U.[FirstName] || ' ' || U.[LastName], 'Not Assigned') AS Name, [ExpirationDate], [LicenseKey] " +
+                "FROM LicenseKeys " +
+                "LEFT OUTER JOIN Users U ON KeyOwnerID = U.ID WHERE SoftwareID = "+ SoftwareId +"  " +
+                "AND [ExpirationDate] < CURRENT_TIMESTAMP " +
                 "ORDER BY KeyOwnerID, ExpirationDate";
 
-            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
-
-            return dt;
+            return SQLiteDataHelper.GetDataTable(SQL);
         }
 
         #endregion

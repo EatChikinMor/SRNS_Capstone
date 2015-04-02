@@ -50,9 +50,21 @@ namespace SRNS_Capstone.Reports
 
                 if (user != null)
                 {
+
                     ((Capstone)Page.Master).showMenuOptions(user.IsAdmin, _userID);
                     _userID = user.ID;
-                    populateSoftwareSelection();
+                    string softCode = Request.QueryString["SoftCode"];
+
+                    if (softCode != null)
+                    {
+                        string[] codes = softCode.Split('_');
+                        buildData(codes[1]);
+                    }
+                    else
+                    {
+                        RepeatAllSoftware();
+                        populateSoftwareSelection();
+                    }
                 }
                 else
                 {
@@ -64,8 +76,14 @@ namespace SRNS_Capstone.Reports
         protected void ddlSoftwareSelect_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             buildData(ddlSoftwareSelect.SelectedItem.Value);
-            pnlSelect.Visible = false;
-            pnlData.Visible = true;
+            lblSoftwareHeader.Text = ddlSoftwareSelect.SelectedItem.Text;
+        }
+
+        private void RepeatAllSoftware()
+        {
+            var items = new DBConnector().getLicenseCountReport().AsEnumerable().ToList();
+            rptrSoftList.DataSource = items;
+            rptrSoftList.DataBind();
         }
 
         private void populateSoftwareSelection()
@@ -83,8 +101,30 @@ namespace SRNS_Capstone.Reports
 
         private void buildData(string SelectedSoftware)
         {
-            gridCounts.DataSource = new DBConnector().getLicenseCountReport(SelectedSoftware);
-            gridCounts.DataBind();
+            var connector = new DBConnector();
+            var row = connector.getSoftwareById(SelectedSoftware).Rows[0];
+            lblSoftwareHeader.Text = row["Organization"] + " " + row["SoftwareName"];
+
+            var dt = connector.getLicenseCountReportDetail(SelectedSoftware);
+            if (dt.Rows.Count == 0)
+            {
+                gridCounts.Visible = false;
+                lblSoftwareCount.Text = "No Keys Exist for this Software";
+                lblSoftwareCount.ForeColor = Color.Red;
+            }
+            else
+            {
+                lblSoftwareCount.Text = dt.Rows.Count.ToString();
+                gridCounts.DataSource = dt;
+                gridCounts.DataBind();
+            }
+            pnlSelect.Visible = false;
+            pnlData.Visible = true;
+        }
+
+        protected void rptrSoftList_OnItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+
         }
     }
 }

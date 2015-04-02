@@ -22,6 +22,15 @@ namespace SRNS_Capstone.Reports {
         protected global::System.Web.UI.WebControls.Panel pnlSelect;
         
         /// <summary>
+        /// rptrSoftList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptrSoftList;
+        
+        /// <summary>
         /// ddlSoftwareSelect control.
         /// </summary>
         /// <remarks>
@@ -38,6 +47,24 @@ namespace SRNS_Capstone.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlData;
+        
+        /// <summary>
+        /// lblSoftwareHeader control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSoftwareHeader;
+        
+        /// <summary>
+        /// lblSoftwareCount control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSoftwareCount;
         
         /// <summary>
         /// gridCounts control.
