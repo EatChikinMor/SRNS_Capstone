@@ -114,7 +114,7 @@
                 <%--<asp:Panel runat="server" ID="pnlAccessControl" Visible="true">
                     <div class="row text-center">
                         <h3>Access Control</h3>
-                        <a class="btn btn-sm btn-default" onclick="checkAllReports();"  TabIndex="10">Check All Reports</a>
+                        <a class="btn btn-sm btn-default" onclick="checkAllReports();" tabindex="10">Check All Reports</a>
                     </div>
                     <br />
                     <div class="row text-center">
@@ -159,7 +159,7 @@
                             <a class="btn btn-sm btn-danger" id="btnDeleteUser" onclick="if(confirm('Are you Sure?')){ deleteThisUser(); }" TabIndex="19">Delete User</a>
                         </asp:Panel>
                         <br />
-                        <a onclick="cancelNewUser();" TabIndex="20" >Cancel</a>
+                        <a onclick="cancelNewUser();" tabindex="20" >Cancel</a>
                     </div>
                 </div>
             </div>
