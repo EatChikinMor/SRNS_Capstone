@@ -172,19 +172,25 @@ namespace SQLiteDataHelpers
                      "INNER JOIN Providers P ON Provider =  P.ID " +
                      "LEFT JOIN LicenseKeys L ON L.SoftwareID = S.ID " +
                      "GROUP BY SoftCode, SoftName " +
-                     "ORDER BY Organization, SoftwareName";
+                     "ORDER BY SoftwareName";
             }
 
             return SQLiteDataHelper.GetDataTable(SQL);
         }
 
-        public DataTable getLicenseCountReportDetail(string SoftwareId)
+        public DataTable getLicenseCountReportDetail(string SoftwareId, bool expired = false)
         {
+            string andExpired;
+            andExpired = expired 
+                ? "AND [ExpirationDate] < CURRENT_TIMESTAMP " 
+                : "AND [ExpirationDate] > CURRENT_TIMESTAMP ";
+
             string SQL =
                 "SELECT COALESCE(U.[FirstName] || ' ' || U.[LastName], 'Not Assigned') AS Name, [ExpirationDate], [LicenseKey] " +
                 "FROM LicenseKeys " +
-                "LEFT OUTER JOIN Users U ON KeyOwnerID = U.ID WHERE SoftwareID = "+ SoftwareId +"  " +
-                "AND [ExpirationDate] < CURRENT_TIMESTAMP " +
+                "LEFT OUTER JOIN Users U ON KeyOwnerID = U.ID " +
+                "WHERE SoftwareID = "+ SoftwareId +"  " +
+                andExpired +
                 "ORDER BY KeyOwnerID, ExpirationDate";
 
             return SQLiteDataHelper.GetDataTable(SQL);

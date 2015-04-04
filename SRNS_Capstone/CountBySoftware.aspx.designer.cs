@@ -22,6 +22,15 @@ namespace SRNS_Capstone.Reports {
         protected global::System.Web.UI.WebControls.Panel pnlSelect;
         
         /// <summary>
+        /// chkShowProvider control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkShowProvider;
+        
+        /// <summary>
         /// rptrSoftList control.
         /// </summary>
         /// <remarks>
@@ -29,15 +38,6 @@ namespace SRNS_Capstone.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptrSoftList;
-        
-        /// <summary>
-        /// ddlSoftwareSelect control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlSoftwareSelect;
         
         /// <summary>
         /// pnlData control.
@@ -74,5 +74,23 @@ namespace SRNS_Capstone.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DataGrid gridCounts;
+        
+        /// <summary>
+        /// lblExpired control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblExpired;
+        
+        /// <summary>
+        /// gridExpired control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DataGrid gridExpired;
     }
 }

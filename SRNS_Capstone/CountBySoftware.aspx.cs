@@ -63,7 +63,6 @@ namespace SRNS_Capstone.Reports
                     else
                     {
                         RepeatAllSoftware();
-                        populateSoftwareSelection();
                     }
                 }
                 else
@@ -73,30 +72,16 @@ namespace SRNS_Capstone.Reports
             }
         }
 
-        protected void ddlSoftwareSelect_OnSelectedIndexChanged(object sender, EventArgs e)
+        protected void chkShowProvider_OnCheckedChanged(object sender, EventArgs e)
         {
-            buildData(ddlSoftwareSelect.SelectedItem.Value);
-            lblSoftwareHeader.Text = ddlSoftwareSelect.SelectedItem.Text;
+            RepeatAllSoftware();
         }
 
         private void RepeatAllSoftware()
         {
-            var items = new DBConnector().getLicenseCountReport().AsEnumerable().ToList();
+            var items = new DBConnector().getLicenseCountReport(chkShowProvider.Checked).AsEnumerable().ToList();
             rptrSoftList.DataSource = items;
             rptrSoftList.DataBind();
-        }
-
-        private void populateSoftwareSelection()
-        {
-            ddlSoftwareSelect.Items.Clear();
-            ddlSoftwareSelect.Items.Add(new ListItem("", ""));
-
-            DataTable dt = new DBConnector().getAllSoftware();
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                ListItem item = new ListItem(dt.Rows[i]["SoftwareName"] + " - " + dt.Rows[i]["Organization"], dt.Rows[i]["ID"].ToString());
-                ddlSoftwareSelect.Items.Add(item);
-            }
         }
 
         private void buildData(string SelectedSoftware)
@@ -108,23 +93,44 @@ namespace SRNS_Capstone.Reports
             var dt = connector.getLicenseCountReportDetail(SelectedSoftware);
             if (dt.Rows.Count == 0)
             {
-                gridCounts.Visible = false;
-                lblSoftwareCount.Text = "No Keys Exist for this Software";
-                lblSoftwareCount.ForeColor = Color.Red;
+                if (buildExpiredData(SelectedSoftware, connector))
+                {
+                    gridCounts.Visible = false;
+                    lblSoftwareCount.Text = "All Keys Expired";
+                    lblSoftwareCount.ForeColor = Color.Red;
+                }
+                else
+                {
+                    gridCounts.Visible = false;
+                    lblSoftwareCount.Text = "No Keys Exist for this Software";
+                    lblSoftwareCount.ForeColor = Color.Red;
+                }
             }
             else
             {
                 lblSoftwareCount.Text = dt.Rows.Count.ToString();
                 gridCounts.DataSource = dt;
                 gridCounts.DataBind();
+                buildExpiredData(SelectedSoftware, connector);
             }
+
             pnlSelect.Visible = false;
             pnlData.Visible = true;
         }
 
-        protected void rptrSoftList_OnItemDataBound(object sender, RepeaterItemEventArgs e)
+        private bool buildExpiredData(string SelectedSoftware, DBConnector connector)
         {
+            var dt = connector.getLicenseCountReportDetail(SelectedSoftware, true);
+            if (dt.Rows.Count == 0)
+            {
+                return false;
+            }
 
+            lblExpired.Text = "Expired :" + dt.Rows.Count;
+            lblExpired.Visible = true;
+            gridExpired.DataSource = dt;
+            gridExpired.DataBind();
+            return true;
         }
     }
 }
