@@ -85,14 +85,14 @@
                     <div class="col-lg-4 col-md-4 col-sm-12">
                         <div class="row">
                             <label style="margin-left:52px;">This user is a Manager &nbsp;</label>
-                            <asp:RadioButton runat="server" type="radio" name="options" id="rdManagerTrue" Text="Yes" GroupName="manager"  TabIndex="4" />
-                            <asp:RadioButton runat="server" type="radio" name="options" id="rdManagerFalse" Text="No" GroupName="manager"  TabIndex="5" />
+                            <asp:RadioButton runat="server" type="radio" name="options" id="rdManagerTrue" Text="Yes" OnCheckedChanged="rdManagerTrue_OnCheckedChanged" AutoPostBack="true" GroupName="manager"  TabIndex="4" />
+                            <asp:RadioButton runat="server" type="radio" name="options" id="rdManagerFalse" Text="No" OnCheckedChanged="rdManagerTrue_OnCheckedChanged" AutoPostBack="true" GroupName="manager"  TabIndex="5" />
                         </div>
                         <br />
                         <div class="row">
                             <label style="margin-left:15px;">This user is an Administrator &nbsp;</label>
-                            <asp:RadioButton runat="server" type="radio" name="options" id="rdAdminTrue" Text="Yes" GroupName="admin" OnCheckedChanged="adminTrue_OnCheckedChanged" AutoPostBack="true" TabIndex="6" />
-                            <asp:RadioButton runat="server" type="radio" name="options" id="rdAdminFalse" Text="No" GroupName="admin" OnCheckedChanged="adminTrue_OnCheckedChanged" AutoPostBack="true"  TabIndex="7" />
+                            <asp:RadioButton runat="server" type="radio" name="options" id="rdAdminTrue" Text="Yes" GroupName="admin" TabIndex="6" />
+                            <asp:RadioButton runat="server" type="radio" name="options" id="rdAdminFalse" Text="No" GroupName="admin" TabIndex="7" />
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4">
@@ -111,7 +111,7 @@
                     </div>
                 </div>
                 <br />
-                <asp:Panel runat="server" ID="pnlAccessControl" Visible="true">
+                <%--<asp:Panel runat="server" ID="pnlAccessControl" Visible="true">
                     <div class="row text-center">
                         <h3>Access Control</h3>
                         <a class="btn btn-sm btn-default" onclick="checkAllReports();"  TabIndex="10">Check All Reports</a>
@@ -145,7 +145,7 @@
                             <asp:CheckBox runat="server" type="checkbox" id="chkPendingChargebacks" value="option3" TabIndex="17" />Pending Chargebacks Report
                         </label>
                     </div>
-                </asp:Panel>
+                </asp:Panel>--%>
                 <br />
                 <div class="row">
                     <div class="col-lg-2 col-md-2 col-lg-offset-5 text-center">
@@ -207,7 +207,7 @@
         $('#rdAdminTrue').click();
     });
 
-    var checkAllReports = (function () {
+   <%-- var checkAllReports = (function () {
 
         return function() {
             $('#<%=chkPendingChargebacks.ClientID%>').attr('checked', true);
@@ -229,6 +229,6 @@
             count = $('#<%=chkManagerLicenseHolders.ClientID%>').is(':checked') ? count + 1 : count;
             return count;
         }
-    })();
+    })();--%>
 </script>
 </asp:Content>

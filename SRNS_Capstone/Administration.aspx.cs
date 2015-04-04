@@ -116,7 +116,7 @@ namespace SRNS_Capstone
         protected void ddlUserSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
             DataRow user = new DBConnector().getUserByID(Convert.ToInt32(ddlUserSelect.SelectedValue)).Rows[0];
-            DataRow access = new DBConnector().getUserPrivileges(Convert.ToInt32(user["ID"].ToString())).Rows[0];
+            //DataRow access = new DBConnector().getUserPrivileges(Convert.ToInt32(user["ID"].ToString())).Rows[0];
 
             int IsAdmin = Convert.ToInt32(user["IsAdmin"].ToString());
             int IsManager = Convert.ToInt32(user["IsManager"].ToString());
@@ -148,13 +148,13 @@ namespace SRNS_Capstone
                 ddlManagers.SelectedIndex = 0;
             }
 
-            chkRequests.Checked = (access["Requests"].ToString() == "1");
-            chkAddLicense.Checked = (access["AddLicense"].ToString() == "1");
-            chkLicenseCount.Checked = (access["LicenseCountReport"].ToString() == "1");
-            chkAvailableLicense.Checked = (access["AvailLicenseReport"].ToString() == "1");
-            chkManagerLicenseHolders.Checked = (access["ManagLicenseReport"].ToString() == "1");
-            chkLicensesExpiring.Checked = (access["LicenseExpReport"].ToString() == "1");
-            chkPendingChargebacks.Checked = (access["PendChargeReport"].ToString() == "1");
+            //chkRequests.Checked = (access["Requests"].ToString() == "1");
+            //chkAddLicense.Checked = (access["AddLicense"].ToString() == "1");
+            //chkLicenseCount.Checked = (access["LicenseCountReport"].ToString() == "1");
+            //chkAvailableLicense.Checked = (access["AvailLicenseReport"].ToString() == "1");
+            //chkManagerLicenseHolders.Checked = (access["ManagLicenseReport"].ToString() == "1");
+            //chkLicensesExpiring.Checked = (access["LicenseExpReport"].ToString() == "1");
+            //chkPendingChargebacks.Checked = (access["PendChargeReport"].ToString() == "1");
 
             labelPasswordInfo.Visible = true;
             pnlSelection.Visible = false;
@@ -200,18 +200,18 @@ namespace SRNS_Capstone
                     PassHash = txtPassword.Text //Converted to hash on insert to DB
                 };
 
-                UserAccess access = new UserAccess()
-                {
-                    Requests = chkRequests.Checked || rdAdminTrue.Checked,
-                    AddLicense = chkAddLicense.Checked || rdAdminTrue.Checked,
-                    AvailLicenseReport = chkAvailableLicense.Checked || rdAdminTrue.Checked,
-                    LicenseCountReport = chkLicenseCount.Checked || rdAdminTrue.Checked,
-                    LicenseExpReport = chkLicensesExpiring.Checked || rdAdminTrue.Checked,
-                    ManagLicenseReport = chkManagerLicenseHolders.Checked || rdAdminTrue.Checked,
-                    PendChargeReport = chkPendingChargebacks.Checked || rdAdminTrue.Checked
-                };
+                //UserAccess access = new UserAccess()
+                //{
+                //    Requests = chkRequests.Checked || rdAdminTrue.Checked,
+                //    AddLicense = chkAddLicense.Checked || rdAdminTrue.Checked,
+                //    AvailLicenseReport = chkAvailableLicense.Checked || rdAdminTrue.Checked,
+                //    LicenseCountReport = chkLicenseCount.Checked || rdAdminTrue.Checked,
+                //    LicenseExpReport = chkLicensesExpiring.Checked || rdAdminTrue.Checked,
+                //    ManagLicenseReport = chkManagerLicenseHolders.Checked || rdAdminTrue.Checked,
+                //    PendChargeReport = chkPendingChargebacks.Checked || rdAdminTrue.Checked
+                //};
 
-                string response = new DBConnector().InsertUser(user, access);
+                string response = new DBConnector().InsertUser(user, rdAdminTrue.Checked);
 
                 if (response.Length > 25)
                 {
@@ -263,18 +263,18 @@ namespace SRNS_Capstone
                     PassHash = txtPassword.Text //Converted to hash on insert to DB
                 };
 
-                UserAccess access = new UserAccess()
-                {
-                    Requests = chkRequests.Checked,
-                    AddLicense = chkAddLicense.Checked,
-                    AvailLicenseReport = chkAvailableLicense.Checked,
-                    LicenseCountReport = chkLicenseCount.Checked,
-                    LicenseExpReport = chkLicensesExpiring.Checked,
-                    ManagLicenseReport = chkManagerLicenseHolders.Checked,
-                    PendChargeReport = chkPendingChargebacks.Checked
-                };
+                //UserAccess access = new UserAccess()
+                //{
+                //    Requests = chkRequests.Checked,
+                //    AddLicense = chkAddLicense.Checked,
+                //    AvailLicenseReport = chkAvailableLicense.Checked,
+                //    LicenseCountReport = chkLicenseCount.Checked,
+                //    LicenseExpReport = chkLicensesExpiring.Checked,
+                //    ManagLicenseReport = chkManagerLicenseHolders.Checked,
+                //    PendChargeReport = chkPendingChargebacks.Checked
+                //};
 
-                string response = new DBConnector().UpdateUser(ddlUserSelect.SelectedValue, user, access);
+                string response = new DBConnector().UpdateUser(ddlUserSelect.SelectedValue, user);
 
                 if (response.Length > 25)
                 {
@@ -392,16 +392,16 @@ namespace SRNS_Capstone
             return rg.IsMatch(strToCheck);
         }
 
-        protected void adminTrue_OnCheckedChanged(object sender, EventArgs e)
+        protected void rdManagerTrue_OnCheckedChanged(object sender, EventArgs e)
         {
-            pnlAccessControl.Visible = !rdAdminTrue.Checked;
+            ddlManagers.Enabled = !rdManagerTrue.Checked;
         }
 
         protected void btnDeleteUser_OnClick(object sender, EventArgs e)
         {
             string userId = ddlUserSelect.SelectedValue;
 
-            if (new DBConnector().DeleteUser(userId) > 1)
+            if (new DBConnector().DeleteUser(userId))
             {
                 lblSuccess.Text = "User Successfully Deleted";
                 clearForm();

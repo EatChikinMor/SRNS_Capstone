@@ -81,7 +81,7 @@ namespace SQLiteDataHelpers
         public List<ComboboxItem> populateUserList()
         {
             // TODO: Alter OrderBy to Sort alphabetically by First, Last name
-            const string SQL = "Select ID, FirstName, LastName, LoginID FROM Users ORDER BY ID DESC";
+            const string SQL = "Select ID, FirstName, LastName, LoginID FROM Users ORDER BY FirstName, LastName DESC";
 
             var dt = SQLiteDataHelper.GetDataTable(SQL);
 
@@ -104,19 +104,6 @@ namespace SQLiteDataHelpers
         public DataTable getManagers()
         {
             String SQL = "SELECT ID, FirstName, LastName FROM Users WHERE IsManager = 1";
-
-            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
-
-            return dt;
-        }
-
-        #endregion
-
-        #region Table UserAccess
-
-        public DataTable getUserPrivileges(int UserID)
-        {
-            string SQL = "SELECT Requests, AddLicense, LicenseCountReport, AvailLicenseReport, ManagLicenseReport, LicenseExpReport, PendChargeReport FROM UserAccess WHERE UserID =" + UserID;
 
             DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
 
@@ -180,12 +167,11 @@ namespace SQLiteDataHelpers
 
         public DataTable getLicenseCountReportDetail(string SoftwareId, bool expired = false)
         {
-            string andExpired;
-            andExpired = expired 
+            var andExpired = expired 
                 ? "AND [ExpirationDate] < CURRENT_TIMESTAMP " 
                 : "AND [ExpirationDate] > CURRENT_TIMESTAMP ";
 
-            string SQL =
+            var SQL =
                 "SELECT COALESCE(U.[FirstName] || ' ' || U.[LastName], 'Not Assigned') AS Name, [ExpirationDate], [LicenseKey] " +
                 "FROM LicenseKeys " +
                 "LEFT OUTER JOIN Users U ON KeyOwnerID = U.ID " +
@@ -202,7 +188,7 @@ namespace SQLiteDataHelpers
 
         #region INSERTS
 
-        public string InsertUser(User user, UserAccess userA)
+        public string InsertUser(User user, bool IsAdmin)
         {
             //////////// Manually Add user \\\\\\\\\\\\
             //User a = new User();
@@ -251,33 +237,10 @@ namespace SQLiteDataHelpers
             string error = "", retError = "";
             if (!SQLiteDataHelper.Insert("USERS", Users, ref error))
             {
-                retError = error + ",";
+                return error;
             }
 
-            if (error.Length < 1)
-            {
-                userA.UserID = GetMaxId("Users");
-
-                Dictionary<String, String> userAccess = SQLTables.TableColumns.UserAccess;
-
-                userAccess["UserID"] = userA.UserID.ToString();
-                userAccess["Requests"] = Convert.ToInt32(userA.Requests).ToString();
-                userAccess["AddLicense"] = Convert.ToInt32(userA.AddLicense).ToString();
-                userAccess["LicenseCountReport"] = Convert.ToInt32(userA.LicenseCountReport).ToString();
-                userAccess["AvailLicenseReport"] = Convert.ToInt32(userA.AvailLicenseReport).ToString();
-                userAccess["ManagLicenseReport"] = Convert.ToInt32(userA.ManagLicenseReport).ToString();
-                userAccess["LicenseExpReport"] = Convert.ToInt32(userA.LicenseCountReport).ToString();
-                userAccess["PendChargeReport"] = Convert.ToInt32(userA.PendChargeReport).ToString();
-
-                error = "";
-
-                return SQLiteDataHelper.Insert("UserAccess", userAccess, ref error)
-                    ? "User successfully created"
-                    : "User Access insert failed - " + retError + error +
-                      "- try updating user access or deleting and recreating the user";
-            }
-
-            return "Insert into Database failed - " + error;
+            return "User successfully created";
         }
 
         public int GetMaxId(string tableName)
@@ -297,7 +260,7 @@ namespace SQLiteDataHelpers
 
         #region UPDATES
 
-        public string UpdateUser(string UserID, User user, UserAccess userA)
+        public string UpdateUser(string UserID, User user)
         {
             if (!IsUsernameAvailable(user.LoginID) && !IsThisTheCurrentUsername(user.LoginID, UserID))
                 return "The chosen username already exists.";
@@ -318,49 +281,22 @@ namespace SQLiteDataHelpers
 
             string where = "ID = " + UserID;
 
-            if (!SQLiteDataHelper.Update("USERS", Users, @where)) 
-                return "User Update failed";
-
-            userA.UserID = Convert.ToInt32(UserID);
-
-            var userAccess = SQLTables.TableColumns.UserAccess;
-
-            userAccess["UserID"] = userA.UserID.ToString();
-            userAccess["Requests"] = Convert.ToInt32(userA.Requests).ToString();
-            userAccess["AddLicense"] = Convert.ToInt32(userA.AddLicense).ToString();
-            userAccess["LicenseCountReport"] = Convert.ToInt32(userA.LicenseCountReport).ToString();
-            userAccess["AvailLicenseReport"] = Convert.ToInt32(userA.AvailLicenseReport).ToString();
-            userAccess["ManagLicenseReport"] = Convert.ToInt32(userA.ManagLicenseReport).ToString();
-            userAccess["LicenseExpReport"] = Convert.ToInt32(userA.LicenseCountReport).ToString();
-            userAccess["PendChargeReport"] = Convert.ToInt32(userA.PendChargeReport).ToString();
-
-            where = "UserID = " + UserID;
-
-            return SQLiteDataHelper.Update("UserAccess", userAccess, @where) 
-                ? "User successfully updated" 
-                : "Access control update failed - User information successfully updated";
+            return !SQLiteDataHelper.Update("USERS", Users, @where) 
+                ? "User Update failed" 
+                : "User successfully updated";
         }
 
         #endregion
 
         #region DELETES
 
-        public int DeleteUser(string UserId)
+        public bool DeleteUser(string UserId)
         {
             string whereUsers = "ID = " + UserId;
             string whereUserA = "UserID = " + UserId;
             int ret = 0;
 
-            if (SQLiteDataHelper.Delete("Users", whereUsers))
-            {
-                ret = 1;
-                if (SQLiteDataHelper.Delete("UserAccess", whereUserA))
-                {
-                    ret = 2;
-                }
-            }
-
-            return ret;
+            return SQLiteDataHelper.Delete("Users", whereUsers);
         }
 
         #endregion
