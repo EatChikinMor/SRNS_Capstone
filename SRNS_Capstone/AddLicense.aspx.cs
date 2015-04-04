@@ -89,5 +89,41 @@ namespace SRNS_Capstone
                 ddlSoftwareSelect.Items.Add(item);
             }
         }
+
+        protected void clearForm()
+        {
+            txtSoftName.Text = txtSoftDescription.Text = txtLiNum.Text = txtSpeedchart.Text = txtLiHold.Text = txtLiHoldUserId.Text = txtLiCost.Text = txtLicenseMan.Text = txtReqNum.Text = "";
+
+        }
+
+        protected void btnSubmit_Click(object sender, EventArgs e)
+        {
+            SoftwareInput software = new SoftwareInput()
+                {
+                    SoftwareName = txtSoftName.Text,
+                    SoftwareDescription = txtSoftDescription.Text,
+                    LicenseNumber = txtLiNum.Text,
+                    LicenseHolder = txtLiHold.Text,
+                    LicenseHoldUid = txtLiHoldUserId.Text,
+                    AscReqNum = txtReqNum.Text,
+                    Speedchart = txtSpeedchart.Text,
+                    LicenseMan = txtLicenseMan.Text,
+                    LicenseCost = txtLiCost.Text,
+                    radioAssign = radioBtnAssign.Checked,
+                    radioRemove = radioBtnRemove.Checked,
+                    radioAvailable = radioBtnAvailable.Checked,
+                    radioSRNS = radiobtnSRNS.Checked,
+                    radioSRR = radiobtnSRR.Checked,
+                    radioDOE = radiobtnDOE.Checked,
+                    radioCen = radiobtnCen.Checked,
+                };
+
+          
+
+                string response = new DBConnector().InsertSoftware(software);
+                clearForm();
+
+        }
+
     }
 }

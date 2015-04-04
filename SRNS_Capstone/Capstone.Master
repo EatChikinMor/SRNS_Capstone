@@ -12,8 +12,6 @@
     <link rel="stylesheet" href="assets/css/bootstrap/bootstrap-theme.min.css" />
     <link rel="stylesheet" href="assets/css/jasny/jasny-bootstrap.min.css" />
     <link rel="stylesheet" href="assets/css/Main.css" />
-    <script src="assets/datetimepicker/bootstrap-datetimepicker.min.js"></script>
-    <link rel="stylesheet" href="assets/datetimepicker/bootstrap-datetimepicker.min.css"/>
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>
@@ -32,18 +30,15 @@
                         <a class="navbar-brand" href="/Default.aspx">
                         <img src="assets/img/SRNS_manager.png" /></a>
                     </div>
-
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="navbar-collapse-1">
-
                         <ul class="nav navbar-nav">
-
                             <li class="" runat="server" id="lstRequests" visible="true"><a href="Requests.aspx">Requests<span class="sr-only">(current)</span></a></li>
-                            <li runat="server" id="lstAddLicense" visible="false"><a href="AddLicense.aspx">Add License</a></li>
+                            <li runat="server" id="lstAddLicense" visible="true"><a href="AddLicense.aspx">Add License</a></li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reports <span class="caret"></span></a>
                                 <ul runat="server" id="lstReports" class="dropdown-menu" role="menu">
-                                    <li runat="server" id="lstLicCount" visible="false"><a href="#">License Count by Software</a></li>
+                                    <li runat="server" id="lstLicCount" visible="false"><a href="CountBySoftware.aspx">License Count by Software</a></li>
                                     <li runat="server" id="lstAvailLic" visible="false"><a href="#">Available Licenses</a></li>
                                     <li runat="server" id="lstManagLic" visible="false"><a href="#">Manager's License Holders</a></li>
                                     <li runat="server" id="lstLicExp" visible="false"><a href="#">Licenses Expiring</a></li>
@@ -68,7 +63,6 @@
         </asp:ContentPlaceHolder>
     </form>
 </body>
-
 <script>
     function logout(sender, eventArgs) {
         document.getElementById("<%=btnLogout.ClientID %>").click();

@@ -28,7 +28,7 @@ namespace SRNS_Capstone
             }
             set
             {
-                ViewState["IsAdmin"] = value;
+                ViewState["userID"] = value;
             }
         }
 
@@ -41,11 +41,11 @@ namespace SRNS_Capstone
                 User user = (User)Session["User"];
 
                 //Remove before release
-                if ("localhost" == Request.Url.DnsSafeHost)
-                {
-                    User a = new User() { ID = 0, FirstName = "Austin", LastName = "Rich", IsAdmin = true, LoginID = "arich", ManagerID = 0 };
-                    user = a;
-                }
+                //if ("localhost" == Request.Url.DnsSafeHost)
+                //{
+                //    User a = new User() { ID = 0, FirstName = "Austin", LastName = "Rich", IsAdmin = true, LoginID = "arich", ManagerID = 0 };
+                //    user = a;
+                //}
                 //Remove before release
 
                 if (user != null)
@@ -61,13 +61,17 @@ namespace SRNS_Capstone
                 }
             }
             
+
             hdnIsPostBack.Value = Page.IsPostBack.ToString();
-            hdnIsManager.Value = managerTrue.Checked ? "true" : "false";
-            hdnIsAdmin.Value = adminTrue.Checked  ? "true" : "false";
+            hdnIsManager.Value = rdManagerTrue.Checked ? "true" : "false";
+            hdnIsAdmin.Value = rdAdminTrue.Checked  ? "true" : "false";
         }
 
         protected void ddlUsersPopulate()
         {
+            ddlUserSelect.Items.Clear();
+
+            ddlUserSelect.Items.Add(new ListItem("",""));
             List<ComboboxItem> users = new DBConnector().populateUserList();
 
             foreach (ListItem item in users.Select(t => new ListItem(t.Text, t.Value)))
@@ -78,13 +82,13 @@ namespace SRNS_Capstone
 
         protected void ddlManagersPopulate()
         {
+            ddlManagers.Items.Clear();
             DataTable dt = new DBConnector().getManagers();
-
+            ddlManagers.Items.Add(new ListItem("", ""));
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 ListItem item = new ListItem((string)dt.Rows[i]["FirstName"] + " " + (string)dt.Rows[i]["LastName"], dt.Rows[i]["ID"].ToString());
                 ddlManagers.Items.Add(item);
-                ddlManagers.Items[0].Value = dt.Rows[i]["ID"].ToString();
             }
         }
 
@@ -92,6 +96,8 @@ namespace SRNS_Capstone
         protected void clearForm()
         {
             txtFirstName.Text = txtLastName.Text = txtLoginID.Text = txtPassword.Text = "";
+            rdManagerTrue.Checked = rdManagerFalse.Checked = false;
+            rdAdminFalse.Checked = rdAdminTrue.Checked = false;
             ddlManagers.SelectedIndex = 0;
             ddlUserSelect.SelectedIndex = 0;
         }
@@ -112,13 +118,20 @@ namespace SRNS_Capstone
         {
             DataRow user = new DBConnector().getUserByID(Convert.ToInt32(ddlUserSelect.SelectedValue)).Rows[0];
             DataRow access = new DBConnector().getUserPrivileges(Convert.ToInt32(user["ID"].ToString())).Rows[0];
+
+            int IsAdmin = Convert.ToInt32(user["IsAdmin"].ToString());
+            int IsManager = Convert.ToInt32(user["IsManager"].ToString());
             hdnUserToUpdate.Value = ddlUserSelect.SelectedValue;
 
             txtFirstName.Text = user["FirstName"].ToString();
             txtLastName.Text = user["LastName"].ToString();
             txtLoginID.Text = user["LoginID"].ToString();
-            hdnIsAdmin.Value = Convert.ToInt32(user["IsAdmin"].ToString()) == 1 ? "true" : "false";
-            hdnIsManager.Value = Convert.ToInt32(user["IsAdmin"].ToString()) == 1 ? "true" : "false";
+            rdAdminTrue.Checked = IsAdmin == 1;
+            rdAdminFalse.Checked = IsAdmin != 1;
+            rdManagerTrue.Checked = IsManager == 1;
+            rdManagerFalse.Checked = IsManager != 1;
+            hdnIsAdmin.Value = IsAdmin == 1 ? "true" : "false";
+            hdnIsManager.Value = IsManager == 1 ? "true" : "false";
             int manager = Convert.ToInt32(user["ManagerID"].ToString());
             if (manager > 0)
             {
@@ -177,27 +190,27 @@ namespace SRNS_Capstone
 
             if (errors.Count == 0)
             {
-            User user = new User()
-            {
+                User user = new User()
+                {
                     FirstName = txtFirstName.Text,
                     LastName = txtLastName.Text,
                     LoginID = txtLoginID.Text,
-                    IsAdmin = adminTrue.Checked,
-                    IsManager = managerTrue.Checked,
-                    ManagerID = managerTrue.Checked ? 0 : Convert.ToInt32(ddlManagers.SelectedItem.Value),
+                    IsAdmin = rdAdminTrue.Checked,
+                    IsManager = rdManagerTrue.Checked,
+                    ManagerID = rdManagerTrue.Checked ? 0 : Convert.ToInt32(ddlManagers.SelectedItem.Value),
                     PassHash = txtPassword.Text //Converted to hash on insert to DB
-            };
+                };
 
-            UserAccess access = new UserAccess()
-            {
-                    Requests = chkRequests.Checked,
-                    AddLicense = chkAddLicense.Checked,
-                    AvailLicenseReport = chkAvailableLicense.Checked,
-                    LicenseCountReport = chkLicenseCount.Checked,
-                    LicenseExpReport = chkLicensesExpiring.Checked,
-                    ManagLicenseReport = chkManagerLicenseHolders.Checked,
-                    PendChargeReport = chkPendingChargebacks.Checked
-            };
+                UserAccess access = new UserAccess()
+                {
+                    Requests = chkRequests.Checked || rdAdminTrue.Checked,
+                    AddLicense = chkAddLicense.Checked || rdAdminTrue.Checked,
+                    AvailLicenseReport = chkAvailableLicense.Checked || rdAdminTrue.Checked,
+                    LicenseCountReport = chkLicenseCount.Checked || rdAdminTrue.Checked,
+                    LicenseExpReport = chkLicensesExpiring.Checked || rdAdminTrue.Checked,
+                    ManagLicenseReport = chkManagerLicenseHolders.Checked || rdAdminTrue.Checked,
+                    PendChargeReport = chkPendingChargebacks.Checked || rdAdminTrue.Checked
+                };
 
             //string response = new DBConnector().InsertUser(user, access);
 
@@ -245,8 +258,8 @@ namespace SRNS_Capstone
                     FirstName = txtFirstName.Text,
                     LastName = txtLastName.Text,
                     LoginID = txtLoginID.Text,
-                    IsAdmin = adminTrue.Checked,
-                    IsManager = managerTrue.Checked,
+                    IsAdmin = rdAdminTrue.Checked,
+                    IsManager = rdManagerTrue.Checked,
                     ManagerID = Convert.ToInt32(ddlManagers.SelectedItem.Value),
                     PassHash = txtPassword.Text //Converted to hash on insert to DB
                 };
@@ -261,7 +274,6 @@ namespace SRNS_Capstone
                     ManagLicenseReport = chkManagerLicenseHolders.Checked,
                     PendChargeReport = chkPendingChargebacks.Checked
                 };
-
 
                 string response = new DBConnector().UpdateUser(ddlUserSelect.SelectedValue, user, access);
 
@@ -379,6 +391,27 @@ namespace SRNS_Capstone
         {
             Regex rg = new Regex(@"^[a-zA-Z\s,]*$");
             return rg.IsMatch(strToCheck);
+        }
+
+        protected void adminTrue_OnCheckedChanged(object sender, EventArgs e)
+        {
+            pnlAccessControl.Visible = !rdAdminTrue.Checked;
+        }
+
+        protected void btnDeleteUser_OnClick(object sender, EventArgs e)
+        {
+            string userId = ddlUserSelect.SelectedValue;
+
+            if (new DBConnector().DeleteUser(userId) > 1)
+            {
+                lblSuccess.Text = "User Successfully Deleted";
+                clearForm();
+                pnlForm.Visible = false;
+                pnlSelection.Visible = true;
+                pnlSuccess.Visible = true;
+                ddlUsersPopulate();
+                ddlManagersPopulate();
+            }
         }
     }
 }

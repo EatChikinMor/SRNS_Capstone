@@ -60,10 +60,7 @@ namespace SQLiteDataHelpers
 
             string passHash;
 
-            using (MD5 md5Hash = MD5.Create())
-            {
-                passHash = GenerateMd5Hash(md5Hash, Salt + password);
-            }
+            passHash = GenerateMd5Hash(Salt + password);
 
             SQL = "SELECT ID, FirstName, LastName, IsAdmin, LoginID, ManagerID FROM Users WHERE LoginID = '" + username + "'" + " AND PassHash = '" + passHash + "'";
 
@@ -77,15 +74,6 @@ namespace SQLiteDataHelpers
             String SQL = "SELECT * FROM Users WHERE ID = " + userID;
 
             DataTable dt =  SQLiteDataHelper.GetDataTable(SQL);
-
-            return dt;
-        }
-
-        public DataTable getUserPrivileges(int UserID)
-        {
-            string SQL = "SELECT Requests, AddLicense, LicenseCountReport, AvailLicenseReport, ManagLicenseReport, LicenseExpReport, PendChargeReport FROM UserAccess WHERE UserID =" + UserID;
-
-            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
 
             return dt;
         }
@@ -159,72 +147,155 @@ namespace SQLiteDataHelpers
         }
         #endregion
 
+        #region Table UserAccess
+
+        public DataTable getUserPrivileges(int UserID)
+        {
+            string SQL = "SELECT Requests, AddLicense, LicenseCountReport, AvailLicenseReport, ManagLicenseReport, LicenseExpReport, PendChargeReport FROM UserAccess WHERE UserID =" + UserID;
+
+            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
+
+            return dt;
+        }
+
+        #endregion
+
+        #region Table Software
+
+        public DataTable getSoftwareById(string ID)
+        {
+            string SQL =
+                "SELECT S.[ID], [SoftwareName], [Provider], [Organization] " +
+                "FROM Software S " +
+                "INNER JOIN Providers P ON Provider =  P.ID " +
+                "WHERE S.ID = " + ID;
+
+            return SQLiteDataHelper.GetDataTable(SQL);
+        }
+
+        public DataTable getAllSoftware()
+        {
+            const string SQL = "SELECT  soft.[ID], [SoftwareName], [Organization] " +
+                               "FROM Software soft " +
+                               "JOIN Providers pro on soft.Provider = pro.ID";
+
+            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
+
+            return dt;
+        }
+
+        public DataTable getLicenseCountReport(bool showProvider = true)
+        {
+            string SQL;
+            if (showProvider)
+            {
+
+                SQL ="SELECT [Provider] || '_' || S.[ID] AS [SoftCode], [Organization] ||' '|| [SoftwareName] AS [SoftName], " +
+                     "COALESCE(COUNT(L.SoftwareID), 0) AS [LicCount] " +
+                     "FROM Software S " +
+                     "INNER JOIN Providers P ON Provider =  P.ID " +
+                     "LEFT JOIN LicenseKeys L ON L.SoftwareID = S.ID " +
+                     "GROUP BY SoftCode, SoftName " +
+                     "ORDER BY Organization, SoftwareName";
+            }
+            else
+            {
+                SQL =
+                    "SELECT [Provider] || '_' || S.[ID] AS [SoftCode], [SoftwareName] AS [SoftName], " +
+                     "COALESCE(COUNT(L.SoftwareID), 0) AS [LicCount] " +
+                     "FROM Software S " +
+                     "INNER JOIN Providers P ON Provider =  P.ID " +
+                     "LEFT JOIN LicenseKeys L ON L.SoftwareID = S.ID " +
+                     "GROUP BY SoftCode, SoftName " +
+                     "ORDER BY SoftwareName";
+            }
+
+            return SQLiteDataHelper.GetDataTable(SQL);
+        }
+
+        public DataTable getLicenseCountReportDetail(string SoftwareId, bool expired = false)
+        {
+            string andExpired;
+            andExpired = expired 
+                ? "AND [ExpirationDate] < CURRENT_TIMESTAMP " 
+                : "AND [ExpirationDate] > CURRENT_TIMESTAMP ";
+
+            string SQL =
+                "SELECT COALESCE(U.[FirstName] || ' ' || U.[LastName], 'Not Assigned') AS Name, [ExpirationDate], [LicenseKey] " +
+                "FROM LicenseKeys " +
+                "LEFT OUTER JOIN Users U ON KeyOwnerID = U.ID " +
+                "WHERE SoftwareID = "+ SoftwareId +"  " +
+                andExpired +
+                "ORDER BY KeyOwnerID, ExpirationDate";
+
+            return SQLiteDataHelper.GetDataTable(SQL);
+        }
+
+        #endregion
+
         #endregion
 
         #region INSERTS
 
         public string InsertUser(User user, UserAccess userA)
         {
-                //////////// Manually Add user \\\\\\\\\\\\
-                //User a = new User();
-                //a.FirstName = "Austin";
-                //a.LastName = "Rich";
-                //a.IsAdmin = true;
-                //a.LoginID = "user";
-                //a.PassHash = "123456a";
-                //a.ManagerID = 1;
-                //a.Salt = GenerateRandomString();
-                //a.IsManager = true;
+            //////////// Manually Add user \\\\\\\\\\\\
+            //User a = new User();
+            //a.FirstName = "Austin";
+            //a.LastName = "Rich";
+            //a.IsAdmin = true;
+            //a.LoginID = "user";
+            //a.PassHash = "123456a";
+            //a.ManagerID = 1;
+            //a.Salt = GenerateRandomString();
+            //a.IsManager = true;
 
-                //user = a;
+            //user = a;
 
-                //UserAccess b = new UserAccess()
-                //{
-                //    UserID = 0,
-                //    Requests = true,
-                //    AddLicense = true,
-                //    AvailLicenseReport = true,
-                //    LicenseCountReport = true,
-                //    LicenseExpReport = true,
-                //    ManagLicenseReport = true,
-                //    PendChargeReport = false
-                //};
+            //UserAccess b = new UserAccess()
+            //{
+            //    UserID = 0,
+            //    Requests = true,
+            //    AddLicense = true,
+            //    AvailLicenseReport = true,
+            //    LicenseCountReport = true,
+            //    LicenseExpReport = true,
+            //    ManagLicenseReport = true,
+            //    PendChargeReport = false
+            //};
 
-                //userA = b;
+            //userA = b;
             //-----------------------------------------\\
 
             if (!IsUsernameAvailable(user.LoginID)) return "The chosen username already exists.";
 
-                    user.Salt = GenerateRandomString();
+            user.Salt = GenerateRandomString();
 
-                    using (MD5 md5Hash = MD5.Create())
-                    {
-                        user.PassHash = GenerateMd5Hash(md5Hash, user.Salt + user.PassHash);
-                    }
+            user.PassHash = GenerateMd5Hash(user.Salt + user.PassHash);
 
-                    Dictionary<String, String> Users = SQLTables.TableColumns.Users;
-                    Users["FirstName"] = user.FirstName;
-                    Users["LastName"] = user.LastName;
+            Dictionary<String, String> Users = SQLTables.TableColumns.Users;
+            Users["FirstName"] = user.FirstName;
+            Users["LastName"] = user.LastName;
             Users["IsAdmin"] = Convert.ToInt32(user.IsAdmin).ToString();
-                    Users["LoginID"] = user.LoginID;
-                    Users["PassHash"] = user.PassHash;
+            Users["LoginID"] = user.LoginID;
+            Users["PassHash"] = user.PassHash;
             Users["ManagerID"] = Convert.ToInt32(user.ManagerID).ToString();
-                    Users["Salt"] = user.Salt;
+            Users["Salt"] = user.Salt;
             Users["IsManager"] = Convert.ToInt32(user.IsManager).ToString();
 
             string error = "", retError = "";
             if (!SQLiteDataHelper.Insert("USERS", Users, ref error))
-                    {
+            {
                 retError = error + ",";
-                    }
+            }
 
             if (error.Length < 1)
-                    {
+            {
                 userA.UserID = GetMaxId("Users");
 
-                        Dictionary<String, String> userAccess = SQLTables.TableColumns.UserAccess;
+                Dictionary<String, String> userAccess = SQLTables.TableColumns.UserAccess;
 
-                        userAccess["UserID"] = userA.UserID.ToString();
+                userAccess["UserID"] = userA.UserID.ToString();
                 userAccess["Requests"] = Convert.ToInt32(userA.Requests).ToString();
                 userAccess["AddLicense"] = Convert.ToInt32(userA.AddLicense).ToString();
                 userAccess["LicenseCountReport"] = Convert.ToInt32(userA.LicenseCountReport).ToString();
@@ -256,7 +327,7 @@ namespace SQLiteDataHelpers
         #endregion
 
         #region UPSERTS
-
+        //
         #endregion
 
         #region UPDATES
@@ -268,10 +339,7 @@ namespace SQLiteDataHelpers
 
             user.Salt = GenerateRandomString();
 
-            using (MD5 md5Hash = MD5.Create())
-            {
-                user.PassHash = GenerateMd5Hash(md5Hash, user.Salt + user.PassHash);
-            }
+            user.PassHash = GenerateMd5Hash(user.Salt + user.PassHash);
 
             var Users = SQLTables.TableColumns.Users;
             Users["FirstName"] = user.FirstName;
@@ -288,20 +356,22 @@ namespace SQLiteDataHelpers
             if (!SQLiteDataHelper.Update("USERS", Users, @where)) 
                 return "User Update failed";
 
-            userA.UserID = GetMaxId("Users");
+            userA.UserID = Convert.ToInt32(UserID);
 
             var userAccess = SQLTables.TableColumns.UserAccess;
 
             userAccess["UserID"] = userA.UserID.ToString();
-            userAccess["Requests"] = userA.Requests.ToString();
-            userAccess["AddLicense"] = userA.AddLicense.ToString();
-            userAccess["LicenseCountReport"] = userA.LicenseCountReport.ToString();
-            userAccess["AvailLicenseReport"] = userA.AvailLicenseReport.ToString();
-            userAccess["ManagLicenseReport"] = userA.ManagLicenseReport.ToString();
-            userAccess["LicenseExpReport"] = userA.LicenseCountReport.ToString();
-            userAccess["PendChargeReport"] = userA.PendChargeReport.ToString();
+            userAccess["Requests"] = Convert.ToInt32(userA.Requests).ToString();
+            userAccess["AddLicense"] = Convert.ToInt32(userA.AddLicense).ToString();
+            userAccess["LicenseCountReport"] = Convert.ToInt32(userA.LicenseCountReport).ToString();
+            userAccess["AvailLicenseReport"] = Convert.ToInt32(userA.AvailLicenseReport).ToString();
+            userAccess["ManagLicenseReport"] = Convert.ToInt32(userA.ManagLicenseReport).ToString();
+            userAccess["LicenseExpReport"] = Convert.ToInt32(userA.LicenseCountReport).ToString();
+            userAccess["PendChargeReport"] = Convert.ToInt32(userA.PendChargeReport).ToString();
 
-            return SQLiteDataHelper.Update("UserAccess", Users, @where) 
+            where = "UserID = " + UserID;
+
+            return SQLiteDataHelper.Update("UserAccess", userAccess, @where) 
                 ? "User successfully updated" 
                 : "Access control update failed - User information successfully updated";
         }
@@ -310,26 +380,56 @@ namespace SQLiteDataHelpers
 
         #region DELETES
 
-        #endregion
-
-        static string GenerateMd5Hash(MD5 md5Hash, string input)
+        public int DeleteUser(string UserId)
         {
-            // Convert the input string to a byte array and compute the hash. 
-            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+            string whereUsers = "ID = " + UserId;
+            string whereUserA = "UserID = " + UserId;
+            int ret = 0;
 
-            // Create a new Stringbuilder to collect the bytes 
-            // and create a string.
-            StringBuilder sBuilder = new StringBuilder();
-
-            // Loop through each byte of the hashed data  
-            // and format each one as a hexadecimal string. 
-            for (int i = 0; i < data.Length; i++)
+            if (SQLiteDataHelper.Delete("Users", whereUsers))
             {
-                sBuilder.Append(i.ToString("x2"));
+                ret = 1;
+                if (SQLiteDataHelper.Delete("UserAccess", whereUserA))
+                {
+                    ret = 2;
+                }
             }
 
-            // Return the hexadecimal string. 
-            return sBuilder.ToString();
+            return ret;
+        }
+
+        #endregion
+
+        static string GenerateMd5Hash(string input)
+        {
+            //// Convert the input string to a byte array and compute the hash. 
+            //byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+            //// Create a new Stringbuilder to collect the bytes 
+            //// and create a string.
+            //StringBuilder sBuilder = new StringBuilder();
+
+            //// Loop through each byte of the hashed data  
+            //// and format each one as a hexadecimal string. 
+            //for (int i = 0; i < data.Length; i++)
+            //{
+            //    sBuilder.Append(i.ToString("x2"));
+            //}
+
+            //// Return the hexadecimal string. 
+            //return sBuilder.ToString();
+
+            MD5 md5 = MD5.Create();
+            byte[] inputBytes = Encoding.ASCII.GetBytes(input);
+            byte[] hash = md5.ComputeHash(inputBytes);
+
+            // step 2, convert byte array to hex string
+            StringBuilder sb = new StringBuilder();
+            foreach (byte t in hash)
+            {
+                sb.Append(t.ToString("x2"));
+            }
+            return sb.ToString();
         }
 
         public string GenerateRandomString()

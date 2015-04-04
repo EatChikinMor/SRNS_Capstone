@@ -157,40 +157,40 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.Label lblPassword;
         
         /// <summary>
-        /// managerTrue control.
+        /// rdManagerTrue control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton managerTrue;
+        protected global::System.Web.UI.WebControls.RadioButton rdManagerTrue;
         
         /// <summary>
-        /// managerFalse control.
+        /// rdManagerFalse control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton managerFalse;
+        protected global::System.Web.UI.WebControls.RadioButton rdManagerFalse;
         
         /// <summary>
-        /// adminTrue control.
+        /// rdAdminTrue control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton adminTrue;
+        protected global::System.Web.UI.WebControls.RadioButton rdAdminTrue;
         
         /// <summary>
-        /// adminFalse control.
+        /// rdAdminFalse control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton adminFalse;
+        protected global::System.Web.UI.WebControls.RadioButton rdAdminFalse;
         
         /// <summary>
         /// ddlManagers control.
@@ -218,6 +218,15 @@ namespace SRNS_Capstone {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl labelPasswordInfo;
+        
+        /// <summary>
+        /// pnlAccessControl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlAccessControl;
         
         /// <summary>
         /// chkRequests control.
@@ -362,5 +371,14 @@ namespace SRNS_Capstone {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCancelNewUser;
+        
+        /// <summary>
+        /// btnHdnDelete control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnHdnDelete;
     }
 }
