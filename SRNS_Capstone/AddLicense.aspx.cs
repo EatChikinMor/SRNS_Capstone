@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SQLiteDataHelpers.Objects;
+using SQLiteDataHelpers;
 
 namespace SRNS_Capstone
 {
@@ -64,6 +65,7 @@ namespace SRNS_Capstone
                 {
                     _IsAdmin = user.IsAdmin;
                     _userID = user.ID;
+                    ddlSoftwarePopulate();
 
                     if (_IsAdmin)
                     {
@@ -75,7 +77,53 @@ namespace SRNS_Capstone
                     Response.Redirect("~/Default.aspx");
                 }
             }
-            //Check for session timeout
         }
+            //Check for session timeout
+        protected void ddlSoftwarePopulate()
+        {
+            List<ComboboxItem> software = new DBConnector().populateSoftwareList();
+
+            for (int i = 0; i < software.Count; i++)
+            {
+                ListItem item = new ListItem(software[i].Text, software[i].Value);
+                ddlSoftwareSelect.Items.Add(item);
+            }
+        }
+
+        protected void clearForm()
+        {
+            txtSoftName.Text = txtSoftDescription.Text = txtLiNum.Text = txtSpeedchart.Text = txtLiHold.Text = txtLiHoldUserId.Text = txtLiCost.Text = txtLicenseMan.Text = txtReqNum.Text = "";
+
+        }
+
+        protected void btnSubmit_Click(object sender, EventArgs e)
+        {
+            SoftwareInput software = new SoftwareInput()
+                {
+                    SoftwareName = txtSoftName.Text,
+                    SoftwareDescription = txtSoftDescription.Text,
+                    LicenseNumber = txtLiNum.Text,
+                    LicenseHolder = txtLiHold.Text,
+                    LicenseHoldUid = txtLiHoldUserId.Text,
+                    AscReqNum = txtReqNum.Text,
+                    Speedchart = txtSpeedchart.Text,
+                    LicenseMan = txtLicenseMan.Text,
+                    LicenseCost = txtLiCost.Text,
+                    radioAssign = radioBtnAssign.Checked,
+                    radioRemove = radioBtnRemove.Checked,
+                    radioAvailable = radioBtnAvailable.Checked,
+                    radioSRNS = radiobtnSRNS.Checked,
+                    radioSRR = radiobtnSRR.Checked,
+                    radioDOE = radiobtnDOE.Checked,
+                    radioCen = radiobtnCen.Checked,
+                };
+
+          
+
+                string response = new DBConnector().InsertSoftware(software);
+                clearForm();
+
+        }
+
     }
 }

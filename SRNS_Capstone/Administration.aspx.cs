@@ -92,6 +92,7 @@ namespace SRNS_Capstone
             }
         }
 
+
         protected void clearForm()
         {
             txtFirstName.Text = txtLastName.Text = txtLoginID.Text = txtPassword.Text = "";
