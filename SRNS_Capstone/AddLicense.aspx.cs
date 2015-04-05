@@ -69,7 +69,7 @@ namespace SRNS_Capstone
 
                     if (_IsAdmin)
                     {
-                        ((Capstone)Page.Master).showMenuOptions(_IsAdmin, _userID);
+                        ((Capstone)Page.Master).showMenuOptions(_IsAdmin);
                     }
                 }
                 else
@@ -98,30 +98,30 @@ namespace SRNS_Capstone
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            SoftwareInput software = new SoftwareInput()
-                {
-                    SoftwareName = txtSoftName.Text,
-                    SoftwareDescription = txtSoftDescription.Text,
-                    LicenseNumber = txtLiNum.Text,
-                    LicenseHolder = txtLiHold.Text,
-                    LicenseHoldUid = txtLiHoldUserId.Text,
-                    AscReqNum = txtReqNum.Text,
-                    Speedchart = txtSpeedchart.Text,
-                    LicenseMan = txtLicenseMan.Text,
-                    LicenseCost = txtLiCost.Text,
-                    radioAssign = radioBtnAssign.Checked,
-                    radioRemove = radioBtnRemove.Checked,
-                    radioAvailable = radioBtnAvailable.Checked,
-                    radioSRNS = radiobtnSRNS.Checked,
-                    radioSRR = radiobtnSRR.Checked,
-                    radioDOE = radiobtnDOE.Checked,
-                    radioCen = radiobtnCen.Checked,
-                };
+        //    SoftwareInput software = new SoftwareInput()
+        //        {
+        //            SoftwareName = txtSoftName.Text,
+        //            SoftwareDescription = txtSoftDescription.Text,
+        //            LicenseNumber = txtLiNum.Text,
+        //            LicenseHolder = txtLiHold.Text,
+        //            LicenseHoldUid = txtLiHoldUserId.Text,
+        //            AscReqNum = txtReqNum.Text,
+        //            Speedchart = txtSpeedchart.Text,
+        //            LicenseMan = txtLicenseMan.Text,
+        //            LicenseCost = txtLiCost.Text,
+        //            radioAssign = radioBtnAssign.Checked,
+        //            radioRemove = radioBtnRemove.Checked,
+        //            radioAvailable = radioBtnAvailable.Checked,
+        //            radioSRNS = radiobtnSRNS.Checked,
+        //            radioSRR = radiobtnSRR.Checked,
+        //            radioDOE = radiobtnDOE.Checked,
+        //            radioCen = radiobtnCen.Checked,
+        //        };
 
           
 
-                string response = new DBConnector().InsertSoftware(software);
-                clearForm();
+        //        string response = new DBConnector().InsertSoftware(software);
+        //        clearForm();
 
         }
 

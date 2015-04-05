@@ -30,7 +30,7 @@ namespace SRNS_Capstone
             Response.Redirect("~/Default.aspx");
         }
 
-        public void showMenuOptions(bool IsAdmin, int UserID)
+        public void showMenuOptions(bool IsAdmin)
         {
             if (IsAdmin)
             {

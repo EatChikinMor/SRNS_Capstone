@@ -51,7 +51,7 @@ namespace SRNS_Capstone.Reports
                 if (user != null)
                 {
 
-                    ((Capstone)Page.Master).showMenuOptions(user.IsAdmin, _userID);
+                    ((Capstone)Page.Master).showMenuOptions(user.IsAdmin);
                     _userID = user.ID;
                     string softCode = Request.QueryString["SoftCode"];
 

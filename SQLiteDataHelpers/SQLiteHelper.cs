@@ -9,7 +9,7 @@ namespace SQLiteDataHelpers
 {
     public class SQLiteHelper
     {
-        String dbConnection = @"data source=" + AppDomain.CurrentDomain.BaseDirectory + "\\DB\\SQLiteDB" + "";
+        readonly String dbConnection = @"data source=" + AppDomain.CurrentDomain.BaseDirectory + "\\DB\\SQLiteDB" + "";
 
         /// <summary>
         ///     Allows the programmer to run a query against the Database.

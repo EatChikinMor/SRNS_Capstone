@@ -219,6 +219,34 @@ namespace SQLiteDataHelpers
 
         #endregion
 
+        #region Table License Keys
+
+        public DataTable getAvailableLicensesReport(bool showProvider)
+        {
+            string orderBy = showProvider 
+                ? "ORDER BY Provider, SoftwareName, ExpirationDate DESC" 
+                : "ORDER BY SoftwareName, ExpirationDate DESC";
+
+            string provider = showProvider
+                ? " [Organization],"
+                : "";
+
+            string SQL =
+                "SELECT" + provider + " S.[SoftwareName], LK.[LicenseKey], ExpirationDate , COALESCE([SpeedChart], \" \") AS Speedchart " +
+                "FROM LicenseKeys LK " +
+                "INNER JOIN Providers P ON S.Provider = P.ID " +
+                "INNER JOIN Software S ON S.ID = LK.SoftwareID " +
+                "LEFT OUTER JOIN Speedcharts SC ON SC.KeyChargedAgainst = LK.[LicenseKey] " +
+                "WHERE ExpirationDate > CURRENT_TIMESTAMP AND (LK.KeyOwnerID = '' OR LK.KeyOwnerID = NULL) " +
+                orderBy;
+
+            DataTable result = SQLiteDataHelper.GetDataTable(SQL);
+
+            return result;
+        }
+
+        #endregion
+
         #endregion
 
         #region INSERTS

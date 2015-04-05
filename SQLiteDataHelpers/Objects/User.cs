@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SQLiteDataHelpers.Objects
 {
-    //[Serializable]
+    [Serializable]
     public class User
     {
         #region private members

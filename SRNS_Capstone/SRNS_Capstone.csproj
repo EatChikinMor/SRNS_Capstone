@@ -69,6 +69,7 @@
     <Content Include="assets\img\grd_alt.png" />
     <Content Include="assets\img\grd_head.png" />
     <Content Include="assets\img\grd_pgr.png" />
+    <Content Include="AvailableCount.aspx" />
     <Content Include="bin\SQLiteDataHelpers.dll" />
     <Content Include="bin\System.Data.SQLite.dll" />
     <Content Include="Administration.aspx" />
@@ -111,6 +112,13 @@
     </Compile>
     <Compile Include="Administration.aspx.designer.cs">
       <DependentUpon>Administration.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AvailableCount.aspx.cs">
+      <DependentUpon>AvailableCount.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AvailableCount.aspx.designer.cs">
+      <DependentUpon>AvailableCount.aspx</DependentUpon>
     </Compile>
     <Compile Include="Capstone.Master.cs">
       <DependentUpon>Capstone.Master</DependentUpon>

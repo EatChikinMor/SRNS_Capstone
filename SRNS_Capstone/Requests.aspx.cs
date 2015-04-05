@@ -58,7 +58,7 @@ namespace SRNS_Capstone
                     _IsAdmin = user.IsAdmin;
                     _userID = user.ID;
 
-                    ((Capstone)Page.Master).showMenuOptions(_IsAdmin, _userID);
+                    ((Capstone)Page.Master).showMenuOptions(_IsAdmin);
 
                     if (_IsAdmin)
                     {

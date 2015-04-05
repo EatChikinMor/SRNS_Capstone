@@ -31,18 +31,6 @@ select.form-control {
     text-align: right;
 }
 
-#btnAdminTrue.active, #btnAdminTrue:active,
-#btnManagerTrue.active, #btnManagerTrue:active {
-    background-color:#2f790d;
-    border-color:#23580a;
-}
-#btnAdminFalse.active, #btnAdminFalse:active,
-#btnManagerFalse.active, #btnManagerFalse:active {
-    background-color:#900808;
-    border-color:#630c0c;
-}
-
-
 .server-action-menu {
     background-color: transparent;
     background-image: linear-gradient(to bottom, rgba(30, 87, 153, 0.2) 0%, rgba(125, 185, 232, 0) 100%);
@@ -50,3 +38,44 @@ select.form-control {
     border-radius:10px;
     padding: 5px;
 }
+
+.dGrid {
+    background-color: #fff;
+    margin: 5px 0 10px 0;
+    border: solid 1px #525252;
+    border-collapse: collapse;
+}
+
+    .dGrid td {
+        padding: 2px;
+        border: solid 1px #c1c1c1;
+        color: #717171;
+        background: #fcfcfc url(assets/img/grd_alt.png) repeat-x top;
+    }
+
+    .dGrid .hdr {
+        padding: 4px 2px;
+        color: #fff;
+        background: #424242 url(assets/img/grd_head.png) repeat-x top;
+        border-left: solid 1px #525252;
+        font-size: 0.9em;
+    }
+
+    .dGrid .ftr td {
+        padding: 4px 2px;
+        color: #fff;
+        background: #424242 url(assets/img/grd_head.png) repeat-x top;
+        border-left: solid 1px #525252;
+        font-size: 0.9em;
+        font-weight: bold;
+    }
+
+    .dGrid .ftr a {
+        color: #fff;
+        text-decoration: none;
+    }
+
+        .dGrid .ftr a:hover {
+            color: #fff;
+            text-decoration: none;
+        }
