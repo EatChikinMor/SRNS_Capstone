@@ -53,6 +53,11 @@
         <div class="row"> <%--Permitting Time - Alphabet Subsections - http://stackoverflow.com/questions/2923137/repeater-in-repeater 
                             IE -  Heading Label for "A" then all Software provided by "A" Companies then Adobe, AMD etc. THen another Letter header "B"  --%>
             <asp:Panel runat="server" ID="pnlSelect">
+                <div class="row text-center">
+                    <h2>
+                        License Count By Software
+                    </h2>
+                </div>
                 <div class="col-lg-2 col-md-2">
                     Sort by Software Provider Name
                     <asp:CheckBox runat="server" ID="chkShowProvider" Checked="false" AutoPostBack="True" OnCheckedChanged="chkShowProvider_OnCheckedChanged"/>

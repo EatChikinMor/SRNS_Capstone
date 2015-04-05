@@ -10,7 +10,7 @@ using SQLiteDataHelpers;
 
 namespace SRNS_Capstone
 {
-    public partial class AvailableCount : System.Web.UI.Page
+    public partial class LicensesExpiring : System.Web.UI.Page
     {
         private User _user
         {
@@ -47,7 +47,7 @@ namespace SRNS_Capstone
                     _user = user;
                     ((Capstone)Page.Master).showMenuOptions(user.IsAdmin);
                     buildGridCount();
-                    
+
                 }
                 else
                 {
@@ -59,7 +59,53 @@ namespace SRNS_Capstone
         private void buildGridCount()
         {
             bool showProvider = chkShowProvider.Checked;
-            var dt = new DBConnector().getAvailableLicensesReport(showProvider);
+            if (isWholeNumeric(txtCount.Text))
+            {
+                pnlError.Visible = false;
+                var dt = new DBConnector().getExpiringLicensesReport(showProvider, Convert.ToInt32(txtCount.Text));
+
+                if (dt.Rows.Count == 0)
+                {
+                    lblSoftwareCount.Text = "No Keys Exist";
+                    lblSoftwareCount.ForeColor = Color.Red;
+                    gridCounts.Visible = false;
+                }
+                else
+                {
+                    lblSoftwareCount.Text = dt.Rows.Count.ToString();
+                    gridCounts.DataSource = dt;
+                    gridCounts.Columns[0].Visible = showProvider;
+                    gridCounts.DataBind();
+                }
+            }
+            else
+            {
+                pnlError.Visible = true;
+                lblError.Text = "Only whole numbers allowed";
+            }
+        }
+
+        private bool isWholeNumeric(string text)
+        {
+            double num;
+            double.TryParse(text, out num);
+            return num == (int)num;
+        }
+
+        protected void chkShowProvider_OnCheckedChanged(object sender, EventArgs e)
+        {
+            buildGridCount();
+        }
+
+        protected void OnClick(object sender, EventArgs e)
+        {
+            buildGridCount();
+        }
+
+        protected void btnViewExpired_OnClick(object sender, EventArgs e)
+        {
+            bool showProvider = chkShowProvider.Checked;
+            var dt = new DBConnector().getExpiredLicenses(showProvider);
 
             if (dt.Rows.Count == 0)
             {
@@ -74,11 +120,6 @@ namespace SRNS_Capstone
                 gridCounts.Columns[0].Visible = showProvider;
                 gridCounts.DataBind();
             }
-        }
-
-        protected void chkShowProvider_OnCheckedChanged(object sender, EventArgs e)
-        {
-            buildGridCount();
         }
     }
 }

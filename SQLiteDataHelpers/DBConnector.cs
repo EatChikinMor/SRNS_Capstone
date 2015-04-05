@@ -228,16 +228,65 @@ namespace SQLiteDataHelpers
                 : "ORDER BY SoftwareName, ExpirationDate DESC";
 
             string provider = showProvider
-                ? " [Organization],"
-                : "";
+                ? "[Organization],"
+                : "NULL AS [Organization],";
 
             string SQL =
-                "SELECT" + provider + " S.[SoftwareName], LK.[LicenseKey], ExpirationDate , COALESCE([SpeedChart], \" \") AS Speedchart " +
+                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], ExpirationDate , COALESCE([SpeedChart], \" \") AS Speedchart " +
                 "FROM LicenseKeys LK " +
                 "INNER JOIN Providers P ON S.Provider = P.ID " +
                 "INNER JOIN Software S ON S.ID = LK.SoftwareID " +
                 "LEFT OUTER JOIN Speedcharts SC ON SC.KeyChargedAgainst = LK.[LicenseKey] " +
                 "WHERE ExpirationDate > CURRENT_TIMESTAMP AND (LK.KeyOwnerID = '' OR LK.KeyOwnerID = NULL) " +
+                orderBy;
+
+            DataTable result = SQLiteDataHelper.GetDataTable(SQL);
+
+            return result;
+        }
+
+        public DataTable getExpiringLicensesReport(bool showProvider, int months = 3)
+        {
+            string orderBy = showProvider
+                ? "ORDER BY Provider, SoftwareName, ExpirationDate DESC"
+                : "ORDER BY SoftwareName, ExpirationDate DESC";
+
+            string provider = showProvider
+                ? "[Organization],"
+                : "NULL AS [Organization],";
+
+            string SQL =
+                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], ExpirationDate , COALESCE([SpeedChart], \" \") AS Speedchart " +
+                "FROM LicenseKeys LK " +
+                "INNER JOIN Providers P ON S.Provider = P.ID " +
+                "INNER JOIN Software S ON S.ID = LK.SoftwareID " +
+                "LEFT OUTER JOIN Speedcharts SC ON SC.KeyChargedAgainst = LK.[LicenseKey] " +
+                "WHERE ExpirationDate > CURRENT_TIMESTAMP " +
+                "AND ExpirationDate < DATE(CURRENT_TIMESTAMP, '+"+ months +" month')" +
+                orderBy;
+
+            DataTable result = SQLiteDataHelper.GetDataTable(SQL);
+
+            return result;
+        }
+
+        public DataTable getExpiredLicenses(bool showProvider)
+        {
+            string orderBy = showProvider
+                ? "ORDER BY Provider, SoftwareName, ExpirationDate DESC"
+                : "ORDER BY SoftwareName, ExpirationDate DESC";
+
+            string provider = showProvider
+                ? "[Organization],"
+                : "NULL AS [Organization],";
+
+            string SQL =
+                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], ExpirationDate, COALESCE([SpeedChart], \" \") AS Speedchart " +
+                "FROM LicenseKeys LK " +
+                "INNER JOIN Providers P ON S.Provider = P.ID " +
+                "INNER JOIN Software S ON S.ID = LK.SoftwareID " +
+                "LEFT OUTER JOIN Speedcharts SC ON SC.KeyChargedAgainst = LK.[LicenseKey] " +
+                "WHERE ExpirationDate < CURRENT_TIMESTAMP ORDER BY SoftwareName, ExpirationDate DESC" +
                 orderBy;
 
             DataTable result = SQLiteDataHelper.GetDataTable(SQL);

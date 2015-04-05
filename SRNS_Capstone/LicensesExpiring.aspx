@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Capstone.Master" CodeBehind="AvailableCount.aspx.cs" Inherits="SRNS_Capstone.AvailableCount" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Capstone.Master" CodeBehind="LicensesExpiring.aspx.cs" Inherits="SRNS_Capstone.LicensesExpiring" %>
 
 <asp:Content ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -8,9 +8,23 @@
 
     <div class="container">
         <div class="row text-center">
+            <asp:Panel runat="server" ID="pnlError" Visible="false">
+                    <div class="alert alert-danger" role="alert" style="margin-top:10px;">
+                        <h4>
+                            <asp:Label runat="server" ID="lblError" Text="Changes not made"></asp:Label>
+                        </h4>
+                    </div>
+            </asp:Panel>
             <h2>
-                Licenses Available for Assignment
+                Licenses Expiring in 
+                <br/>
+                <asp:TextBox runat="server" ID="txtCount" Text="3" Width="50px"></asp:TextBox> months
             </h2>
+            <div class="row">
+                <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary btn-sm" Text="Submit" OnClick="OnClick"/>
+                &nbsp;
+                <asp:Button runat="server" ID="btnViewExpired" CssClass="btn btn-primary btn-sm" Text="View Expired" OnClick="btnViewExpired_OnClick"/>
+            </div>
         </div>
         <div class="row text-center">
             <div class="col-lg-2 col-md-2">
@@ -18,7 +32,7 @@
             <asp:CheckBox runat="server" ID="chkShowProvider" Checked="false" AutoPostBack="True" OnCheckedChanged="chkShowProvider_OnCheckedChanged" />
             </div>
             <div class="col-lg-8">
-                <h3>
+                <h3 class="pull-left">
                 Count:
                 <asp:Label runat="server" ID="lblSoftwareCount" Visible="true"></asp:Label>
                 </h3>
@@ -49,3 +63,4 @@
         </div>
     </div>
 </asp:Content>
+

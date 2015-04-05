@@ -41,7 +41,7 @@
                                     <li runat="server" id="lstLicCount" visible="false"><a href="CountBySoftware.aspx">License Count by Software</a></li>
                                     <li runat="server" id="lstAvailLic" visible="false"><a href="AvailableCount.aspx">Available Licenses</a></li>
                                     <li runat="server" id="lstManagLic" visible="false"><a href="#">Manager's License Holders</a></li>
-                                    <li runat="server" id="lstLicExp" visible="false"><a href="#">Licenses Expiring</a></li>
+                                    <li runat="server" id="lstLicExp" visible="false"><a href="LicensesExpiring.aspx">Licenses Expiring</a></li>
                                     <li class="divider"></li>
                                     <li runat="server" id="lstPendCharg"><a href="#">Pending Chargebacks</a></li>
                                 </ul>

@@ -92,6 +92,7 @@
     <Content Include="Capstone.Master" />
     <Content Include="Default.aspx" />
     <Content Include="CountBySoftware.aspx" />
+    <Content Include="LicensesExpiring.aspx" />
     <Content Include="Requests.aspx" />
     <Content Include="Scripts\jquery-1.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.7.1.js" />
@@ -133,6 +134,13 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LicensesExpiring.aspx.cs">
+      <DependentUpon>LicensesExpiring.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LicensesExpiring.aspx.designer.cs">
+      <DependentUpon>LicensesExpiring.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CountBySoftware.aspx.cs">
