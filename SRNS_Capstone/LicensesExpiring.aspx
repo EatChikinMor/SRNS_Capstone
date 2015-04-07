@@ -7,25 +7,37 @@
 
 
     <div class="container">
-        <div class="row text-center">
-            <asp:Panel runat="server" ID="pnlError" Visible="false">
-                    <div class="alert alert-danger" role="alert" style="margin-top:10px;">
-                        <h4>
-                            <asp:Label runat="server" ID="lblError" Text="Changes not made"></asp:Label>
-                        </h4>
-                    </div>
-            </asp:Panel>
-            <h2>
-                Licenses Expiring in 
-                <br/>
-                <asp:TextBox runat="server" ID="txtCount" Text="3" Width="50px"></asp:TextBox> months
-            </h2>
-            <div class="row">
-                <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary btn-sm" Text="Submit" OnClick="OnClick"/>
-                &nbsp;
-                <asp:Button runat="server" ID="btnViewExpired" CssClass="btn btn-primary btn-sm" Text="View Expired" OnClick="btnViewExpired_OnClick"/>
+        <asp:Panel runat="server" ID="pnlError" Visible="false">
+                <div class="alert alert-danger" role="alert" style="margin-top:10px;">
+                    <h4>
+                        <asp:Label runat="server" ID="lblError" Text="Changes not made"></asp:Label>
+                    </h4>
+                </div>
+        </asp:Panel>
+        <asp:panel runat="server" ID="pnlExpiringLicenses" Visible="True">
+            <div class="row text-center">
+                <h2>
+                    Licenses Expiring in 
+                    <br/>
+                    <asp:TextBox runat="server" ID="txtCount" Text="3" Width="50px"></asp:TextBox> months
+                </h2>
+                <div class="row">
+                    <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary btn-sm" Text="Submit" OnClick="OnClick"/>
+                    &nbsp;
+                    <asp:Button runat="server" ID="btnViewExpired" CssClass="btn btn-danger btn-sm" Text="View Expired" OnClick="btnViewExpired_OnClick"/>
+                </div>
             </div>
-        </div>
+        </asp:panel>
+        <asp:panel runat="server" ID="pnlExpired" Visible="False">
+            <div class="row text-center">
+                <h2>
+                    Expired Licenses
+                </h2>
+                <div class="row">
+                    <asp:Button runat="server" ID="btnExpiring" CssClass="btn btn-danger btn-sm" Text="View Expiring" OnClick="btnExpiring_OnClick"/>
+                </div>
+            </div>
+        </asp:panel>
         <div class="row text-center">
             <div class="col-lg-2 col-md-2">
                 Sort by Software Provider Name

@@ -93,8 +93,16 @@
                         <asp:TextBox CssClass="form-control text-center" placeholder="Username" runat="server" ID="txtUsername"></asp:TextBox>
                         <asp:TextBox CssClass="form-control text-center" placeholder="Password" runat="server" ID="txtPassword" TextMode="Password" Style="margin-top:7px;"></asp:TextBox>
                         <asp:Button CssClass="btn btn-default btn-block" runat="server" ID="btnLogin" Text="Login" Style="margin-top:7px;" OnClick="btnLogin_Click" />
+                        <asp:Label runat="server" ID="lblDomain"></asp:Label>
+                        <asp:HyperLink runat="server" ID="lnkDomain" style="cursor: pointer" onclick="$('#domainEntry').slideToggle('slow');" Text="Change?"/>
+                        <div id="domainEntry" class="" style="display: none;">
+                            <asp:TextBox CssClass="form-control text-center" runat="server" ID="txtDomain"></asp:TextBox>
+                            <asp:Button runat="server" CssClass="btn btn-primary btn-block" ID="btnSubmitDomain" Style="margin-top:7px;" OnClick="btnSubmitDomain_OnClick" Text="Update Domain"/>
+                        </div>
                         <asp:Panel runat="server" ID="pnlError" Visible="false">
-                                <div class="alert alert-danger" role="alert" style="margin-top:10px;"><h4>Invalid Username or password</h4></div>
+                            <div class="alert alert-danger" role="alert" style="margin-top:10px;">
+                                <h4>Invalid Username or password</h4>
+                            </div>
                         </asp:Panel>
                         <%--<a href="#">Forgot your password?</a>--%>
                         <%--<a class="btn btn-lg btn-default" onclick="showInvalid(); return false;"></a>--%>
@@ -104,5 +112,7 @@
         </asp:Panel>
     </form>
 </body>
+    
+<script src="assets/js/jquery-2.3.1.js"></script>
 
 </html>

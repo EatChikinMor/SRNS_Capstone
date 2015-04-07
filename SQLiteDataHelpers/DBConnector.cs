@@ -286,12 +286,30 @@ namespace SQLiteDataHelpers
                 "INNER JOIN Providers P ON S.Provider = P.ID " +
                 "INNER JOIN Software S ON S.ID = LK.SoftwareID " +
                 "LEFT OUTER JOIN Speedcharts SC ON SC.KeyChargedAgainst = LK.[LicenseKey] " +
-                "WHERE ExpirationDate < CURRENT_TIMESTAMP ORDER BY SoftwareName, ExpirationDate DESC" +
+                "WHERE ExpirationDate < CURRENT_TIMESTAMP " +
                 orderBy;
 
             DataTable result = SQLiteDataHelper.GetDataTable(SQL);
 
             return result;
+        }
+
+        #endregion
+
+        #region Table Settings
+
+        public string getSettingValueByName(string settingName)
+        {
+            var SQL = "SELECT [VALUE] FROM [Settings] WHERE [Setting] = '" + settingName + "'";
+
+            return SQLiteDataHelper.ExecuteScalar(SQL);
+        }
+
+        public string getSettingValueByID(string settingId)
+        {
+            var SQL = "SELECT [VALUE] FROM [Settings] WHERE [ID] = '" + settingId + "'";
+
+            return SQLiteDataHelper.ExecuteScalar(SQL);
         }
 
         #endregion
@@ -397,6 +415,17 @@ namespace SQLiteDataHelpers
                 ? "User Update failed" 
                 : "User successfully updated";
         }
+
+        #region Table Settings
+
+        public void updateSettingValueByName(string settingName,string settingValue)
+        {
+            var SQL = "UPDATE Settings SET VALUE = '" + settingValue + "' WHERE Setting = '" + settingName + "'";
+
+            SQLiteDataHelper.ExecuteNonQuery(SQL);
+        }
+
+        #endregion
 
         #endregion
 

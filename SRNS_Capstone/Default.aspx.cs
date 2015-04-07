@@ -9,6 +9,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SQLiteDataHelpers;
 using SQLiteDataHelpers.Objects;
+using System.DirectoryServices;
+using System.Web.Security;
 
 namespace SRNS_Capstone
 {
@@ -16,11 +18,17 @@ namespace SRNS_Capstone
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (!Page.IsPostBack)
+            {
+                txtDomain.Text = ActiveDirectoryHelper.getCurrentDomain();
+                lblDomain.Text = "Current Domain: <b>" + txtDomain.Text +"</b>";
+            }
         }
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
+            //bool ua = ActiveDirectoryHelper.AuthenticeUser("","");
+
             DataTable user = getUserInformation(txtUsername.Text, txtPassword.Text);
 
             if (user.Rows.Count > 0)
@@ -68,6 +76,44 @@ namespace SRNS_Capstone
                 .First(i => i.Name.Equals("System.Web.UI.IScriptManagerInternal.RegisterUpdatePanel"));
             methodInfo.Invoke(ScriptManager.GetCurrent(Page),
                 new object[] { sender as UpdatePanel });
+        }
+
+        public bool AuthenticateUser(string domain, string username, string password, string LdapPath, out string Errmsg)
+        {
+            Errmsg = "";
+            string domainAndUsername = domain + @"\" + username;
+            DirectoryEntry entry = new DirectoryEntry(LdapPath, domainAndUsername, password);
+            try
+            {
+                // Bind to the native AdsObject to force authentication.
+                Object obj = entry.NativeObject;
+                DirectorySearcher search = new DirectorySearcher(entry);
+                search.Filter = "(SAMAccountName=" + username + ")";
+                search.PropertiesToLoad.Add("cn");
+                SearchResult result = search.FindOne();
+                if (null == result)
+                {
+                    return false;
+                }
+                // Update the new path to the user in the directory
+                LdapPath = result.Path;
+                string _filterAttribute = (String)result.Properties["cn"][0];
+            }
+            catch (Exception ex)
+            {
+                Errmsg = ex.Message;
+                return false;
+                throw new Exception("Error authenticating user." + ex.Message);
+            }
+            return true;
+        }
+
+        protected void btnSubmitDomain_OnClick(object sender, EventArgs e)
+        {
+            new DBConnector().updateSettingValueByName("DOMAIN", txtDomain.Text);
+            txtDomain.Text = ActiveDirectoryHelper.getCurrentDomain();
+            lblDomain.Text = "Current Domain: <b>" + txtDomain.Text + "</b>";
+            pnlError.Visible = false;
         }
     }
 }

@@ -76,6 +76,42 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.Button btnLogin;
         
         /// <summary>
+        /// lblDomain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDomain;
+        
+        /// <summary>
+        /// lnkDomain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkDomain;
+        
+        /// <summary>
+        /// txtDomain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDomain;
+        
+        /// <summary>
+        /// btnSubmitDomain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSubmitDomain;
+        
+        /// <summary>
         /// pnlError control.
         /// </summary>
         /// <remarks>

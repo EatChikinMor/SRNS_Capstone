@@ -83,6 +83,9 @@ namespace SRNS_Capstone
                 pnlError.Visible = true;
                 lblError.Text = "Only whole numbers allowed";
             }
+
+            pnlExpired.Visible = false;
+            pnlExpiringLicenses.Visible = true;
         }
 
         private bool isWholeNumeric(string text)
@@ -104,6 +107,7 @@ namespace SRNS_Capstone
 
         protected void btnViewExpired_OnClick(object sender, EventArgs e)
         {
+            pnlError.Visible = false;
             bool showProvider = chkShowProvider.Checked;
             var dt = new DBConnector().getExpiredLicenses(showProvider);
 
@@ -120,6 +124,14 @@ namespace SRNS_Capstone
                 gridCounts.Columns[0].Visible = showProvider;
                 gridCounts.DataBind();
             }
+
+            pnlExpired.Visible = true;
+            pnlExpiringLicenses.Visible = false;
+        }
+
+        protected void btnExpiring_OnClick(object sender, EventArgs e)
+        {
+            buildGridCount();
         }
     }
 }
