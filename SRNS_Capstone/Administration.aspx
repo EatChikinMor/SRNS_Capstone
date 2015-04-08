@@ -82,7 +82,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-4 col-md-4 col-sm-12">
+                    <%--<div class="col-lg-4 col-md-4 col-sm-12">
                         <div class="row">
                             <label style="margin-left:52px;">This user is a Manager &nbsp;</label>
                             <asp:RadioButton runat="server" type="radio" name="options" id="rdManagerTrue" Text="Yes" OnCheckedChanged="rdManagerTrue_OnCheckedChanged" AutoPostBack="true" GroupName="manager"  TabIndex="4" />
@@ -94,7 +94,7 @@
                             <asp:RadioButton runat="server" type="radio" name="options" id="rdAdminTrue" Text="Yes" GroupName="admin" TabIndex="6" />
                             <asp:RadioButton runat="server" type="radio" name="options" id="rdAdminFalse" Text="No" GroupName="admin" TabIndex="7" />
                         </div>
-                    </div>
+                    </div>--%>
                     <div class="col-lg-4 col-md-4">
                         <div class="hidden-lg hidden-md col-sm-2 col-xs-5 text-center">
                             <label>Manager</label>

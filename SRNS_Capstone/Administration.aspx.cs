@@ -51,7 +51,7 @@ namespace SRNS_Capstone
                 if (user != null)
                 {
                     ((Capstone)Page.Master).showMenuOptions(user.IsAdmin);
-                    _userID = user.ID;
+                    //_userID = user.ID;
                     ddlUsersPopulate();
                     ddlManagersPopulate();
                 }
@@ -62,9 +62,9 @@ namespace SRNS_Capstone
             }
 
 
-            hdnIsPostBack.Value = Page.IsPostBack.ToString();
-            hdnIsManager.Value = rdManagerTrue.Checked ? "true" : "false";
-            hdnIsAdmin.Value = rdAdminTrue.Checked  ? "true" : "false";
+            //hdnIsPostBack.Value = Page.IsPostBack.ToString();
+            //hdnIsManager.Value = rdManagerTrue.Checked ? "true" : "false";
+            //hdnIsAdmin.Value = rdAdminTrue.Checked  ? "true" : "false";
         }
 
         protected void ddlUsersPopulate()
@@ -96,8 +96,8 @@ namespace SRNS_Capstone
         protected void clearForm()
         {
             txtFirstName.Text = txtLastName.Text = txtLoginID.Text = txtPassword.Text = "";
-            rdManagerTrue.Checked = rdManagerFalse.Checked = false;
-            rdAdminFalse.Checked = rdAdminTrue.Checked = false;
+            //rdManagerTrue.Checked = rdManagerFalse.Checked = false;
+            //rdAdminFalse.Checked = rdAdminTrue.Checked = false;
             ddlManagers.SelectedIndex = 0;
             ddlUserSelect.SelectedIndex = 0;
         }
@@ -126,10 +126,10 @@ namespace SRNS_Capstone
             txtFirstName.Text = user["FirstName"].ToString();
             txtLastName.Text = user["LastName"].ToString();
             txtLoginID.Text = user["LoginID"].ToString();
-            rdAdminTrue.Checked = IsAdmin == 1;
-            rdAdminFalse.Checked = IsAdmin != 1;
-            rdManagerTrue.Checked = IsManager == 1;
-            rdManagerFalse.Checked = IsManager != 1;
+            //rdAdminTrue.Checked = IsAdmin == 1;
+            //rdAdminFalse.Checked = IsAdmin != 1;
+            //rdManagerTrue.Checked = IsManager == 1;
+            //rdManagerFalse.Checked = IsManager != 1;
             hdnIsAdmin.Value = IsAdmin == 1 ? "true" : "false";
             hdnIsManager.Value = IsManager == 1 ? "true" : "false";
             int manager = Convert.ToInt32(user["ManagerID"].ToString());
@@ -195,8 +195,8 @@ namespace SRNS_Capstone
                     FirstName = txtFirstName.Text,
                     LastName = txtLastName.Text,
                     LoginID = txtLoginID.Text,
-                    IsAdmin = rdAdminTrue.Checked,
-                    IsManager = rdManagerTrue.Checked,
+                    //IsAdmin = rdAdminTrue.Checked,
+                    //IsManager = rdManagerTrue.Checked,
                     ManagerID = rdManagerTrue.Checked ? 0 : Convert.ToInt32(ddlManagers.SelectedItem.Value),
                     PassHash = txtPassword.Text //Converted to hash on insert to DB
                 };
@@ -212,7 +212,7 @@ namespace SRNS_Capstone
                 //    PendChargeReport = chkPendingChargebacks.Checked || rdAdminTrue.Checked
                 //};
 
-                string response = new DBConnector().InsertUser(user, rdAdminTrue.Checked);
+                string response = new DBConnector().InsertUser(user);
 
                 if (response.Length > 25)
                 {

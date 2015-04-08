@@ -10,7 +10,7 @@ namespace SQLiteDataHelpers.Objects
     public class User
     {
         #region private members
-        private int _ID;
+        private string _ID;
         private string _FirstName;
         private string _LastName;
         private bool _IsAdmin;
@@ -22,7 +22,7 @@ namespace SQLiteDataHelpers.Objects
         #endregion
 
         #region public members
-        public int ID
+        public string ID
         {
             get { return _ID; }
             set

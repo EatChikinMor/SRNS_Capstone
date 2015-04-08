@@ -82,12 +82,12 @@ namespace SQLiteDataHelpers
                     {                         
                         {"FirstName", ""},
                         {"LastName", ""},
-                        {"IsAdmin", ""},
+                        //{"IsAdmin", ""},
                         {"LoginID", ""},
                         {"PassHash", ""},
                         {"ManagerID", ""},
                         {"Salt", ""},
-                        {"IsManager",""}
+                        //{"IsManager",""}
                     };
                     return columns;
                 }

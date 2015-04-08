@@ -27,13 +27,18 @@ namespace SRNS_Capstone
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            //bool ua = ActiveDirectoryHelper.AuthenticeUser("","");
+            bool ua = ActiveDirectoryHelper.AuthenticeUser(txtUsername.Text, txtPassword.Text);
 
-            DataTable user = getUserInformation(txtUsername.Text, txtPassword.Text);
+            DataTable user = new DataTable();
 
-            if (user.Rows.Count > 0)
+            if (!ua)
             {
-                User userSession = buildUser(user.Rows[0]);
+                user = getUserInformation(txtUsername.Text, txtPassword.Text);
+            }
+
+            if (ua || user.Rows.Count > 0)
+            {
+                User userSession = buildUser(user.Rows.Count > 0 ? user.Rows[0] : null);
 
                 Session["User"] = userSession;
                 
@@ -55,17 +60,33 @@ namespace SRNS_Capstone
             return user;
         }
 
-        private User buildUser(DataRow row)
+        private User buildUser(DataRow row = null)
         {
-            User user = new User() 
-            { 
-                ID = Convert.ToInt32(row["ID"].ToString()),
-                LoginID = row["LoginID"].ToString(),
-                FirstName = row["FirstName"].ToString(),
-                LastName = row["LastName"].ToString(),
-                IsAdmin = Convert.ToBoolean(Convert.ToInt32(row["IsAdmin"].ToString())),
-                ManagerID = Convert.ToInt32(row["ManagerID"].ToString())
-            };
+            User user = new User();
+
+            if (row == null)
+            {
+                var ADuser = ActiveDirectoryHelper.getUserByLogin(txtUsername.Text);
+                user = new User()
+                {
+                    ID = ADuser.Properties["distinguishedName"].Value.ToString(),
+                    LoginID = txtUsername.Text,
+                    FirstName = ADuser.Properties["givenName"].Value.ToString(),
+                    LastName = ADuser.Properties["SN"].Value.ToString(),
+                    IsAdmin = false
+                };
+            }
+            else
+            {
+                user = new User()
+                {
+                    ID = row["ID"].ToString(),
+                    LoginID = row["LoginID"].ToString(),
+                    FirstName = row["FirstName"].ToString(),
+                    LastName = row["LastName"].ToString(),
+                    IsAdmin = true
+                };
+            }
             
             return user;
         }

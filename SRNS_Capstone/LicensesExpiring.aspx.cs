@@ -37,7 +37,7 @@ namespace SRNS_Capstone
                 //Remove before release
                 if ("localhost" == Request.Url.DnsSafeHost)
                 {
-                    User a = new User() { ID = 0, FirstName = "Austin", LastName = "Rich", IsAdmin = true, LoginID = "arich", ManagerID = 0 };
+                    User a = new User() { ID = "0", FirstName = "Austin", LastName = "Rich", IsAdmin = true, LoginID = "arich", ManagerID = 0 };
                     user = a;
                 }
                 //Remove before release
@@ -97,7 +97,15 @@ namespace SRNS_Capstone
 
         protected void chkShowProvider_OnCheckedChanged(object sender, EventArgs e)
         {
-            buildGridCount();
+            if (pnlExpired.Visible)
+            {
+                btnViewExpired_OnClick(null, null);
+            }
+            else
+            {
+
+                buildGridCount();
+            }
         }
 
         protected void OnClick(object sender, EventArgs e)

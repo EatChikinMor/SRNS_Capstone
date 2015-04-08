@@ -43,7 +43,7 @@ namespace SRNS_Capstone.Reports
                 //Remove before release
                 if ("localhost" == Request.Url.DnsSafeHost)
                 {
-                    User a = new User() { ID = 0, FirstName = "Austin", LastName = "Rich", IsAdmin = true, LoginID = "arich", ManagerID = 0 };
+                    User a = new User() { ID = "0", FirstName = "Austin", LastName = "Rich", IsAdmin = true, LoginID = "arich", ManagerID = 0 };
                     user = a;
                 }
                 //Remove before release
@@ -52,7 +52,7 @@ namespace SRNS_Capstone.Reports
                 {
 
                     ((Capstone)Page.Master).showMenuOptions(user.IsAdmin);
-                    _userID = user.ID;
+                    //_userID = user.ID;
                     string softCode = Request.QueryString["SoftCode"];
 
                     if (softCode != null)

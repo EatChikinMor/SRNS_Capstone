@@ -62,7 +62,8 @@ namespace SQLiteDataHelpers
 
             passHash = GenerateMd5Hash(Salt + password);
 
-            SQL = "SELECT ID, FirstName, LastName, IsAdmin, LoginID, ManagerID FROM Users WHERE LoginID = '" + username + "'" + " AND PassHash = '" + passHash + "'";
+            SQL = "SELECT ID, FirstName, LastName, LoginID, ManagerID FROM Users WHERE LoginID = '" + username + "'" + " AND PassHash = '" + passHash + "'";
+            //SQL = "SELECT ID, FirstName, LastName, IsAdmin, LoginID, ManagerID FROM Users WHERE LoginID = '" + username + "'" + " AND PassHash = '" + passHash + "'";
 
             DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
 
@@ -318,7 +319,7 @@ namespace SQLiteDataHelpers
 
         #region INSERTS
 
-        public string InsertUser(User user, bool IsAdmin)
+        public string InsertUser(User user)
         {
             //////////// Manually Add user \\\\\\\\\\\\
             //User a = new User();
@@ -357,12 +358,12 @@ namespace SQLiteDataHelpers
             Dictionary<String, String> Users = SQLTables.TableColumns.Users;
             Users["FirstName"] = user.FirstName;
             Users["LastName"] = user.LastName;
-            Users["IsAdmin"] = Convert.ToInt32(user.IsAdmin).ToString();
+            //Users["IsAdmin"] = Convert.ToInt32(user.IsAdmin).ToString();
             Users["LoginID"] = user.LoginID;
             Users["PassHash"] = user.PassHash;
             Users["ManagerID"] = Convert.ToInt32(user.ManagerID).ToString();
             Users["Salt"] = user.Salt;
-            Users["IsManager"] = Convert.ToInt32(user.IsManager).ToString();
+            //Users["IsManager"] = Convert.ToInt32(user.IsManager).ToString();
 
             string error = "", retError = "";
             if (!SQLiteDataHelper.Insert("USERS", Users, ref error))
@@ -402,12 +403,12 @@ namespace SQLiteDataHelpers
             var Users = SQLTables.TableColumns.Users;
             Users["FirstName"] = user.FirstName;
             Users["LastName"] = user.LastName;
-            Users["IsAdmin"] = user.IsAdmin.ToString();
+            //Users["IsAdmin"] = user.IsAdmin.ToString();
             Users["LoginID"] = user.LoginID;
             Users["PassHash"] = user.PassHash;
             Users["ManagerID"] = user.ManagerID.ToString();
             Users["Salt"] = user.Salt;
-            Users["IsManager"] = user.IsManager.ToString();
+            //Users["IsManager"] = user.IsManager.ToString();
 
             string where = "ID = " + UserID;
 

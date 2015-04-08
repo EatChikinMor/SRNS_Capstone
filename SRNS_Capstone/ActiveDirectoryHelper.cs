@@ -49,7 +49,7 @@ namespace SRNS_Capstone
             bool isValid;
             using (PrincipalContext auth = new PrincipalContext(ContextType.Domain, "CALLINGPOST"))
             {
-                isValid = auth.ValidateCredentials("arich", "R927175344#");
+                isValid = auth.ValidateCredentials(username, password);
             }
             return isValid;
         }
@@ -59,7 +59,7 @@ namespace SRNS_Capstone
         /// </summary>
         /// <param name="domain"></param>
         /// <returns></returns>
-        public List<Tuple<String, String>> getAllUsersOnDomain(string domain = null)
+        public static List<Tuple<String, String>> getAllUsersOnDomain(string domain = null)
         {
             var ADUsers = new List<Tuple<String, String>>();
 
@@ -87,7 +87,17 @@ namespace SRNS_Capstone
             return ADUsers;
         }
 
-        public bool doesUsernameExist( string Username )
+        public static DirectoryEntry getUserByLogin(string LoginID, string domain = null)
+        {
+            using (DirectorySearcher adSearch = new DirectorySearcher("(sAMAccountName=" + LoginID + ")"))
+            {
+                SearchResult adSearchResult = adSearch.FindOne();
+
+                return adSearchResult.GetDirectoryEntry();
+            }
+        }
+
+        public static bool doesUsernameExist( string Username )
         {
             var checkAgainst = getAllUsersOnDomain();
 
