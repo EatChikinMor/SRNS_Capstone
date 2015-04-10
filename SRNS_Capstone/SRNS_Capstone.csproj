@@ -70,6 +70,11 @@
     <Content Include="assets\img\grd_alt.png" />
     <Content Include="assets\img\grd_head.png" />
     <Content Include="assets\img\grd_pgr.png" />
+    <Content Include="assets\js\cleditor\images\buttons.gif" />
+    <Content Include="assets\js\cleditor\images\toolbar.gif" />
+    <Content Include="assets\js\cleditor\jquery.cleditor.css" />
+    <Content Include="assets\js\cleditor\jquery.cleditor.min.js" />
+    <Content Include="assets\js\datepicker.js" />
     <Content Include="assets\js\jquery.formatCurrency-1.4.0.min.js" />
     <Content Include="AvailableCount.aspx" />
     <Content Include="bin\AjaxControlToolkit.dll" />
@@ -97,7 +102,7 @@
     <Content Include="assets\css\jasny\jasny-bootstrap.css" />
     <Content Include="assets\css\jasny\jasny-bootstrap.min.css" />
     <Content Include="assets\css\Main.css" />
-    <Content Include="assets\fonts\glyphicons\glyphicons-halflings-regular.svg" />
+    <Content Include="assets\css\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="assets\img\hd_srns-mast01-cut-2.svg" />
     <Content Include="assets\img\SRNS-Head.png" />
     <Content Include="assets\img\SRNS_manager.png" />
@@ -183,10 +188,10 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\fonts\glyphicons\glyphicons-halflings-regular.eot" />
-    <Content Include="assets\fonts\glyphicons\glyphicons-halflings-regular.ttf" />
-    <Content Include="assets\fonts\glyphicons\glyphicons-halflings-regular.woff" />
-    <Content Include="assets\fonts\glyphicons\glyphicons-halflings-regular.woff2" />
+    <Content Include="assets\css\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="assets\css\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="assets\css\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="assets\css\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="DB\SQLiteDB" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

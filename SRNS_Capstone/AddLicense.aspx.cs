@@ -85,7 +85,9 @@ namespace SRNS_Capstone
                         ((Capstone)Page.Master).showMenuOptions(_IsAdmin);
                     }
                     populatDropDowns();
-                    txtDateUpdated.Text = DateTime.Now.ToString();
+                    txtDateUpdated.Text = DateTime.Now.Date.ToString("d");
+                    lblEditor.Text = "Document Created By/Last Updated By: " + user.FirstName + " " + user.LastName;
+                    txtDateAssigned.Text = "4/02/2014";
                 }
                 else
                 {
@@ -210,7 +212,7 @@ namespace SRNS_Capstone
             {
                 ShowTextError(txtSoftName);
                 ShowLabelError(lblSoftName);
-                errors.Add("First Name Empty");
+                errors.Add("Software Name Empty");
                 valid[0] = false;
             }
             if (String.IsNullOrEmpty(txtProvider.Text))
@@ -236,7 +238,7 @@ namespace SRNS_Capstone
             if (ddlLicHolder.SelectedIndex == 0 && radioBtnAssign.Checked)
             {
                 ShowDropdownError(ddlLicHolder);
-                errors.Add(errors.Count > 0 ? ", Select a Manager" : "Select a Manager");
+                errors.Add(errors.Count > 0 ? ", License marked as assigned with no holder chosen" : "License marked as assigned with no holder chosen");
             }
 
             //pnlError.Visible = true;

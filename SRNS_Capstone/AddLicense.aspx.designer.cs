@@ -400,13 +400,22 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.Label lblComments;
         
         /// <summary>
-        /// txtComments control.
+        /// editor control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtComments;
+        protected global::System.Web.UI.HtmlControls.HtmlTextArea editor;
+        
+        /// <summary>
+        /// lblEditor control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblEditor;
         
         /// <summary>
         /// btnSubmit control.

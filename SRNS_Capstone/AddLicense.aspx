@@ -2,14 +2,15 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ContentPlaceHolderID="head" runat="server">
+    <link rel="stylesheet" href="assets/js/cleditor/jquery.cleditor.css"/>
     <style>
-        .day, .next, .prev, .today, .month, .datepicker-switch {
-            cursor: pointer;
-        }
+         .day, .next, .prev, .today, .month, .datepicker-switch {
+             cursor: pointer;
+         }
 
-            .month:nth-child(2n), .year:nth-child(2n) {
-                background-color: #CCC;
-            }
+        .month:nth-child(2n), .year:nth-child(2n) {
+            background-color: #CCC;
+        }
     </style>
 </asp:Content>
 
@@ -53,7 +54,7 @@
         <div class="row">
             <div class="col-lg-4 col-md-4">
                 <asp:Label runat="server" ID="lblLiHold">License Holder</asp:Label>
-                <asp:DropDownList CssClass="form-control" runat="server" Style="min-width: 100%" ID="ddlLicHolder"></asp:DropDownList>
+                <asp:DropDownList CssClass="form-control" runat="server" Style="min-width: 100%" ID="ddlLicHolder" onchange="populateLoginID()"></asp:DropDownList>
             </div>
             <div class="col-lg-4 col-md-4">
                 <asp:Label runat="server" ID="lblLicenseMan">License Manager</asp:Label>
@@ -73,11 +74,11 @@
         <div class="row">
             <div class="col-lg-4 col-md-4">
                 <asp:Label runat="server" ID="lblLiHoldUserId">License Holder User ID</asp:Label>
-                <asp:TextBox CssClass="form-control" runat="server" ID="txtLiHoldUserId"></asp:TextBox>
+                <asp:TextBox CssClass="form-control" runat="server" ID="txtLiHoldUserId" ></asp:TextBox>
             </div>
             <div class="col-lg-4 col-md-4">
-                <asp:Label runat="server" ID="lblLiCost">License Cost</asp:Label>
-                <asp:TextBox CssClass="form-control" runat="server" ID="txtLiCost"></asp:TextBox>
+                <asp:Label runat="server" ID="lblLiCost">License Cost (#.##)</asp:Label>
+                <asp:TextBox CssClass="form-control" runat="server" ID="txtLiCost" onkeyup="javascript:this.value=validateCurrency(this.value);"></asp:TextBox>
             </div>
             <div class="col-lg-4 col-md-4">
                 <asp:Label runat="server" ID="Label5">Date Removed</asp:Label>
@@ -132,41 +133,52 @@
                     <br/>
                 </asp:Panel>
             </div>
-            <div class="col-lg-4 col-md-4">
+            <div class="col-lg-3 col-md-3">
                 <asp:Panel runat="server" ID="pnlAssign">
                     <asp:Label runat="server" ID="lblAssignStatus" Text="Assignment Status"></asp:Label>
                     <br/>
-                    <asp:RadioButton runat="server" type="radio" ToolTip="Assign" GroupName="Assignment" name="options" ID="radioBtnAssign" />
+                    <asp:RadioButton runat="server" type="radio" ToolTip="Assign" GroupName="Assignment" name="options" onclick="radioBtnFillDate();" ID="radioBtnAssign" />
                     Assigned
                     <br/>
-                    <asp:RadioButton runat="server" type="radio" ToolTip="Remove" GroupName="Assignment" name="options" ID="radioBtnRemove" />
+                    <asp:RadioButton runat="server" type="radio" ToolTip="Remove" GroupName="Assignment" name="options" onclick="radioBtnFillDate();" ID="radioBtnRemove" />
                     Removed
                     <br/>
-                    <asp:RadioButton runat="server" type="radio" ToolTip="Available" GroupName="Assignment" name="options" ID="radioBtnAvailable" />
+                    <asp:RadioButton runat="server" type="radio" ToolTip="Available" GroupName="Assignment" name="options"  onclick="radioBtnFillDate();" ID="radioBtnAvailable" />
                     Available
                     <br/>
                 </asp:Panel>
             </div>
-            <div class="col-lg-4 col-md-4">
+            <div class="col-lg-5 col-md-5">
+                <br/>
                 <asp:Label runat="server" ID="lblComments">Comments:</asp:Label>
 
-                <asp:TextBox CssClass="form-control" runat="server" ID="txtComments" TextMode="MultiLine"></asp:TextBox>
-
+                <div style="width: 450px;">
+                    <div>
+                        <textarea runat="server" id="editor" rows="0" cols="0"></textarea>
+                    </div>
+                    <div class="normaldiv" style="float: right">
+                        <a href="#" class="siteButton" id="btnClear">Clear</a>
+                        <%--<a href="#" class="siteButton" id="btnAddImage">Add an image</a>--%>&nbsp;&nbsp;
+                        <a href="#" class="siteButton" id="btnGetHtml">Get html</a>
+                    </div>
+                </div>
+                <br/>
                 <div class="fileinput fileinput-new input-group" data-provides="fileinput" style="margin-top: 5px;">
                     <div class="form-control" data-trigger="fileinput"><i class="glyphicon glyphicon-file fileinput-exists"></i><span class="fileinput-filename"></span></div>
                     <span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists">Change</span><input type="file" name="..."></span>
                     <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
                 </div>
                 <br />
-                <div class="row">
-                    <asp:Button CssClass="btn btn-lg btn-primary pull-right" runat="server" ID="btnSubmit" Text="Submit" OnClick="btnSubmit_Click" />
-                </div>
+                <strong><asp:Label runat="server" ID="lblEditor"></asp:Label></strong>
+                <asp:Button CssClass="btn btn-lg btn-primary pull-right" runat="server" ID="btnSubmit" Text="Submit" OnClick="btnSubmit_Click" />
             </div>
         </div>
     </div>
+    
 
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+    <script src="assets/js/datepicker.js"></script>
     <script src="assets/js/jquery.formatCurrency-1.4.0.min.js"></script>
+    <script src="assets/js/cleditor/jquery.cleditor.min.js"></script>
     <script>
         $('.input-group.date').datepicker({
             format: "mm/dd/yyyy",
@@ -177,37 +189,80 @@
             todayHighlight: true
         });
 
-        $('.fileupload').fileupload();
+        function validateCurrency(input) {
+            var regex = /^\d+(?:\.\d{0,2})$/;
+            if (!regex.test(input)) {
+                var txt = document.getElementById("<%=txtLiCost.ClientID%>");
+                var lbl = document.getElementById("<%=lblLiCost.ClientID%>");
+                txt.style.backgroundColor = "#FFD8D8";
+                lbl.style.color = "red";
+            } else {
+                var txt = document.getElementById("<%=txtLiCost.ClientID%>");
+                var lbl = document.getElementById("<%=lblLiCost.ClientID%>");
+                txt.style.backgroundColor = "white";
+                lbl.style.color = "black";
+            }
+            return input;
+        };
 
-        var inputMoney = (function() {
-            return function(input) {
-                var DecimalSeparator = Number(input).toLocaleString().substr(1, 1);
+        $(document).ready(function () {
+            var options = {
+                width: 450,
+                height: 200,
+                controls: "bold italic underline strikethrough subscript superscript |  font size " +
+                        "style | color highlight removeformat | bullets numbering | outdent " +
+                        "indent | alignleft center alignright justify | undo redo | " +
+                        "rule link image unlink | cut copy paste pastetext | print source"
+            };
+ 
+                var editor = $("#<%=editor.ClientID%>").cleditor(options)[0];
+ 
+            $("#btnClear").click(function (e) {
+                e.preventDefault();
+                editor.focus();
+                editor.clear();
+            });
 
-                var AmountWithCommas = Amount.toLocaleString();
-                var arParts = String(AmountWithCommas).split(DecimalSeparator);
-                var intPart = arParts[0];
-                var decPart = (arParts.length > 1 ? arParts[1] : '');
-                decPart = (decPart + '00').substr(0, 2);
+            $("#btnGetHtml").click(function () {
+                alert($("#editor").val());
+            });
 
-                return '$ ' + intPart + DecimalSeparator + decPart;
+            _varOldAssign = document.getElementById('<%=txtDateAssigned.ClientID%>').value;
+            _varOldRemove = document.getElementById('<%=txtDateRemoved.ClientID%>').value;
+ 
+        });
+
+        var populateLoginID = (function() {
+            return function () {
+                var holder = document.getElementById('<%=ddlLicHolder.ClientID%>');
+                var holderLogin = holder.options[holder.selectedIndex].value;
+                var txtLogin = document.getElementById('<%=txtLiHoldUserId.ClientID%>');
+                txtLogin.value = holderLogin;
             }
         })();
 
-        function Comma(Num) { //function to add commas to textboxes
-            Num += '';
-            Num = Num.replace(',', ''); Num = Num.replace(',', ''); Num = Num.replace(',', '');
-            Num = Num.replace(',', ''); Num = Num.replace(',', ''); Num = Num.replace(',', '');
-            x = Num.split('.');
-            x1 = x[0];
-            x2 = x.length > 1 ? '.' + x[1] : '';
-            var rgx = /(\d+)(\d{3})/;
-            while (rgx.test(x1))
-                x1 = x1.replace(rgx, '$1' + ',' + '$2');
-            return x1 + x2;
+        function radioBtnFillDate(myRadio) {
+            if (document.getElementById("<%=radioBtnAssign.ClientID%>").checked) {
+                var txtAssign = document.getElementById('<%=txtDateAssigned.ClientID%>');
+                var date = new Date();
+                txtAssign.value = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+                var txtRemove = document.getElementById('<%=txtDateRemoved.ClientID%>');
+                txtRemove.value = _varOldRemove;
+            }
+            if (document.getElementById("<%=radioBtnRemove.ClientID%>").checked) {
+                var txtRemove = document.getElementById('<%=txtDateRemoved.ClientID%>');
+                var date = new Date();
+                txtRemove.value = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+                var txtAssign = document.getElementById('<%=txtDateAssigned.ClientID%>');
+                txtAssign.value = _varOldAssign;
+            }
+            if (document.getElementById("<%=radioBtnAvailable.ClientID%>").checked) {
+                var txtRemove = document.getElementById('<%=txtDateRemoved.ClientID%>');
+                var txtAssign = document.getElementById('<%=txtDateAssigned.ClientID%>');
+                txtAssign.value = _varOldAssign;
+                txtRemove.value = _varOldRemove;
+            }
         }
-
-
-        
 
     </script>
 
