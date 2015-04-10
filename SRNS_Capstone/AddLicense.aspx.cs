@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -45,6 +46,19 @@ namespace SRNS_Capstone
             }
         }
 
+        private List<Tuple<String, String, String>> VSActiveUsers
+        {
+            get
+            {
+                if (ViewState["ActiveUsers"] == null)
+                {
+                    ViewState["ActiveUsers"] = new List<Tuple<String, String, String>>();
+                }
+                return (List<Tuple<String, String, String>>)ViewState["ActiveUsers"];
+            }
+            set { ViewState["ActiveUsers"] = value; }
+        }
+
         #endregion
 
         protected void Page_Load(object sender, EventArgs e)
@@ -65,12 +79,13 @@ namespace SRNS_Capstone
                 {
                     _IsAdmin = user.IsAdmin;
                     //_userID = user.ID;
-                    ddlSoftwarePopulate();
 
                     if (_IsAdmin)
                     {
                         ((Capstone)Page.Master).showMenuOptions(_IsAdmin);
                     }
+                    populatDropDowns();
+                    txtDateUpdated.Text = DateTime.Now.ToString();
                 }
                 else
                 {
@@ -78,51 +93,211 @@ namespace SRNS_Capstone
                 }
             }
         }
-            //Check for session timeout
-        protected void ddlSoftwarePopulate()
-        {
-            List<ComboboxItem> software = new DBConnector().populateSoftwareList();
-
-            for (int i = 0; i < software.Count; i++)
-            {
-                ListItem item = new ListItem(software[i].Text, software[i].Value);
-                ddlSoftwareSelect.Items.Add(item);
-            }
-        }
 
         protected void clearForm()
         {
-            txtSoftName.Text = txtSoftDescription.Text = txtLiNum.Text = txtSpeedchart.Text = txtLiHold.Text = txtLiHoldUserId.Text = txtLiCost.Text = txtLicenseMan.Text = txtReqNum.Text = "";
+            txtSoftName.Text = txtSoftDescription.Text = txtLiKey.Text = txtSpeedchart.Text = txtLiHoldUserId.Text = txtLiCost.Text = txtReqNum.Text = "";
+            ddlLicHolder.SelectedIndex = ddlHolderManager.SelectedIndex = 0;
+            radiobtnDOE.Checked =
+                radioBtnAssign.Checked = 
+                    radioBtnAvailable.Checked =
+                        radioBtnRemove.Checked =
+                            radiobtnCen.Checked =
+                                radiobtnDOE.Checked = 
+                                    radiobtnSRNS.Checked = 
+                                        radiobtnSRR.Checked = false;
+        }
 
+        protected void populatDropDowns()
+        {
+            ddlLicHolder.Items.Clear();
+            ddlHolderManager.Items.Clear();
+            ddlLicHolder.SelectedIndex = ddlHolderManager.SelectedIndex = 0;
+            ddlLicHolder.Items.Add("");
+            ddlLicHolder.Items[0].Value = "0";
+            ddlHolderManager.Items.Add("");
+            ddlHolderManager.Items[0].Value = "0";
+
+            if (VSActiveUsers.Count > 0)
+            {
+                foreach (var item in VSActiveUsers)
+                {
+                    ListItem input = new ListItem(item.Item1, item.Item2);
+                    ddlLicHolder.Items.Add(input);
+                    ddlHolderManager.Items.Add(input);
+                }
+            }
+            else
+            {
+                var everyone = ActiveDirectoryHelper.GetAdUsers();
+                //var anyone = ActiveDirectoryHelper.getAllUsersOnDomain();
+                var list = new List<Tuple<String,String,String>>();
+
+                foreach (var item in everyone)
+                {
+                    ListItem input = new ListItem(item.Item1, item.Item3);
+                    ddlLicHolder.Items.Add(input);
+                    ddlHolderManager.Items.Add(input);
+                    list.Add(item);
+                }
+
+                VSActiveUsers = list;
+            }
         }
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-        //    SoftwareInput software = new SoftwareInput()
-        //        {
-        //            SoftwareName = txtSoftName.Text,
-        //            SoftwareDescription = txtSoftDescription.Text,
-        //            LicenseNumber = txtLiNum.Text,
-        //            LicenseHolder = txtLiHold.Text,
-        //            LicenseHoldUid = txtLiHoldUserId.Text,
-        //            AscReqNum = txtReqNum.Text,
-        //            Speedchart = txtSpeedchart.Text,
-        //            LicenseMan = txtLicenseMan.Text,
-        //            LicenseCost = txtLiCost.Text,
-        //            radioAssign = radioBtnAssign.Checked,
-        //            radioRemove = radioBtnRemove.Checked,
-        //            radioAvailable = radioBtnAvailable.Checked,
-        //            radioSRNS = radiobtnSRNS.Checked,
-        //            radioSRR = radiobtnSRR.Checked,
-        //            radioDOE = radiobtnDOE.Checked,
-        //            radioCen = radiobtnCen.Checked,
-        //        };
+            var checkedButton = pnlHolders.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked);
+            int holderCompany = (int)Enum.Parse(typeof(CompanyHolders), checkedButton.ToolTip);
 
-          
+            checkedButton = pnlAssign.Controls.OfType<RadioButton>().FirstOrDefault(btn => btn.Checked);
+            int assignmentStatus = (int) Enum.Parse(typeof (Assigned), checkedButton.ToolTip);
 
-        //        string response = new DBConnector().InsertSoftware(software);
-        //        clearForm();
+            DBConnector conn = new DBConnector();
 
+            int provID = conn.GetProviderIdByName(txtProvider.Text);
+
+            bool passed = false;
+
+            if (provID < 0)
+            {
+                var result = conn.insertProvider(txtProvider.Text, ref passed);
+                
+                if (passed)
+                {
+                    provID = Convert.ToInt32(result);
+                }
+            }
+
+            passed = false;
+
+            int softID = conn.GetSoftwareIdByName(txtSoftName.Text);
+
+            if (softID < 0)
+            {
+                var result = conn.insertSoftware(txtSoftName.Text, ref passed);
+
+                if (passed)
+                {
+                    softID = Convert.ToInt32(result);
+                }
+            }
+
+            LicenseKey LK = new LicenseKey()
+            {
+                SoftwareId = softID,
+                Description = txtSoftDescription.Text,
+                Key = txtLiKey.Text,
+                Holder = ddlLicHolder.SelectedItem.Text,
+                HolderID = ddlLicHolder.SelectedItem.Value,
+                Manager = ddlHolderManager.SelectedItem.Value,
+                LicenseCost = Convert.ToDecimal(2)
+            };
+
+            //string response = new DBConnector().InsertSoftware(software);
+            clearForm();
+
+        }
+
+        private List<String> ValidateEmptyInput(ref bool[] valid, bool update = false)
+        {
+            //TODO: Get validation Requirements From Karla
+            //pnlError.Visible = false;
+
+            var errors = new List<string>();
+
+            if (String.IsNullOrEmpty(txtSoftName.Text))
+            {
+                ShowTextError(txtSoftName);
+                ShowLabelError(lblSoftName);
+                errors.Add("First Name Empty");
+                valid[0] = false;
+            }
+            if (String.IsNullOrEmpty(txtProvider.Text))
+            {
+                ShowTextError(txtProvider);
+                ShowLabelError(lblProvider);
+                errors.Add(errors.Count > 0 ? ", Provider Empty" : "Provider Empty");
+                valid[1] = false;
+            }
+            if (String.IsNullOrEmpty(txtLiKey.Text))
+            {
+                ShowTextError(txtLiKey);
+                ShowLabelError(lblLiNum);
+                errors.Add(errors.Count > 0 ? ", License Key Empty" : "License Key Empty");
+                valid[2] = false;
+            }
+            if (String.IsNullOrEmpty(txtLiCost.Text) && !update)
+            {
+                ShowTextError(txtLiCost);
+                ShowLabelError(lblLiCost);
+                errors.Add(errors.Count > 0 ? ", License Cost Empty" : "License Cost Empty");
+            }
+            if (ddlLicHolder.SelectedIndex == 0 && radioBtnAssign.Checked)
+            {
+                ShowDropdownError(ddlLicHolder);
+                errors.Add(errors.Count > 0 ? ", Select a Manager" : "Select a Manager");
+            }
+
+            //pnlError.Visible = true;
+
+            return errors;
+        }
+
+        private List<String> ValidateInput(bool update = false)
+        {
+            var valid = new[] { true, true, true };
+            var errors = ValidateEmptyInput(ref valid, update);
+            //if (valid[0] && !IsAlpha(txtFirstName.Text))
+            //{
+            //    txtFirstName.BackColor = ColorTranslator.FromHtml("#FFD8D8");
+            //    lblFirstName.ForeColor = Color.Red;
+            //    errors.Add("First Name Invalid");
+            //}
+            //if (valid[1] && !IsAlpha((txtLastName.Text)))
+            //{
+            //    txtLastName.BackColor = ColorTranslator.FromHtml("#FFD8D8");
+            //    lblLastName.ForeColor = Color.Red;
+            //    errors.Add(errors.Count > 0 ? ", Last Name Invalid" : "Last Name Invalid");
+            //}
+            //if (valid[2] && !IsAlphaNumeric(txtLoginID.Text))
+            //{
+            //    txtLoginID.BackColor = ColorTranslator.FromHtml("#FFD8D8");
+            //    lblUsername.ForeColor = Color.Red;
+            //    errors.Add(errors.Count > 0 ? ", Username Can Only contain A-Z,a-z,0-9" : "Username Can Only contain A-Z,a-z,0-9");
+            //}
+
+            return errors;
+        }
+
+        protected void ShowLabelError(Label l)
+        {
+            l.ForeColor = Color.Red;
+        }
+
+        protected void ShowTextError(TextBox t)
+        {
+            t.BackColor = ColorTranslator.FromHtml("#FFD8D8");
+        }
+
+        protected void ShowDropdownError(DropDownList d)
+        {
+            d.BackColor = ColorTranslator.FromHtml("#FFD8D8");
+        }
+
+        private enum CompanyHolders
+        {
+            SRNS = 0,
+            SRR = 1,
+            DOE = 2,
+            Centerra = 4
+        }
+
+        private enum Assigned
+        {
+            Assign = 0,
+            Remove = 1,
+            Available = 2
         }
 
     }

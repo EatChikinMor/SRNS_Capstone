@@ -6,6 +6,7 @@ using System.Text;
 using System.Data.SQLite;
 using System.IO;
 using System.Security.Cryptography;
+using Microsoft.SqlServer.Server;
 using SQLiteDataHelpers.Objects;
 
 namespace SQLiteDataHelpers
@@ -14,7 +15,16 @@ namespace SQLiteDataHelpers
     {
         readonly SQLiteHelper SQLiteDataHelper = new SQLiteHelper();
 
-        #region SELECTS
+        #region SELECTS ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        public int GetMaxId(string tableName)
+        {
+            string SQL = "SELECT MAX(ID) FROM " + tableName;
+
+            int ID = Convert.ToInt32(SQLiteDataHelper.ExecuteScalar(SQL));
+
+            return ID;
+        }
 
         public int getTableRowCount(string table)
         {
@@ -161,6 +171,14 @@ namespace SQLiteDataHelpers
             return SQLiteDataHelper.GetDataTable(SQL);
         }
 
+        public int GetSoftwareIdByName(string Name)
+        {
+            string SQL = "SELECT [ID] FROM Software WHERE [SoftwareName] = '" + Name + "'";
+
+            var result = SQLiteDataHelper.ExecuteScalar(SQL) ?? "-1";
+            return Convert.ToInt32(result);
+        }
+
         public DataTable getAllSoftware()
         {
             const string SQL = "SELECT  soft.[ID], [SoftwareName], [Organization] " +
@@ -178,10 +196,10 @@ namespace SQLiteDataHelpers
             if (showProvider)
             {
 
-                SQL ="SELECT [Provider] || '_' || S.[ID] AS [SoftCode], [Organization] ||' '|| [SoftwareName] AS [SoftName], " +
+                SQL = "SELECT [Provider] || '_' || S.[ID] AS [SoftCode], COALESCE([Organization], '[No Provider]') ||' '|| [SoftwareName] AS [SoftName], " +
                      "COALESCE(COUNT(L.SoftwareID), 0) AS [LicCount] " +
                      "FROM Software S " +
-                     "INNER JOIN Providers P ON Provider =  P.ID " +
+                     "LEFT JOIN Providers P ON Provider =  P.ID " +
                      "LEFT JOIN LicenseKeys L ON L.SoftwareID = S.ID " +
                      "GROUP BY SoftCode, SoftName " +
                      "ORDER BY Organization, SoftwareName";
@@ -192,7 +210,7 @@ namespace SQLiteDataHelpers
                     "SELECT [Provider] || '_' || S.[ID] AS [SoftCode], [SoftwareName] AS [SoftName], " +
                      "COALESCE(COUNT(L.SoftwareID), 0) AS [LicCount] " +
                      "FROM Software S " +
-                     "INNER JOIN Providers P ON Provider =  P.ID " +
+                     "LEFT JOIN Providers P ON Provider =  P.ID " +
                      "LEFT JOIN LicenseKeys L ON L.SoftwareID = S.ID " +
                      "GROUP BY SoftCode, SoftName " +
                      "ORDER BY SoftwareName";
@@ -220,7 +238,31 @@ namespace SQLiteDataHelpers
 
         #endregion
 
-        #region Table License Keys
+        #region Providers
+
+        public int GetProviderIdByName(string name)
+        {
+            string SQL = "SELECT [ID] FROM Providers WHERE [Organization] = '"+ name +"'";
+
+            var result = SQLiteDataHelper.ExecuteScalar(SQL) ?? "0";
+            return Convert.ToInt32(result);
+        }
+
+        public int GetProviderNameById(int id)
+        {
+            string SQL = "SELECT [Organization] FROM Providers WHERE [ID] = '"+ id +"'";
+
+            var result = SQLiteDataHelper.ExecuteScalar(SQL) ?? "-1";
+            return Convert.ToInt32(result);
+        }
+
+        #endregion
+
+        #region License Keys
+
+        #endregion
+
+        #region Reports
 
         public DataTable getAvailableLicensesReport(bool showProvider)
         {
@@ -315,9 +357,11 @@ namespace SQLiteDataHelpers
 
         #endregion
 
-        #endregion
+        #endregion ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        #region INSERTS
+        #region INSERTS ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        #region Table Users
 
         public string InsertUser(User user)
         {
@@ -374,22 +418,55 @@ namespace SQLiteDataHelpers
             return "User successfully created";
         }
 
-        public int GetMaxId(string tableName)
+        #endregion
+
+        #region Table Software
+
+        public string insertSoftware(string name, ref bool success)
         {
-            string SQL = "SELECT MAX(ID) FROM " + tableName;
+            Dictionary<String, String> software = SQLTables.TableColumns.Software;
+            software["SoftwareName"] = name;
 
-            int ID = Convert.ToInt32(SQLiteDataHelper.ExecuteScalar(SQL));
+            string error = "";
+            if (!SQLiteDataHelper.Insert("Software", software, ref error))
+            {
+                success = false;
+                return error;
+            }
 
-            return ID;
+            success = true;
+            return true.ToString() + "-" + GetMaxId("Software").ToString();
         }
 
         #endregion
+
+        #region Table Providers
+
+        public string insertProvider(string name, ref bool success)
+        {
+            Dictionary<String, String> provider = SQLTables.TableColumns.Providers;
+            provider["Organization"] = name;
+
+            string error = "";
+            if (!SQLiteDataHelper.Insert("Providers", provider, ref error))
+            {
+                success = false;
+                return error;
+            }
+
+            success = true;
+            return GetMaxId("Providers").ToString();
+        }
+
+        #endregion
+
+        #endregion ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
         #region UPSERTS
         //
         #endregion
 
-        #region UPDATES
+        #region UPDATES ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public string UpdateUser(string UserID, User user)
         {
@@ -428,9 +505,9 @@ namespace SQLiteDataHelpers
 
         #endregion
 
-        #endregion
+        #endregion ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        #region DELETES
+        #region DELETES ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public bool DeleteUser(string UserId)
         {
@@ -441,7 +518,7 @@ namespace SQLiteDataHelpers
             return SQLiteDataHelper.Delete("Users", whereUsers);
         }
 
-        #endregion
+        #endregion ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
         static string GenerateMd5Hash(string input)
         {

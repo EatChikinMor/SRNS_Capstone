@@ -13,22 +13,13 @@ namespace SRNS_Capstone {
     public partial class AddLicense {
         
         /// <summary>
-        /// btnNew control.
+        /// ScriptManager1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNew;
-        
-        /// <summary>
-        /// ddlSoftwareSelect control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlSoftwareSelect;
+        protected global::System.Web.UI.ScriptManager ScriptManager1;
         
         /// <summary>
         /// lblSoftName control.
@@ -40,15 +31,6 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.Label lblSoftName;
         
         /// <summary>
-        /// lblSoftDescription control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSoftDescription;
-        
-        /// <summary>
         /// txtSoftName control.
         /// </summary>
         /// <remarks>
@@ -56,6 +38,15 @@ namespace SRNS_Capstone {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSoftName;
+        
+        /// <summary>
+        /// lblSoftDescription control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSoftDescription;
         
         /// <summary>
         /// txtSoftDescription control.
@@ -67,31 +58,22 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.TextBox txtSoftDescription;
         
         /// <summary>
-        /// radioBtnAssign control.
+        /// lblProvider control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton radioBtnAssign;
+        protected global::System.Web.UI.WebControls.Label lblProvider;
         
         /// <summary>
-        /// radioBtnRemove control.
+        /// txtProvider control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton radioBtnRemove;
-        
-        /// <summary>
-        /// radioBtnAvailable control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton radioBtnAvailable;
+        protected global::System.Web.UI.WebControls.TextBox txtProvider;
         
         /// <summary>
         /// lblLiNum control.
@@ -103,6 +85,15 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.Label lblLiNum;
         
         /// <summary>
+        /// txtLiKey control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtLiKey;
+        
+        /// <summary>
         /// lblSpeedchart control.
         /// </summary>
         /// <remarks>
@@ -110,15 +101,6 @@ namespace SRNS_Capstone {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSpeedchart;
-        
-        /// <summary>
-        /// txtLiNum control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtLiNum;
         
         /// <summary>
         /// txtSpeedchart control.
@@ -130,6 +112,24 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.TextBox txtSpeedchart;
         
         /// <summary>
+        /// Label1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label1;
+        
+        /// <summary>
+        /// txtDateUpdated control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDateUpdated;
+        
+        /// <summary>
         /// lblLiHold control.
         /// </summary>
         /// <remarks>
@@ -137,6 +137,15 @@ namespace SRNS_Capstone {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblLiHold;
+        
+        /// <summary>
+        /// ddlLicHolder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlLicHolder;
         
         /// <summary>
         /// lblLicenseMan control.
@@ -148,22 +157,31 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.Label lblLicenseMan;
         
         /// <summary>
-        /// txtLiHold control.
+        /// ddlHolderManager control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtLiHold;
+        protected global::System.Web.UI.WebControls.DropDownList ddlHolderManager;
         
         /// <summary>
-        /// txtLicenseMan control.
+        /// Label2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtLicenseMan;
+        protected global::System.Web.UI.WebControls.Label Label2;
+        
+        /// <summary>
+        /// txtDateAssigned control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDateAssigned;
         
         /// <summary>
         /// lblLiHoldUserId control.
@@ -175,15 +193,6 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.Label lblLiHoldUserId;
         
         /// <summary>
-        /// lblLiCost control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblLiCost;
-        
-        /// <summary>
         /// txtLiHoldUserId control.
         /// </summary>
         /// <remarks>
@@ -191,6 +200,15 @@ namespace SRNS_Capstone {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtLiHoldUserId;
+        
+        /// <summary>
+        /// lblLiCost control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblLiCost;
         
         /// <summary>
         /// txtLiCost control.
@@ -202,6 +220,24 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.TextBox txtLiCost;
         
         /// <summary>
+        /// Label5 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label5;
+        
+        /// <summary>
+        /// txtDateRemoved control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDateRemoved;
+        
+        /// <summary>
         /// lblReqNum control.
         /// </summary>
         /// <remarks>
@@ -209,15 +245,6 @@ namespace SRNS_Capstone {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblReqNum;
-        
-        /// <summary>
-        /// lblChargeback control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblChargeback;
         
         /// <summary>
         /// txtReqNum control.
@@ -229,6 +256,15 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.TextBox txtReqNum;
         
         /// <summary>
+        /// lblChargeback control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblChargeback;
+        
+        /// <summary>
         /// ddlChargeback control.
         /// </summary>
         /// <remarks>
@@ -236,6 +272,33 @@ namespace SRNS_Capstone {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlChargeback;
+        
+        /// <summary>
+        /// Label4 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label4;
+        
+        /// <summary>
+        /// txtDateExpiring control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDateExpiring;
+        
+        /// <summary>
+        /// pnlHolders control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlHolders;
         
         /// <summary>
         /// lblLiComp control.
@@ -283,6 +346,51 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.RadioButton radiobtnCen;
         
         /// <summary>
+        /// pnlAssign control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlAssign;
+        
+        /// <summary>
+        /// lblAssignStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblAssignStatus;
+        
+        /// <summary>
+        /// radioBtnAssign control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton radioBtnAssign;
+        
+        /// <summary>
+        /// radioBtnRemove control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton radioBtnRemove;
+        
+        /// <summary>
+        /// radioBtnAvailable control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton radioBtnAvailable;
+        
+        /// <summary>
         /// lblComments control.
         /// </summary>
         /// <remarks>
@@ -308,68 +416,5 @@ namespace SRNS_Capstone {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSubmit;
-        
-        /// <summary>
-        /// lblDocCreate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblDocCreate;
-        
-        /// <summary>
-        /// txtDocCreate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDocCreate;
-        
-        /// <summary>
-        /// Label1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
-        
-        /// <summary>
-        /// txtDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText txtDate;
-        
-        /// <summary>
-        /// Label2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label2;
-        
-        /// <summary>
-        /// Label3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label3;
-        
-        /// <summary>
-        /// Label4 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label4;
     }
 }
