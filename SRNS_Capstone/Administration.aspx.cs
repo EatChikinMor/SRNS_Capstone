@@ -201,17 +201,6 @@ namespace SRNS_Capstone
                     PassHash = txtPassword.Text //Converted to hash on insert to DB
                 };
 
-                //UserAccess access = new UserAccess()
-                //{
-                //    Requests = chkRequests.Checked || rdAdminTrue.Checked,
-                //    AddLicense = chkAddLicense.Checked || rdAdminTrue.Checked,
-                //    AvailLicenseReport = chkAvailableLicense.Checked || rdAdminTrue.Checked,
-                //    LicenseCountReport = chkLicenseCount.Checked || rdAdminTrue.Checked,
-                //    LicenseExpReport = chkLicensesExpiring.Checked || rdAdminTrue.Checked,
-                //    ManagLicenseReport = chkManagerLicenseHolders.Checked || rdAdminTrue.Checked,
-                //    PendChargeReport = chkPendingChargebacks.Checked || rdAdminTrue.Checked
-                //};
-
                 string response = new DBConnector().InsertUser(user);
 
                 if (response.Length > 25)
@@ -263,17 +252,6 @@ namespace SRNS_Capstone
                     ManagerID = Convert.ToInt32(ddlManagers.SelectedItem.Value),
                     PassHash = txtPassword.Text //Converted to hash on insert to DB
                 };
-
-                //UserAccess access = new UserAccess()
-                //{
-                //    Requests = chkRequests.Checked,
-                //    AddLicense = chkAddLicense.Checked,
-                //    AvailLicenseReport = chkAvailableLicense.Checked,
-                //    LicenseCountReport = chkLicenseCount.Checked,
-                //    LicenseExpReport = chkLicensesExpiring.Checked,
-                //    ManagLicenseReport = chkManagerLicenseHolders.Checked,
-                //    PendChargeReport = chkPendingChargebacks.Checked
-                //};
 
                 string response = new DBConnector().UpdateUser(ddlUserSelect.SelectedValue, user);
 

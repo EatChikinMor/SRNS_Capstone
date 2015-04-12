@@ -33,7 +33,8 @@ namespace SQLiteDataHelpers
                         {"DateExpiring",""},
                         {"LicenseHolderCompany",""},
                         {"Description",""},
-                        {"Comments",""}
+                        {"Comments",""},
+                        {"FileSubpath",""}
                     };
                     return columns;
                 }
@@ -82,7 +83,10 @@ namespace SQLiteDataHelpers
                 get
                 {
                     var columns = new Dictionary<String, String>()
-                    {{"SoftwareName", ""}};
+                    {
+                        {"SoftwareName", ""},
+                        {"Provider", ""}
+                    };
                     return columns;
                 }
             }

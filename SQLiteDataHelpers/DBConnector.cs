@@ -175,7 +175,8 @@ namespace SQLiteDataHelpers
         {
             string SQL = "SELECT [ID] FROM Software WHERE [SoftwareName] = '" + Name + "'";
 
-            var result = SQLiteDataHelper.ExecuteScalar(SQL) ?? "-1";
+            var result = SQLiteDataHelper.ExecuteScalar(SQL);
+            return String.IsNullOrEmpty(result) ? -1 : Convert.ToInt32(result);
             return Convert.ToInt32(result);
         }
 
@@ -226,12 +227,11 @@ namespace SQLiteDataHelpers
                 : "AND [ExpirationDate] > CURRENT_TIMESTAMP ";
 
             var SQL =
-                "SELECT COALESCE(U.[FirstName] || ' ' || U.[LastName], 'Not Assigned') AS Name, [ExpirationDate], [LicenseKey] " +
-                "FROM LicenseKeys " +
-                "LEFT OUTER JOIN Users U ON KeyOwnerID = U.ID " +
+                "SELECT COALESCE(LK.KeyHolder || '-' ||LK.HolderLoginID, 'Not Assigned') AS Name, [ExpirationDate], [LicenseKey] " +
+                "FROM LicenseKeys LK " +
                 "WHERE SoftwareID = "+ SoftwareId +"  " +
                 andExpired +
-                "ORDER BY KeyOwnerID, ExpirationDate";
+                "ORDER BY KeyHolder, ExpirationDate";
 
             return SQLiteDataHelper.GetDataTable(SQL);
         }
@@ -244,21 +244,56 @@ namespace SQLiteDataHelpers
         {
             string SQL = "SELECT [ID] FROM Providers WHERE [Organization] = '"+ name +"'";
 
-            var result = SQLiteDataHelper.ExecuteScalar(SQL) ?? "0";
-            return Convert.ToInt32(result);
+            var result = SQLiteDataHelper.ExecuteScalar(SQL);
+            return String.IsNullOrEmpty(result) ? -1 : Convert.ToInt32(result);
         }
 
         public int GetProviderNameById(int id)
         {
             string SQL = "SELECT [Organization] FROM Providers WHERE [ID] = '"+ id +"'";
 
-            var result = SQLiteDataHelper.ExecuteScalar(SQL) ?? "-1";
-            return Convert.ToInt32(result);
+            var result = SQLiteDataHelper.ExecuteScalar(SQL);
+            return result == "" ? -1 : Convert.ToInt32(result);
         }
 
         #endregion
 
         #region License Keys
+
+        public DataTable getLicenseByKey(string Key)
+        {
+            //Having strange issue where GetDataTable only returns
+            //one row for this procedure regardless of how many the SQL statement returns.
+            //Added checkConflicting below to compensate
+            string SQL =
+                "SELECT [SoftwareName],[LicenseKey], [DateModified], [ExpirationDate], " +
+                "[KeyHolder],[KeyManager],[HolderLoginID], [LicenseCost], [RequisitionNumber], " +
+                "[ChargebackComplete], [Organization],[AssignmentStatus],[SpeedChartID], [DateAssigned], " +
+                "[DateRemoved], [DateExpiring], [LicenseHolderCompany], [Description], [Comments], [FileSubPath] " +
+                "FROM LicenseKeys LK " +
+                "INNER JOIN Software S ON [SoftwareID] = S.ID " +
+                "INNER JOIN Providers P ON ProviderID = P.ID " +
+                "WHERE [LicenseKey] = '" + Key + "'";
+
+            return SQLiteDataHelper.GetDataTable(SQL);
+        }
+
+        public bool doesKeyExist(string Key)
+        {
+            string SQL = "SELECT COUNT(LicenseKey) FROM LicenseKeys WHERE LicenseKey = '"+ Key +"'";
+
+            return SQLiteDataHelper.ExecuteScalar(SQL) == "1";
+        }
+
+        
+        public bool DoesLicenseExist(string LicenseKey, int SoftwareID)
+        {
+            string SQL = "SELECT Count(SoftwareID) FROM LicenseKeys WHERE SoftwareID = " + SoftwareID +
+                         " AND LicenseKey = '" + LicenseKey + "'";
+            var result = SQLiteDataHelper.ExecuteScalar(SQL);
+
+            return result == "1";
+        }
 
         #endregion
 
@@ -280,7 +315,7 @@ namespace SQLiteDataHelpers
                 "INNER JOIN Providers P ON S.Provider = P.ID " +
                 "INNER JOIN Software S ON S.ID = LK.SoftwareID " +
                 "LEFT OUTER JOIN Speedcharts SC ON SC.KeyChargedAgainst = LK.[LicenseKey] " +
-                "WHERE ExpirationDate > CURRENT_TIMESTAMP AND (LK.KeyOwnerID = '' OR LK.KeyOwnerID = NULL) " +
+                "WHERE ExpirationDate > CURRENT_TIMESTAMP AND (LK.KeyHolder = '' OR LK.KeyHolder IS NULL) " +
                 orderBy;
 
             DataTable result = SQLiteDataHelper.GetDataTable(SQL);
@@ -361,81 +396,43 @@ namespace SQLiteDataHelpers
 
         #region INSERTS ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        #region Table Users
+        #region License Keys
 
-        public string InsertUser(User user)
+        public string InsertLicense(LicenseKey LK)
         {
-            //////////// Manually Add user \\\\\\\\\\\\
-            //User a = new User();
-            //a.FirstName = "Austin";
-            //a.LastName = "Rich";
-            //a.IsAdmin = true;
-            //a.LoginID = "user";
-            //a.PassHash = "123456a";
-            //a.ManagerID = 1;
-            //a.Salt = GenerateRandomString();
-            //a.IsManager = true;
+            if (DoesLicenseExist(LK.Key, LK.SoftwareId)) 
+                return "License Key for specified software already exists";
 
-            //user = a;
+            var License = SQLTables.TableColumns.LicenseKeys;
 
-            //UserAccess b = new UserAccess()
-            //{
-            //    UserID = 0,
-            //    Requests = true,
-            //    AddLicense = true,
-            //    AvailLicenseReport = true,
-            //    LicenseCountReport = true,
-            //    LicenseExpReport = true,
-            //    ManagLicenseReport = true,
-            //    PendChargeReport = false
-            //};
-
-            //userA = b;
-            //-----------------------------------------\\
-
-            if (!IsUsernameAvailable(user.LoginID)) return "The chosen username already exists.";
-
-            user.Salt = GenerateRandomString();
-
-            user.PassHash = GenerateMd5Hash(user.Salt + user.PassHash);
-
-            Dictionary<String, String> Users = SQLTables.TableColumns.Users;
-            Users["FirstName"] = user.FirstName;
-            Users["LastName"] = user.LastName;
-            //Users["IsAdmin"] = Convert.ToInt32(user.IsAdmin).ToString();
-            Users["LoginID"] = user.LoginID;
-            Users["PassHash"] = user.PassHash;
-            Users["ManagerID"] = Convert.ToInt32(user.ManagerID).ToString();
-            Users["Salt"] = user.Salt;
-            //Users["IsManager"] = Convert.ToInt32(user.IsManager).ToString();
-
-            string error = "", retError = "";
-            if (!SQLiteDataHelper.Insert("USERS", Users, ref error))
-            {
-                return error;
-            }
-
-            return "User successfully created";
-        }
-
-        #endregion
-
-        #region Table Software
-
-        public string insertSoftware(string name, ref bool success)
-        {
-            Dictionary<String, String> software = SQLTables.TableColumns.Software;
-            software["SoftwareName"] = name;
+            License["SoftwareID"] = LK.SoftwareId.ToString();
+            License["LicenseKey"] = LK.Key;
+            License["DateModified"] = LK.DateUpdated.ToString("s");
+            License["ExpirationDate"] = LK.DateExpiring.ToString("s");
+            License["KeyHolder"] = LK.Holder;
+            License["KeyManager"] = LK.Manager;
+            License["HolderLoginID"] = LK.HolderID;
+            License["LicenseCost"] = String.Format("{0:0.00}",LK.LicenseCost);
+            License["RequisitionNumber"] = LK.RequisitionNumber;
+            License["ChargebackComplete"] = Convert.ToInt32(LK.ChargebackComplete).ToString();
+            License["ProviderID"] = LK.Provider.ToString();
+            License["AssignmentStatus"] = LK.Assignment.ToString();
+            License["SpeedChartID"] = LK.Speedchart;
+            License["DateAssigned"] = LK.DateAssigned.ToString("s");
+            License["DateRemoved"] = LK.DateRemoved.ToString("s");
+            License["DateExpiring"] = LK.DateExpiring.ToString("s");
+            License["LicenseHolderCompany"] = LK.LicenseHolderCompany.ToString();
+            License["Description"] = LK.Description;
+            License["Comments"] = LK.Comments;
+            License["Comments"] = LK.Comments;
+            License["FileSubpath"] = LK.fileSubpath.ToString();
 
             string error = "";
-            if (!SQLiteDataHelper.Insert("Software", software, ref error))
-            {
-                success = false;
-                return error;
-            }
 
-            success = true;
-            return true.ToString() + "-" + GetMaxId("Software").ToString();
+            return SQLiteDataHelper.Insert("LicenseKeys", License, ref error)
+                ? "License \"" + LK.Key + "\" Inserted Successfully"
+                : error;
+
         }
 
         #endregion
@@ -460,11 +457,68 @@ namespace SQLiteDataHelpers
 
         #endregion
 
-        #endregion ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        #region Table Software
 
-        #region UPSERTS
-        //
+        public string insertSoftware(string name, int Provider, ref bool success)
+        {
+            Dictionary<String, String> software = SQLTables.TableColumns.Software;
+            software["SoftwareName"] = name;
+            software["Provider"] = Provider.ToString();
+
+            string error = "";
+            if (!SQLiteDataHelper.Insert("Software", software, ref error))
+            {
+                success = false;
+                return error;
+            }
+
+            success = true;
+            return GetMaxId("Software").ToString();
+        }
+
         #endregion
+
+        #region Table Users
+
+        public string InsertUser(User user)
+        {
+            //////////// Manually Add user \\\\\\\\\\\\
+            //User a = new User();
+            //a.FirstName = "Austin";
+            //a.LastName = "Rich";
+            //a.IsAdmin = true;
+            //a.LoginID = "user";
+            //a.PassHash = "123456a";
+            //a.ManagerID = 1;
+            //a.Salt = GenerateRandomString();
+            //a.IsManager = true;
+
+            //user = a;
+            //-----------------------------------------\\
+
+            if (!IsUsernameAvailable(user.LoginID)) return "The chosen username already exists.";
+
+            user.Salt = GenerateRandomString();
+
+            user.PassHash = GenerateMd5Hash(user.Salt + user.PassHash);
+
+            Dictionary<String, String> Users = SQLTables.TableColumns.Users;
+            Users["FirstName"] = user.FirstName;
+            Users["LastName"] = user.LastName;
+            //Users["IsAdmin"] = Convert.ToInt32(user.IsAdmin).ToString();
+            Users["LoginID"] = user.LoginID;
+            Users["PassHash"] = user.PassHash;
+            Users["ManagerID"] = Convert.ToInt32(user.ManagerID).ToString();
+            Users["Salt"] = user.Salt;
+            //Users["IsManager"] = Convert.ToInt32(user.IsManager).ToString();
+
+            string error = "", retError = "";
+            return !SQLiteDataHelper.Insert("USERS", Users, ref error) ? error : "User successfully created";
+        }
+
+        #endregion
+
+        #endregion ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
         #region UPDATES ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -503,6 +557,41 @@ namespace SQLiteDataHelpers
             SQLiteDataHelper.ExecuteNonQuery(SQL);
         }
 
+        #region Table License Keys
+
+        public bool UpdateLicenseKey(LicenseKey LK)
+        {
+            var License = SQLTables.TableColumns.LicenseKeys;
+
+            License["SoftwareID"] = LK.SoftwareId.ToString();
+            License["LicenseKey"] = LK.Key;
+            License["DateModified"] = LK.DateUpdated.ToString("s");
+            License["ExpirationDate"] = LK.DateExpiring.ToString("s");
+            License["KeyHolder"] = LK.Holder;
+            License["KeyManager"] = LK.Manager;
+            License["HolderLoginID"] = LK.HolderID;
+            License["LicenseCost"] = String.Format("{0:0.00}", LK.LicenseCost);
+            License["RequisitionNumber"] = LK.RequisitionNumber;
+            License["ChargebackComplete"] = Convert.ToInt32(LK.ChargebackComplete).ToString();
+            License["ProviderID"] = LK.Provider.ToString();
+            License["AssignmentStatus"] = LK.Assignment.ToString();
+            License["SpeedChartID"] = LK.Speedchart;
+            License["DateAssigned"] = LK.DateAssigned.ToString("s");
+            License["DateRemoved"] = LK.DateRemoved.ToString("s");
+            License["DateExpiring"] = LK.DateExpiring.ToString("s");
+            License["LicenseHolderCompany"] = LK.LicenseHolderCompany.ToString();
+            License["Description"] = LK.Description;
+            License["Comments"] = LK.Comments;
+            License["Comments"] = LK.Comments;
+            License["FileSubpath"] = LK.fileSubpath.ToString();
+
+            string WHERE = "LicenseKey = '" + LK.Key + "'";
+
+            return SQLiteDataHelper.Update("LicenseKeys", License, WHERE);
+        }
+
+        #endregion
+
         #endregion
 
         #endregion ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -517,6 +606,17 @@ namespace SQLiteDataHelpers
 
             return SQLiteDataHelper.Delete("Users", whereUsers);
         }
+
+        #region Table License Keys
+
+        public bool DeleteKey(string Key)
+        {
+            string WHERE = "LicenseKey = '" + Key + "'";
+
+            return SQLiteDataHelper.Delete("LicenseKeys", WHERE);
+        }
+
+        #endregion
 
         #endregion ///////////////////////////////////////////////////////////////////////////////////////////////////////
 

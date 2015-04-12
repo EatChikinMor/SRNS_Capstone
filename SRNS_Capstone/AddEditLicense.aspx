@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Capstone.Master" CodeBehind="AddLicense.aspx.cs" Inherits="SRNS_Capstone.AddLicense" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Capstone.Master" CodeBehind="AddEditLicense.aspx.cs" Inherits="SRNS_Capstone.AddLicense" validateRequest="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ContentPlaceHolderID="head" runat="server">
@@ -17,6 +17,54 @@
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
     <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
     <div class="container">
+            <asp:Panel runat="server" ID="pnlSelection" Visible="true">
+            <asp:Panel runat="server" ID="pnlSuccess" Visible="false">
+                    <div class="col-lg-6 col-lg-offset-3">
+                        <div class="alert alert-success" role="alert" style="margin-top:10px;">
+                            <h4>
+                                <asp:Label runat="server" ID="lblSuccess" Text="Database Changes Successful"></asp:Label>
+                            </h4>
+                        </div>
+                    </div>
+            </asp:Panel>
+            <div class="col-lg-12 col-md-12 text-center">
+                <h1 style="margin-top: 10vh;">Add License</h1>
+                <div class="row">
+                <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4">
+                    <asp:Button runat="server" ID="btnAddKey" class="btn btn-block btn-default" Text="Add License" OnClick="btnAddKey_OnClick"></asp:Button>
+                </div>
+                </div>
+                <div class="row text-center">
+                    <h3>or</h3>
+                </div>
+                <div class="row">
+                    <h3>Enter License Key to modify</h3>
+                    <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4">
+                        
+                        <asp:Panel runat="server" DefaultButton="btnLookupKey">
+                            <div class="input-group">
+                                    <asp:TextBox runat="server" ID="txtEnterKeyToEdit" CssClass="form-control" autocomplete="off"></asp:TextBox>
+                                    <span class="input-group-btn">
+                                        <asp:Button runat="server" class="btn btn-default" type="button" ID="btnLookupKey" OnClick="btnLookupKey_OnClick" Text="Submit"></asp:Button>
+                                    </span>
+                            </div>
+                        </asp:Panel>
+                    </div>
+                </div>
+            </div>
+        </asp:Panel>
+        <asp:Panel runat="server" ID="pnlMain" Visible="false">
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3">
+                <asp:Panel runat="server" ID="pnlError" Visible="false">
+                        <div class="alert alert-danger" role="alert" style="margin-top:10px;">
+                            <h4>
+                                <asp:Label runat="server" ID="lblError" Text="Changes not made"></asp:Label>
+                            </h4>
+                        </div>
+                </asp:Panel>
+            </div>
+        </div>
         <div class="row">
             <div class="col-lg-4 col-md-4">
                 <asp:Label runat="server" ID="lblSoftName">Software Name</asp:Label>
@@ -53,8 +101,9 @@
         
         <div class="row">
             <div class="col-lg-4 col-md-4">
-                <asp:Label runat="server" ID="lblLiHold">License Holder</asp:Label>
-                <asp:DropDownList CssClass="form-control" runat="server" Style="min-width: 100%" ID="ddlLicHolder" onchange="populateLoginID()"></asp:DropDownList>
+                <asp:Label runat="server" ID="lblLiHold">License Holder</asp:Label><%--&nbsp;&nbsp;&nbsp;<a onclick="manualEntry();" >Enter Manually</a>--%>
+                <asp:DropDownList CssClass="form-control" runat="server" Style="min-width: 100%; display: block" ID="ddlLicHolder" onchange="populateLoginID()" ></asp:DropDownList>
+                <asp:TextBox type="text" ID="txtManualLicHolder" class="form-control" runat="server" style="display: none;" />
             </div>
             <div class="col-lg-4 col-md-4">
                 <asp:Label runat="server" ID="lblLicenseMan">License Manager</asp:Label>
@@ -104,7 +153,7 @@
                 </asp:DropDownList>
             </div>
             <div class="col-lg-4 col-md-4">
-                <asp:Label runat="server" ID="Label4">Date of Expiration</asp:Label>
+                <asp:Label runat="server" ID="lblDateExpiring">Date of Expiration</asp:Label>
                 <div class="input-group date">
                     <asp:TextBox type="text" ID="txtDateExpiring" class="form-control" runat="server" />
                     <span class="input-group-addon">
@@ -154,25 +203,35 @@
 
                 <div style="width: 450px;">
                     <div>
-                        <textarea runat="server" id="editor" rows="0" cols="0"></textarea>
+                        <textarea runat="server" id="editor" rows="0" cols="0" ValidateRequestMode="Disabled"></textarea>
                     </div>
                     <div class="normaldiv" style="float: right">
-                        <a href="#" class="siteButton" id="btnClear">Clear</a>
+                        <a href="#" class="siteButton btn btn-xs btn-default" id="btnClear">Clear</a>
                         <%--<a href="#" class="siteButton" id="btnAddImage">Add an image</a>--%>&nbsp;&nbsp;
-                        <a href="#" class="siteButton" id="btnGetHtml">Get html</a>
+                        <%--<a href="#" class="siteButton btn btn-xs btn-default" id="btnGetHtml">Get html</a>--%>
                     </div>
                 </div>
                 <br/>
                 <div class="fileinput fileinput-new input-group" data-provides="fileinput" style="margin-top: 5px;">
-                    <div class="form-control" data-trigger="fileinput"><i class="glyphicon glyphicon-file fileinput-exists"></i><span class="fileinput-filename"></span></div>
-                    <span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists">Change</span><input type="file" name="..."></span>
+                    <div class="form-control" data-trigger="fileinput">
+                        <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                        <span class="fileinput-filename"></span>
+                    </div>
+                    <span class="input-group-addon btn btn-default btn-file">
+                        <span class="fileinput-new">Select file</span>
+                        <span class="fileinput-exists">Change</span>
+                        <asp:FileUpload runat="server" ID="fileUpload" />
+                    </span>
                     <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
                 </div>
                 <br />
                 <strong><asp:Label runat="server" ID="lblEditor"></asp:Label></strong>
+                <br/>
+                <asp:Button runat="server" CssClass="btn btn-danger btn-md pull-left" ID="btnDelete" Text="Delete License" OnClick="btnDelete_OnClick" Visible="False"/>
                 <asp:Button CssClass="btn btn-lg btn-primary pull-right" runat="server" ID="btnSubmit" Text="Submit" OnClick="btnSubmit_Click" />
             </div>
         </div>
+        </asp:Panel>
     </div>
     
 
@@ -210,12 +269,12 @@
                 width: 450,
                 height: 200,
                 controls: "bold italic underline strikethrough subscript superscript |  font size " +
-                        "style | color highlight removeformat | bullets numbering | outdent " +
-                        "indent | alignleft center alignright justify | undo redo | " +
-                        "rule link image unlink | cut copy paste pastetext | print source"
+                    "style | color highlight removeformat | bullets numbering | outdent " +
+                    "indent | alignleft center alignright justify | undo redo | " +
+                    "rule link image unlink | cut copy paste pastetext | print source"
             };
  
-                var editor = $("#<%=editor.ClientID%>").cleditor(options)[0];
+            var editor = $("#<%=editor.ClientID%>").cleditor(options)[0];
  
             $("#btnClear").click(function (e) {
                 e.preventDefault();
@@ -263,6 +322,14 @@
                 txtRemove.value = _varOldRemove;
             }
         }
+
+
+        var manualEntry = (function() {
+            return function() {
+                $('#<%=ddlLicHolder.ClientID%>').slideToggle('slow');
+                $('#<%=txtManualLicHolder.ClientID%>').slideToggle('slow');
+            }
+        })();
 
     </script>
 
