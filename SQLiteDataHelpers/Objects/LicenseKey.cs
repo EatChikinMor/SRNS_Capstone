@@ -28,6 +28,7 @@ namespace SQLiteDataHelpers.Objects
         private DateTime _DateExpiring;
         private int _LicenseHolderCompany;
         private string _Comments;
+        private Guid _fileSubpath;
 
         #endregion
 
@@ -227,6 +228,17 @@ namespace SQLiteDataHelpers.Objects
                 if (_Comments != value)
                 {
                     _Comments = value;
+                }
+            }
+        }
+        public Guid fileSubpath
+        {
+            get { return _fileSubpath; }
+            set
+            {
+                if (_fileSubpath != value)
+                {
+                    _fileSubpath = value;
                 }
             }
         }
