@@ -52,8 +52,6 @@ namespace SRNS_Capstone
                 //    user = a;
                 //}
                 //Remove before release
-                for (int x = 0; x < 10; x++)//this is my code, delete
-                    Console.WriteLine(x);//this is my code, delete
 
                     if (user != null)
                     {
