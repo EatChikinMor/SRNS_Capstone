@@ -52,24 +52,26 @@ namespace SRNS_Capstone
                 //    user = a;
                 //}
                 //Remove before release
+                for (int x = 0; x < 10; x++)//this is my code, delete
+                    Console.WriteLine(x);//this is my code, delete
 
-                if (user != null)
-                {
-                    _IsAdmin = user.IsAdmin;
-                    //_userID = user.ID;
-
-                    ((Capstone)Page.Master).showMenuOptions(_IsAdmin);
-
-                    if (_IsAdmin)
+                    if (user != null)
                     {
-                        pnlPendingRequests.Visible = true;
-                        IsAdmin();
+                        _IsAdmin = user.IsAdmin;
+                        //_userID = user.ID;
+
+                        ((Capstone)Page.Master).showMenuOptions(_IsAdmin);
+
+                        if (_IsAdmin)
+                        {
+                            pnlPendingRequests.Visible = true;
+                            IsAdmin();
+                        }
                     }
-                }
-                else
-                {
-                    Response.Redirect("~/Default.aspx");
-                }
+                    else
+                    {
+                        Response.Redirect("~/Default.aspx");
+                    }
                 //anything here
             }
 
