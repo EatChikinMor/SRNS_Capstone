@@ -29,6 +29,7 @@ namespace SQLiteDataHelpers.Objects
         private int _LicenseHolderCompany;
         private string _Comments;
         private Guid _fileSubpath;
+        private string _LastModifiedBy;
 
         #endregion
 
@@ -242,7 +243,17 @@ namespace SQLiteDataHelpers.Objects
                 }
             }
         }
-
+        public string LastModifiedBy
+        {
+            get { return _LastModifiedBy; }
+            set
+            {
+                if (_LastModifiedBy != value)
+                {
+                    _LastModifiedBy = value;
+                }
+            }
+        }
         #endregion
 
         #region constructors

@@ -227,7 +227,7 @@ namespace SQLiteDataHelpers
                 : "AND [ExpirationDate] > CURRENT_TIMESTAMP ";
 
             var SQL =
-                "SELECT COALESCE(LK.KeyHolder || '-' ||LK.HolderLoginID, 'Not Assigned') AS Name, [ExpirationDate], [LicenseKey] " +
+                "SELECT COALESCE(LK.KeyHolder || '-' ||LK.HolderLoginID, 'Not Assigned') AS Name, DATE([ExpirationDate]), [LicenseKey] " +
                 "FROM LicenseKeys LK " +
                 "WHERE SoftwareID = "+ SoftwareId +"  " +
                 andExpired +
@@ -262,14 +262,11 @@ namespace SQLiteDataHelpers
 
         public DataTable getLicenseByKey(string Key)
         {
-            //Having strange issue where GetDataTable only returns
-            //one row for this procedure regardless of how many the SQL statement returns.
-            //Added checkConflicting below to compensate
             string SQL =
-                "SELECT [SoftwareName],[LicenseKey], [DateModified], [ExpirationDate], " +
-                "[KeyHolder],[KeyManager],[HolderLoginID], [LicenseCost], [RequisitionNumber], " +
-                "[ChargebackComplete], [Organization],[AssignmentStatus],[SpeedChartID], [DateAssigned], " +
-                "[DateRemoved], [DateExpiring], [LicenseHolderCompany], [Description], [Comments], [FileSubPath] " +
+                "SELECT [SoftwareName],[LicenseKey], [DateModified], [ExpirationDate], [KeyHolder],[KeyManager]," +
+                "[HolderLoginID], [LicenseCost], [RequisitionNumber], [ChargebackComplete], [Organization], " +
+                "[AssignmentStatus],[SpeedChartID], [DateAssigned], [DateRemoved], [DateExpiring], [LicenseHolderCompany], " +
+                "[Description], [Comments], [FileSubPath], [LastModifiedBy] " +
                 "FROM LicenseKeys LK " +
                 "INNER JOIN Software S ON [SoftwareID] = S.ID " +
                 "INNER JOIN Providers P ON ProviderID = P.ID " +
@@ -284,7 +281,6 @@ namespace SQLiteDataHelpers
 
             return SQLiteDataHelper.ExecuteScalar(SQL) == "1";
         }
-
         
         public bool DoesLicenseExist(string LicenseKey, int SoftwareID)
         {
@@ -310,7 +306,7 @@ namespace SQLiteDataHelpers
                 : "NULL AS [Organization],";
 
             string SQL =
-                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], ExpirationDate , COALESCE([SpeedChart], \" \") AS Speedchart " +
+                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], DATE(ExpirationDate) AS ExpirationDate, COALESCE([SpeedChart], \" \") AS Speedchart " +
                 "FROM LicenseKeys LK " +
                 "INNER JOIN Providers P ON S.Provider = P.ID " +
                 "INNER JOIN Software S ON S.ID = LK.SoftwareID " +
@@ -323,6 +319,8 @@ namespace SQLiteDataHelpers
             return result;
         }
 
+
+
         public DataTable getExpiringLicensesReport(bool showProvider, int months = 3)
         {
             string orderBy = showProvider
@@ -334,7 +332,7 @@ namespace SQLiteDataHelpers
                 : "NULL AS [Organization],";
 
             string SQL =
-                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], ExpirationDate , COALESCE([SpeedChart], \" \") AS Speedchart " +
+                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], DATE(ExpirationDate) AS ExpirationDate , COALESCE([SpeedChart], \" \") AS Speedchart " +
                 "FROM LicenseKeys LK " +
                 "INNER JOIN Providers P ON S.Provider = P.ID " +
                 "INNER JOIN Software S ON S.ID = LK.SoftwareID " +
@@ -359,7 +357,7 @@ namespace SQLiteDataHelpers
                 : "NULL AS [Organization],";
 
             string SQL =
-                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], ExpirationDate, COALESCE([SpeedChart], \" \") AS Speedchart " +
+                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], DATE(ExpirationDate) AS ExpirationDate, COALESCE([SpeedChart], \" \") AS Speedchart " +
                 "FROM LicenseKeys LK " +
                 "INNER JOIN Providers P ON S.Provider = P.ID " +
                 "INNER JOIN Software S ON S.ID = LK.SoftwareID " +
@@ -370,6 +368,17 @@ namespace SQLiteDataHelpers
             DataTable result = SQLiteDataHelper.GetDataTable(SQL);
 
             return result;
+        }
+
+        public DataTable getManagersLicenseHolders(string Manager)
+        {
+            string SQL = "SELECT KeyHolder, SoftwareName, DATE(ExpirationDate) AS ExpirationDate, COALESCE(Speedchart, ' ') AS Speedchart " +
+                         "FROM LicenseKeys " +
+                         "INNER JOIN Software S ON S.ID = SoftwareID " +
+                         "LEFT OUTER JOIN Speedcharts ON SpeedChartID = SpeedChart " +
+                         "WHERE KeyManager = '" + Manager + "' ORDER BY KeyHolder";
+
+            return SQLiteDataHelper.GetDataTable(SQL);
         }
 
         #endregion
@@ -425,7 +434,8 @@ namespace SQLiteDataHelpers
             License["Description"] = LK.Description;
             License["Comments"] = LK.Comments;
             License["Comments"] = LK.Comments;
-            License["FileSubpath"] = LK.fileSubpath.ToString();
+            License["FileSubpath"] = LK.fileSubpath == Guid.Empty ? "" : LK.fileSubpath.ToString();
+            License["LastModifiedBy"] = LK.LastModifiedBy;
 
             string error = "";
 
@@ -583,7 +593,8 @@ namespace SQLiteDataHelpers
             License["Description"] = LK.Description;
             License["Comments"] = LK.Comments;
             License["Comments"] = LK.Comments;
-            License["FileSubpath"] = LK.fileSubpath.ToString();
+            License["FileSubpath"] = LK.fileSubpath == Guid.Empty ? "" : LK.fileSubpath.ToString();
+            License["LastModifiedBy"] = LK.LastModifiedBy;
 
             string WHERE = "LicenseKey = '" + LK.Key + "'";
 

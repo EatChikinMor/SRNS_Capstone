@@ -67,15 +67,6 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl lstAvailLic;
         
         /// <summary>
-        /// lstManagLic control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl lstManagLic;
-        
-        /// <summary>
         /// lstLicExp control.
         /// </summary>
         /// <remarks>
@@ -92,6 +83,33 @@ namespace SRNS_Capstone {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl lstPendCharg;
+        
+        /// <summary>
+        /// lstUserReports control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl lstUserReports;
+        
+        /// <summary>
+        /// lstMyLicenses control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl lstMyLicenses;
+        
+        /// <summary>
+        /// lstUserManagLic control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl lstUserManagLic;
         
         /// <summary>
         /// admin control.

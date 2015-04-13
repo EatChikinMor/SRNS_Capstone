@@ -18,7 +18,7 @@ namespace SRNS_Capstone
     {
         #region Private Members
 
-        private string directoryPath = AppDomain.CurrentDomain.BaseDirectory + @"\attachmentsDirectory\";
+        private string directoryPath = AppDomain.CurrentDomain.BaseDirectory + "attachmentsDirectory\\";
 
         private User _user
         {
@@ -96,7 +96,6 @@ namespace SRNS_Capstone
                     Response.Redirect("~/Default.aspx");
                 }
             }
-            lblEditor.Text = "Document Created By/Last Updated By: " + _user.FirstName + " " + _user.LastName;
         }
 
         protected void clearForm()
@@ -119,9 +118,9 @@ namespace SRNS_Capstone
             ddlHolderManager.Items.Clear();
             ddlLicHolder.SelectedIndex = ddlHolderManager.SelectedIndex = 0;
             ddlLicHolder.Items.Add("");
-            ddlLicHolder.Items[0].Value = "0";
+            ddlLicHolder.Items[0].Value = "";
             ddlHolderManager.Items.Add("");
-            ddlHolderManager.Items[0].Value = "0";
+            ddlHolderManager.Items[0].Value = "";
 
             if (VSActiveUsers.Count > 0)
             {
@@ -148,128 +147,6 @@ namespace SRNS_Capstone
 
                 VSActiveUsers = list;
             }
-        }
-
-        protected void btnSubmit_Click(object sender, EventArgs e)
-        {
-            var errors = ValidateInput();
-
-            if (errors.Count == 0)
-            {
-                var checkedButton = pnlHolders.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked);
-                int holderCompany = (int) Enum.Parse(typeof (CompanyHolders), checkedButton.ToolTip);
-
-                checkedButton = pnlAssign.Controls.OfType<RadioButton>().FirstOrDefault(btn => btn.Checked);
-                int assignmentStatus = (int) Enum.Parse(typeof (Assigned), checkedButton.ToolTip);
-
-                DBConnector conn = new DBConnector();
-
-                if (!conn.doesKeyExist(txtLiKey.Text))
-                {
-
-                    int provID = conn.GetProviderIdByName(txtProvider.Text);
-
-                    bool passed = false;
-
-                    if (provID < 0)
-                    {
-                        var result = conn.insertProvider(txtProvider.Text, ref passed);
-
-                        if (passed)
-                        {
-                            provID = Convert.ToInt32(result);
-                        }
-                    }
-
-                    passed = false;
-
-                    int softID = conn.GetSoftwareIdByName(txtSoftName.Text);
-
-                    if (softID < 0)
-                    {
-                        var result = conn.insertSoftware(txtSoftName.Text, provID, ref passed);
-
-                        if (passed)
-                        {
-                            softID = Convert.ToInt32(result);
-                        }
-                    }
-
-                    
-                    Guid g = Guid.NewGuid();
-                    if (fileUpload.HasFile)
-                    {
-                        try
-                        {
-                            Directory.CreateDirectory(directoryPath + g);
-                            string filename = Path.GetFileName(fileUpload.FileName);
-                            fileUpload.SaveAs(directoryPath + g + @"\" + filename);
-                        }
-                        catch
-                        {
-                            g = Guid.Empty;
-                        }
-                    }
-
-                    //String.Format("{0:0.00}", a); - reference
-                    LicenseKey LK = new LicenseKey()
-                    {
-                        SoftwareId = softID,
-                        Description = txtSoftDescription.Text,
-                        Key = txtLiKey.Text,
-                        Holder = ddlLicHolder.SelectedItem.Text,
-                        HolderID = ddlLicHolder.SelectedItem.Value,
-                        Manager = ddlHolderManager.SelectedItem.Text,
-                        LicenseCost = Convert.ToDecimal(txtLiCost.Text),
-                        RequisitionNumber = txtReqNum.Text,
-                        ChargebackComplete = ddlChargeback.SelectedIndex == 0,
-                        Provider = provID,
-                        Assignment = assignmentStatus,
-                        Speedchart = txtSpeedchart.Text,
-                        DateUpdated = Convert.ToDateTime(txtDateUpdated.Text), //Validate empty
-                        DateAssigned =
-                            txtDateAssigned.Text.Length > 0
-                                ? Convert.ToDateTime(txtDateUpdated.Text)
-                                : DateTime.MinValue,
-                        DateRemoved =
-                            txtDateRemoved.Text.Length > 0 ? Convert.ToDateTime(txtDateRemoved.Text) : DateTime.MinValue,
-                        DateExpiring = Convert.ToDateTime(txtDateExpiring.Text), //Validate empty
-                        LicenseHolderCompany = holderCompany,
-                        Comments = Server.HtmlEncode(editor.InnerText),
-                        fileSubpath = g
-                    };
-
-                    string insert = new DBConnector().InsertLicense(LK);
-
-                    pnlMain.Visible = false;
-                    pnlSelection.Visible = true;
-                    pnlSuccess.Visible = true;
-                    lblSuccess.Text = insert;
-                    //string response = new DBConnector().InsertSoftware(software);
-                    //clearForm();
-                }
-                else
-                {
-                    pnlError.Visible = true;
-                    lblError.Text = "License Key '" + txtLiKey.Text + "' already exists";
-                }
-            }
-            else
-            {
-                lblError.Visible = true;
-                lblError.ForeColor = Color.Red;
-
-                var E = new StringBuilder();
-
-                foreach (var error in errors)
-                {
-                    E.Append(error);
-                }
-
-                lblError.Text = E.ToString() + " are required.";
-                pnlError.Visible = true;
-            }
-
         }
 
         private List<String> ValidateEmptyInput(ref bool[] valid)
@@ -313,7 +190,17 @@ namespace SRNS_Capstone
                 errors.Add(errors.Count > 0 ? ", " + lblDateExpiring.Text : lblDateExpiring.Text);
             }
 
-            //pnlError.Visible = true;
+            if (!radiobtnSRNS.Checked && !radiobtnCen.Checked && !radiobtnDOE.Checked && !radiobtnSRR.Checked)
+            {
+                ShowLabelError(lblLiComp);
+                errors.Add(errors.Count > 0 ? ", " + lblLiComp.Text : lblLiComp.Text);
+            }
+
+            if (!radioBtnAssign.Checked && !radioBtnAvailable.Checked && !radioBtnRemove.Checked)
+            {
+                ShowLabelError(lblAssignStatus);
+                errors.Add(errors.Count > 0 ? ", " + lblAssignStatus.Text : lblAssignStatus.Text);
+            }
 
             return errors;
         }
@@ -339,7 +226,7 @@ namespace SRNS_Capstone
             return errors;
         }
 
-        private void clearErrors() //TODO: Implement
+        private void clearErrors()
         {
             pnlError.Visible = false;
             ClearTextError(txtSoftName);
@@ -388,18 +275,24 @@ namespace SRNS_Capstone
 
         protected void btnAddKey_OnClick(object sender, EventArgs e)
         {
+            lblEditor.Text = "Document Created By/Last Updated By: " + _user.FirstName + " " + _user.LastName;
             txtLiKey.Enabled = true;
             pnlSuccess.Visible = false;
             clearForm();
             pnlSelection.Visible = false;
             pnlMain.Visible = true;
             btnDelete.Visible = false;
+            btnSubmit.Visible = true;
+            btnUpdate.Visible = false;
+            pnlWarningAttach.Visible = false;
         }
 
         protected void btnLookupKey_OnClick(object sender, EventArgs e)
         {
             pnlSuccess.Visible = false;
             btnDelete.Visible = true;
+            btnSubmit.Visible = false;
+            btnUpdate.Visible = true;
 
             if (String.IsNullOrEmpty(txtEnterKeyToEdit.Text))
             {
@@ -419,49 +312,11 @@ namespace SRNS_Capstone
                 {
                     fillFields(dt.Rows[0]);
                     txtLiKey.Enabled = false;
+                    pnlWarningAttach.Visible = true;
                 }
             }
         }
-
-        private void fillFields(DataRow row)
-        {
-            txtSoftName.Text = row["SoftwareName"].ToString();
-            txtSoftDescription.Text = row["Description"].ToString();
-            txtProvider.Text = row["Organization"].ToString();
-            txtLiKey.Text = row["LicenseKey"].ToString();
-            txtSpeedchart.Text = row["SpeedChartID"].ToString();
-            var date = Convert.ToDateTime(row["DateModified"].ToString());
-            txtDateUpdated.Text = date.ToShortDateString();
-            ddlLicHolder.SelectedValue = row["HolderLoginID"].ToString();
-            ddlHolderManager.SelectedValue = ddlLicHolder.Items.FindByText(row["KeyManager"].ToString()).Value;
-            date = Convert.ToDateTime(row["DateAssigned"].ToString());
-            txtDateAssigned.Text = date == DateTime.MinValue ? "" : date.ToShortDateString();
-            txtLiHoldUserId.Text = row["HolderLoginID"].ToString();
-            txtLiCost.Text = String.Format("{0:0.00}", Convert.ToDecimal(row["LicenseCost"].ToString()));
-            date = Convert.ToDateTime(row["DateAssigned"].ToString());
-            txtDateRemoved.Text = date == DateTime.MinValue ? "" : date.ToShortDateString();
-            txtReqNum.Text = row["RequisitionNumber"].ToString();
-            ddlChargeback.SelectedIndex = Convert.ToInt32(row["ChargebackComplete"]);
-            date = Convert.ToDateTime(row["DateExpiring"].ToString());
-            txtDateExpiring.Text = date == DateTime.MinValue ? "" : date.ToShortDateString();
-
-            if (!String.IsNullOrEmpty(row["LicenseHolderCompany"].ToString()))
-            {
-                RadioButton[] rd = { radiobtnSRNS, radiobtnSRR, radiobtnDOE, radiobtnCen };
-                rd[Convert.ToInt32(row["LicenseHolderCompany"])].Checked = true;
-            }
-
-            if (!String.IsNullOrEmpty(row["AssignmentStatus"].ToString()))
-            {
-                RadioButton[] rd = {  radioBtnAssign, radioBtnRemove, radioBtnAvailable };
-                rd[Convert.ToInt32(row["AssignmentStatus"])].Checked = true;
-            }
-
-            editor.InnerText = Server.HtmlDecode(row["Comments"].ToString());
-            pnlSelection.Visible = false;
-            pnlMain.Visible = true;
-        }
-
+        
         private enum CompanyHolders
         {
             SRNS = 0,
@@ -487,6 +342,323 @@ namespace SRNS_Capstone
                 lblSuccess.Text = "Key '" + txtLiKey.Text + "' Sucessfully Deleted";
             }
             
+        }
+
+        protected void btnSubmit_Click(object sender, EventArgs e)
+        {
+            var errors = ValidateInput();
+
+            if (errors.Count == 0)
+            {
+                var checkedButton = pnlHolders.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked);
+                int holderCompany = (int)Enum.Parse(typeof(CompanyHolders), checkedButton.ToolTip);
+
+                checkedButton = pnlAssign.Controls.OfType<RadioButton>().FirstOrDefault(btn => btn.Checked);
+                int assignmentStatus = (int)Enum.Parse(typeof(Assigned), checkedButton.ToolTip);
+
+                DBConnector conn = new DBConnector();
+
+                if (!conn.doesKeyExist(txtLiKey.Text))
+                {
+
+                    int provID = conn.GetProviderIdByName(txtProvider.Text);
+
+                    bool passed = false;
+
+                    if (provID < 0)
+                    {
+                        var result = conn.insertProvider(txtProvider.Text, ref passed);
+
+                        if (passed)
+                        {
+                            provID = Convert.ToInt32(result);
+                        }
+                    }
+
+                    passed = false;
+
+                    int softID = conn.GetSoftwareIdByName(txtSoftName.Text);
+
+                    if (softID < 0)
+                    {
+                        var result = conn.insertSoftware(txtSoftName.Text, provID, ref passed);
+
+                        if (passed)
+                        {
+                            softID = Convert.ToInt32(result);
+                        }
+                    }
+
+
+                    Guid g = Guid.NewGuid();
+                    if (fileUpload.HasFile)
+                    {
+                        try
+                        {
+                            Directory.CreateDirectory(directoryPath + g);
+                            string filename = Path.GetFileName(fileUpload.FileName);
+                            fileUpload.SaveAs(directoryPath + g + @"\" + filename);
+                        }
+                        catch
+                        {
+                            g = Guid.Empty;
+                        }
+                    }
+
+                    //String.Format("{0:0.00}", a); - reference
+                    LicenseKey LK = new LicenseKey()
+                    {
+                        SoftwareId = softID,
+                        Description = txtSoftDescription.Text,
+                        Key = txtLiKey.Text,
+                        Holder = ddlLicHolder.SelectedItem.Text,
+                        HolderID = ddlLicHolder.SelectedItem.Value,
+                        Manager = ddlHolderManager.SelectedItem.Text,
+                        LicenseCost = Convert.ToDecimal(txtLiCost.Text),
+                        RequisitionNumber = txtReqNum.Text,
+                        ChargebackComplete = ddlChargeback.SelectedIndex == 0,
+                        Provider = provID,
+                        Assignment = assignmentStatus,
+                        Speedchart = txtSpeedchart.Text,
+                        DateUpdated = Convert.ToDateTime(txtDateUpdated.Text), //Validate empty
+                        DateAssigned =
+                            txtDateAssigned.Text.Length > 0
+                                ? Convert.ToDateTime(txtDateUpdated.Text)
+                                : DateTime.MinValue,
+                        DateRemoved =
+                            txtDateRemoved.Text.Length > 0 ? Convert.ToDateTime(txtDateRemoved.Text) : DateTime.MinValue,
+                        DateExpiring = Convert.ToDateTime(txtDateExpiring.Text), //Validate empty
+                        LicenseHolderCompany = holderCompany,
+                        Comments = Server.HtmlEncode(editor.InnerText),
+                        fileSubpath = g,
+                        LastModifiedBy = _user.FirstName + " " + _user.LastName
+                    };
+
+                    string insert = new DBConnector().InsertLicense(LK);
+
+                    pnlMain.Visible = false;
+                    pnlSelection.Visible = true;
+                    pnlSuccess.Visible = true;
+                    lblSuccess.Text = insert;
+                    //string response = new DBConnector().InsertSoftware(software);
+                    //clearForm();
+                }
+                else
+                {
+                    pnlError.Visible = true;
+                    lblError.Text = "License Key '" + txtLiKey.Text + "' already exists";
+                }
+            }
+            else
+            {
+                lblError.Visible = true;
+                lblError.ForeColor = Color.Red;
+
+                var E = new StringBuilder();
+
+                foreach (var error in errors)
+                {
+                    E.Append(error);
+                }
+
+                lblError.Text = E + " is required.";
+                pnlError.Visible = true;
+            }
+
+        }
+
+        protected void btnUpdate_OnClick(object sender, EventArgs e)
+        {
+            var errors = ValidateInput();
+
+            if (errors.Count == 0)
+            {
+                var checkedButton = pnlHolders.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked);
+                int holderCompany = (int)Enum.Parse(typeof(CompanyHolders), checkedButton.ToolTip);
+
+                checkedButton = pnlAssign.Controls.OfType<RadioButton>().FirstOrDefault(btn => btn.Checked);
+                int assignmentStatus = (int)Enum.Parse(typeof(Assigned), checkedButton.ToolTip);
+
+                DBConnector conn = new DBConnector();
+
+                int provID = conn.GetProviderIdByName(txtProvider.Text);
+
+                bool passed = false;
+
+                if (provID < 0)
+                {
+                    var result = conn.insertProvider(txtProvider.Text, ref passed);
+
+                    if (passed)
+                    {
+                        provID = Convert.ToInt32(result);
+                    }
+                }
+
+                passed = false;
+
+                int softID = conn.GetSoftwareIdByName(txtSoftName.Text);
+
+                if (softID < 0)
+                {
+                    var result = conn.insertSoftware(txtSoftName.Text, provID, ref passed);
+
+                    if (passed)
+                    {
+                        softID = Convert.ToInt32(result);
+                    }
+                }
+
+                Guid g = Guid.Empty;
+
+                if (!String.IsNullOrEmpty(hdnGuid.Value))
+                {
+                    g = new Guid(hdnGuid.Value);
+                }
+
+                if (fileUpload.HasFile)
+                {
+                    try
+                    {
+                        if (g == Guid.Empty)
+                        {
+                            g = new Guid();
+
+                            Directory.CreateDirectory(directoryPath + g);
+                            string filename = Path.GetFileName(fileUpload.FileName);
+                            fileUpload.SaveAs(directoryPath + g + @"\" + filename);
+                        }
+                        else
+                        {
+                            string path = Directory.GetFiles(directoryPath + hdnGuid.Value).First();
+                            File.Delete(path);
+
+                            string filename = Path.GetFileName(fileUpload.FileName);
+                            fileUpload.SaveAs(directoryPath + g + @"\" + filename);
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                }
+
+                //String.Format("{0:0.00}", a); - reference
+                LicenseKey LK = new LicenseKey()
+                {
+                    SoftwareId = softID,
+                    Description = txtSoftDescription.Text,
+                    Key = txtLiKey.Text,
+                    Holder = ddlLicHolder.SelectedItem.Text,
+                    HolderID = ddlLicHolder.SelectedItem.Value,
+                    Manager = ddlHolderManager.SelectedItem.Text,
+                    LicenseCost = Convert.ToDecimal(txtLiCost.Text),
+                    RequisitionNumber = txtReqNum.Text,
+                    ChargebackComplete = ddlChargeback.SelectedIndex == 0,
+                    Provider = provID,
+                    Assignment = assignmentStatus,
+                    Speedchart = txtSpeedchart.Text,
+                    DateUpdated = Convert.ToDateTime(txtDateUpdated.Text), //Validate empty
+                    DateAssigned =
+                        txtDateAssigned.Text.Length > 0
+                            ? Convert.ToDateTime(txtDateUpdated.Text)
+                            : DateTime.MinValue,
+                    DateRemoved =
+                        txtDateRemoved.Text.Length > 0 ? Convert.ToDateTime(txtDateRemoved.Text) : DateTime.MinValue,
+                    DateExpiring = Convert.ToDateTime(txtDateExpiring.Text), //Validate empty
+                    LicenseHolderCompany = holderCompany,
+                    Comments = Server.HtmlEncode(editor.InnerText),
+                    fileSubpath = g,
+                    LastModifiedBy = _user.FirstName + " " +_user.LastName
+                };
+
+                if( new DBConnector().UpdateLicenseKey(LK))
+                {
+                    pnlMain.Visible = false;
+                    pnlSelection.Visible = true;
+                    pnlSuccess.Visible = true;
+                    lblSuccess.Text = "Update Successful";
+                    pnlWarningAttach.Visible = false;
+                }
+                else
+                {
+                    lblError.Visible = true;
+                    lblError.ForeColor = Color.Red;
+                    lblError.Text = "An unknown error occurred, update failed";
+                    pnlError.Visible = true;
+                }
+                //string response = new DBConnector().InsertSoftware(software);
+                //clearForm();
+
+            }
+            else
+            {
+                lblError.Visible = true;
+                lblError.ForeColor = Color.Red;
+
+                var E = new StringBuilder();
+
+                foreach (var error in errors)
+                {
+                    E.Append(error);
+                }
+
+                lblError.Text = E + " is required.";
+                pnlError.Visible = true;
+            }
+
+        }
+
+        private void fillFields(DataRow row)
+        {
+            txtSoftName.Text = row["SoftwareName"].ToString();
+            txtSoftDescription.Text = row["Description"].ToString();
+            txtProvider.Text = row["Organization"].ToString();
+            txtLiKey.Text = row["LicenseKey"].ToString();
+            txtSpeedchart.Text = row["SpeedChartID"].ToString();
+            var date = Convert.ToDateTime(row["DateModified"].ToString());
+            txtDateUpdated.Text = date.ToShortDateString();
+            ddlLicHolder.SelectedValue = row["HolderLoginID"].ToString();
+            ddlHolderManager.SelectedValue = ddlLicHolder.Items.FindByText(row["KeyManager"].ToString()).Value;
+            date = Convert.ToDateTime(row["DateAssigned"].ToString());
+            txtDateAssigned.Text = date == DateTime.MinValue ? "" : date.ToShortDateString();
+            txtLiHoldUserId.Text = row["HolderLoginID"].ToString();
+            txtLiCost.Text = String.Format("{0:0.00}", Convert.ToDecimal(row["LicenseCost"].ToString()));
+            date = Convert.ToDateTime(row["DateRemoved"].ToString());
+            txtDateRemoved.Text = date == DateTime.MinValue ? "" : date.ToShortDateString();
+            txtReqNum.Text = row["RequisitionNumber"].ToString();
+            ddlChargeback.SelectedIndex = Convert.ToInt32(row["ChargebackComplete"]);
+            date = Convert.ToDateTime(row["DateExpiring"].ToString());
+            txtDateExpiring.Text = date == DateTime.MinValue ? "" : date.ToShortDateString();
+
+            if (!String.IsNullOrEmpty(row["LicenseHolderCompany"].ToString()))
+            {
+                RadioButton[] rd = { radiobtnSRNS, radiobtnSRR, radiobtnDOE, radiobtnCen };
+                rd[Convert.ToInt32(row["LicenseHolderCompany"])].Checked = true;
+            }
+
+            if (!String.IsNullOrEmpty(row["AssignmentStatus"].ToString()))
+            {
+                RadioButton[] rd = { radioBtnAssign, radioBtnRemove, radioBtnAvailable };
+                rd[Convert.ToInt32(row["AssignmentStatus"])].Checked = true;
+            }
+
+            editor.InnerText = Server.HtmlDecode(row["Comments"].ToString());
+            pnlSelection.Visible = false;
+            pnlMain.Visible = true;
+            hdnGuid.Value = row["FileSubpath"].ToString();
+
+            lblEditor.Text = "Document Created By/Last Updated By: " + row["LastModifiedBy"];
+
+            lnkFileLink.Visible = true;
+            if (!String.IsNullOrEmpty(hdnGuid.Value))
+            {
+                //StreamReader stream = new StreamReader(directoryPath + @"\" + hdnGuid.Value);
+                string Path = Directory.GetFiles(directoryPath + @"\" + hdnGuid.Value).First();
+                string File = System.IO.Path.GetFileName(Path);
+                lnkFileLink.Text = File;
+                lnkFileLink.NavigateUrl = @"\attachmentsDirectory\" + hdnGuid.Value + @"\" + File;
+            }
         }
     }
 }

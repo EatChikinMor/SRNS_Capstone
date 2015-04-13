@@ -34,7 +34,8 @@ namespace SQLiteDataHelpers
                         {"LicenseHolderCompany",""},
                         {"Description",""},
                         {"Comments",""},
-                        {"FileSubpath",""}
+                        {"FileSubpath",""},
+                        {"LastModifiedBy", ""}
                     };
                     return columns;
                 }

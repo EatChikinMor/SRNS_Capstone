@@ -10,7 +10,7 @@ using SQLiteDataHelpers;
 
 namespace SRNS_Capstone
 {
-    public partial class AvailableCount : System.Web.UI.Page
+    public partial class ManagersLicenseHolders : System.Web.UI.Page
     {
         private User _user
         {
@@ -58,7 +58,7 @@ namespace SRNS_Capstone
         private void buildGridCount()
         {
             bool showProvider = chkShowProvider.Checked;
-            var dt = new DBConnector().getAvailableLicensesReport(showProvider);
+            var dt = new DBConnector().getManagersLicenseHolders( _user.FirstName + " " + _user.LastName);
 
             if (dt.Rows.Count == 0)
             {

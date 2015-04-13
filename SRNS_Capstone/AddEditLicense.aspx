@@ -1,10 +1,9 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Capstone.Master" CodeBehind="AddEditLicense.aspx.cs" Inherits="SRNS_Capstone.AddLicense" validateRequest="false" %>
 
-<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ContentPlaceHolderID="head" runat="server">
     <link rel="stylesheet" href="assets/js/cleditor/jquery.cleditor.css"/>
     <style>
-         .day, .next, .prev, .today, .month, .datepicker-switch {
+         .day, .next, .prev, .today, .month, .datepicker-switch, .year {
              cursor: pointer;
          }
 
@@ -67,7 +66,12 @@
         </div>
         <div class="row">
             <div class="col-lg-4 col-md-4">
-                <asp:Label runat="server" ID="lblSoftName">Software Name</asp:Label>
+                  * Required Fields  
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-4">
+                <asp:Label runat="server" ID="lblSoftName">*Software Name</asp:Label>
                 <asp:TextBox CssClass="form-control" runat="server" ID="txtSoftName"></asp:TextBox>
             </div>
             <div class="col-lg-4 col-md-4">
@@ -75,13 +79,13 @@
                 <asp:TextBox CssClass="form-control" runat="server" ID="txtSoftDescription"></asp:TextBox>
             </div>
             <div class="col-lg-4 col-md-4">
-                <asp:Label runat="server" ID="lblProvider">Software Provider/Manufacturer</asp:Label>
+                <asp:Label runat="server" ID="lblProvider">*Software Provider/Manufacturer</asp:Label>
                 <asp:TextBox CssClass="form-control" runat="server" ID="txtProvider"></asp:TextBox>
             </div>
         </div>
         <div class="row">
             <div class="col-lg-4 col-md-4">
-                <asp:Label runat="server" ID="lblLiNum">License Key/Number</asp:Label>
+                <asp:Label runat="server" ID="lblLiNum">*License Key/Number</asp:Label>
                 <asp:TextBox CssClass="form-control" runat="server" ID="txtLiKey"></asp:TextBox>
             </div>
             <div class="col-lg-4 col-md-4">
@@ -126,7 +130,7 @@
                 <asp:TextBox CssClass="form-control" runat="server" ID="txtLiHoldUserId" ></asp:TextBox>
             </div>
             <div class="col-lg-4 col-md-4">
-                <asp:Label runat="server" ID="lblLiCost">License Cost (#.##)</asp:Label>
+                <asp:Label runat="server" ID="lblLiCost">*License Cost (Decimal point required)</asp:Label>
                 <asp:TextBox CssClass="form-control" runat="server" ID="txtLiCost" onkeyup="javascript:this.value=validateCurrency(this.value);"></asp:TextBox>
             </div>
             <div class="col-lg-4 col-md-4">
@@ -153,7 +157,7 @@
                 </asp:DropDownList>
             </div>
             <div class="col-lg-4 col-md-4">
-                <asp:Label runat="server" ID="lblDateExpiring">Date of Expiration</asp:Label>
+                <asp:Label runat="server" ID="lblDateExpiring">*Date of Expiration</asp:Label>
                 <div class="input-group date">
                     <asp:TextBox type="text" ID="txtDateExpiring" class="form-control" runat="server" />
                     <span class="input-group-addon">
@@ -212,6 +216,14 @@
                     </div>
                 </div>
                 <br/>
+                <h3>
+                    <asp:Label runat="server" ID="lblLink" Text="Attachment:"></asp:Label>
+                    <asp:HyperLink runat="server" ID="lnkFileLink" Visible="False"></asp:HyperLink>
+                </h3>
+                <br/>
+                <asp:Panel runat="server" ID="pnlWarningAttach">
+                    <span style="color:red">WARNING:</span>Attaching a file will replace current attachment. Attach .zip for multiple attachments
+                </asp:Panel>
                 <div class="fileinput fileinput-new input-group" data-provides="fileinput" style="margin-top: 5px;">
                     <div class="form-control" data-trigger="fileinput">
                         <i class="glyphicon glyphicon-file fileinput-exists"></i>
@@ -224,15 +236,18 @@
                     </span>
                     <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
                 </div>
-                <br />
+                <br/>
                 <strong><asp:Label runat="server" ID="lblEditor"></asp:Label></strong>
                 <br/>
                 <asp:Button runat="server" CssClass="btn btn-danger btn-md pull-left" ID="btnDelete" Text="Delete License" OnClick="btnDelete_OnClick" Visible="False"/>
                 <asp:Button CssClass="btn btn-lg btn-primary pull-right" runat="server" ID="btnSubmit" Text="Submit" OnClick="btnSubmit_Click" />
+                <asp:Button CssClass="btn btn-lg btn-primary pull-right" runat="server" ID="btnUpdate" Text="Update" OnClick="btnUpdate_OnClick" />
             </div>
         </div>
         </asp:Panel>
     </div>
+    
+    <asp:HiddenField runat="server" ID="hdnGuid"/>
     
 
     <script src="assets/js/datepicker.js"></script>
@@ -255,12 +270,15 @@
                 var lbl = document.getElementById("<%=lblLiCost.ClientID%>");
                 txt.style.backgroundColor = "#FFD8D8";
                 lbl.style.color = "red";
+                document.getElementById('<%=btnSubmit.ClientID%>').disabled = true;
             } else {
                 var txt = document.getElementById("<%=txtLiCost.ClientID%>");
                 var lbl = document.getElementById("<%=lblLiCost.ClientID%>");
                 txt.style.backgroundColor = "white";
                 lbl.style.color = "black";
+                document.getElementById('<%=btnSubmit.ClientID%>').disabled = false;
             }
+
             return input;
         };
 

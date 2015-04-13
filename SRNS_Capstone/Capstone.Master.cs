@@ -35,18 +35,16 @@ namespace SRNS_Capstone
             if (IsAdmin)
             {
                 admin.Visible =
-                lstAddLicense.Visible =
-                lstReports.Visible =
-                lstAvailLic.Visible = 
-                lstLicCount.Visible =
-                lstLicExp.Visible = 
-                lstManagLic.Visible =
-                lstPendCharg.Visible = true;
+                    lstAddLicense.Visible =
+                        lstUserReports.Visible = 
+                            lstReports.Visible = true;
             }
             else
             {
-                //TODO: User Logic
-                //Probably Remove "Reports" Option and replace with "User Report"
+                lstAddLicense.Visible = false;
+                lstReports.Visible = false;
+                lstUserReports.Visible = true;
+                admin.Visible = false;
             }
             //lstAvailLic.Visible = false;
         }
