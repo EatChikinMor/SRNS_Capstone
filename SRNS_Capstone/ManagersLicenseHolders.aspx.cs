@@ -35,17 +35,18 @@ namespace SRNS_Capstone
                 User user = (User)Session["User"];
 
                 //Remove before release
-                if ("localhost" == Request.Url.DnsSafeHost)
-                {
-                    User a = new User() { ID = "0", FirstName = "Austin", LastName = "Rich", IsAdmin = true, LoginID = "arich", ManagerID = 0 };
-                    user = a;
-                }
+                //if ("localhost" == Request.Url.DnsSafeHost)
+                //{
+                //    User a = new User() { ID = "0", FirstName = "Austin", LastName = "Rich", IsAdmin = true, LoginID = "arich", ManagerID = 0 };
+                //    user = a;
+                //}
                 //Remove before release
 
                 if (user != null)
                 {
                     _user = user;
                     ((Capstone)Page.Master).showMenuOptions(user.IsAdmin);
+                    lblMangerNameHead.Text = _user.FirstName + " " + _user.LastName;
                     buildGridCount();
                 }
                 else
@@ -57,7 +58,7 @@ namespace SRNS_Capstone
 
         private void buildGridCount()
         {
-            bool showProvider = chkShowProvider.Checked;
+            //bool showProvider = chkShowProvider.Checked;
             var dt = new DBConnector().getManagersLicenseHolders( _user.FirstName + " " + _user.LastName);
 
             if (dt.Rows.Count == 0)
@@ -70,7 +71,7 @@ namespace SRNS_Capstone
             {
                 lblSoftwareCount.Text = dt.Rows.Count.ToString();
                 gridCounts.DataSource = dt;
-                gridCounts.Columns[0].Visible = showProvider;
+                //gridCounts.Columns[0].Visible = showProvider;
                 gridCounts.DataBind();
             }
         }

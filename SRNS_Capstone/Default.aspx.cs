@@ -70,7 +70,7 @@ namespace SRNS_Capstone
                 user = new User()
                 {
                     ID = ADuser.Properties["distinguishedName"].Value.ToString(),
-                    LoginID = ADuser.Properties["sAMAAccountName"].Value.ToString(),
+                    LoginID = txtUsername.Text,
                     FirstName = ADuser.Properties["givenName"].Value.ToString(),
                     LastName = ADuser.Properties["SN"].Value.ToString(),
                     IsAdmin = false

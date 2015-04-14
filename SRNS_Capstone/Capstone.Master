@@ -49,7 +49,7 @@
                             <li class="dropdown" runat="server" id="lstUserReports" Visible="false">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Reports <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li runat="server" id="lstMyLicenses" ><a href="AddEditLicense.aspx">My Licenses License</a></li>
+                                    <li runat="server" id="lstMyLicenses" ><a href="AddEditLicense.aspx">My Licenses</a></li>
                                     <li runat="server" id="lstUserManagLic" ><a href="ManagersLicenseHolders.aspx">Manager's License Holders</a></li>
                                 </ul>
                             </li>

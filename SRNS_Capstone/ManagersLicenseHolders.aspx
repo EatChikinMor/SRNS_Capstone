@@ -13,11 +13,11 @@
             </h2>
         </div>
         <div class="row text-center">
-            <div class="col-lg-2 col-md-2">
+            <%--<div class="col-lg-2 col-md-2">
                 Sort by Software Provider Name
             <asp:CheckBox runat="server" ID="chkShowProvider" Checked="false" AutoPostBack="True" OnCheckedChanged="chkShowProvider_OnCheckedChanged" />
-            </div>
-            <div class="col-lg-8">
+            </div>--%>
+            <div class="col-lg-8 col-lg-offset-2">
                 <h3>
                 Count:
                 <asp:Label runat="server" ID="lblSoftwareCount" Visible="true"></asp:Label>
@@ -37,10 +37,10 @@
                         FieldHeaderStyle-CssClass="hdr"
                         CommandRowStyle-CssClass="ftr">
                         <Columns>
-                            <asp:BoundColumn HeaderText="Provider" DataField="KeyHolder" />
+                            <asp:BoundColumn HeaderText="Key Holder" DataField="KeyHolder" />
                             <asp:BoundColumn HeaderText="Software" DataField="SoftwareName" />
                             <asp:BoundColumn HeaderText="Expires" DataField="ExpirationDate" />
-                            <asp:BoundColumn HeaderText="Key" DataField="LicenseKey" />
+                            <%--<asp:BoundColumn HeaderText="Key" DataField="LicenseKey" />--%>
                             <asp:BoundColumn HeaderText="Speedchart" DataField="Speedchart" />
                         </Columns>
                     </asp:DataGrid>

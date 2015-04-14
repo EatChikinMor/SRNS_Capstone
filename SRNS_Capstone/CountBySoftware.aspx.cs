@@ -41,11 +41,11 @@ namespace SRNS_Capstone.Reports
                 User user = (User)Session["User"];
 
                 //Remove before release
-                if ("localhost" == Request.Url.DnsSafeHost)
-                {
-                    User a = new User() { ID = "0", FirstName = "Austin", LastName = "Rich", IsAdmin = true, LoginID = "arich", ManagerID = 0 };
-                    user = a;
-                }
+                //if ("localhost" == Request.Url.DnsSafeHost)
+                //{
+                //    User a = new User() { ID = "0", FirstName = "Austin", LastName = "Rich", IsAdmin = true, LoginID = "arich", ManagerID = 0 };
+                //    user = a;
+                //}
                 //Remove before release
 
                 if (user != null)
