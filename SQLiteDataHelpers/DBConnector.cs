@@ -227,7 +227,8 @@ namespace SQLiteDataHelpers
                 : "AND [ExpirationDate] > CURRENT_TIMESTAMP ";
 
             var SQL =
-                "SELECT COALESCE(LK.KeyHolder || '-' ||LK.HolderLoginID, 'Not Assigned') AS Name, DATE([ExpirationDate]), [LicenseKey] " +
+                "SELECT COALESCE(LK.KeyHolder, 'Not Assigned') AS Name, DATE([ExpirationDate]) AS ExpirationDate, [LicenseKey] " +
+                //"SELECT COALESCE(LK.KeyHolder || ' - Login ID:' ||LK.HolderLoginID, 'Not Assigned') AS Name, DATE([ExpirationDate]) AS ExpirationDate, [LicenseKey] " +
                 "FROM LicenseKeys LK " +
                 "WHERE SoftwareID = "+ SoftwareId +"  " +
                 andExpired +
@@ -265,7 +266,7 @@ namespace SQLiteDataHelpers
             string SQL =
                 "SELECT [SoftwareName],[LicenseKey], [DateModified], [ExpirationDate], [KeyHolder],[KeyManager]," +
                 "[HolderLoginID], [LicenseCost], [RequisitionNumber], [ChargebackComplete], [Organization], " +
-                "[AssignmentStatus],[SpeedChartID], [DateAssigned], [DateRemoved], [DateExpiring], [LicenseHolderCompany], " +
+                "[AssignmentStatus],[SpeedChart], [DateAssigned], [DateRemoved], [DateExpiring], [LicenseHolderCompany], " +
                 "[Description], [Comments], [FileSubPath], [LastModifiedBy] " +
                 "FROM LicenseKeys LK " +
                 "INNER JOIN Software S ON [SoftwareID] = S.ID " +
@@ -306,11 +307,11 @@ namespace SQLiteDataHelpers
                 : "NULL AS [Organization],";
 
             string SQL =
-                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], DATE(ExpirationDate) AS ExpirationDate, COALESCE([SpeedChart], \" \") AS Speedchart " +
+                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], DATE(ExpirationDate) AS ExpirationDate, [SpeedChart] " +
                 "FROM LicenseKeys LK " +
                 "INNER JOIN Providers P ON S.Provider = P.ID " +
                 "INNER JOIN Software S ON S.ID = LK.SoftwareID " +
-                "LEFT OUTER JOIN Speedcharts SC ON SC.KeyChargedAgainst = LK.[LicenseKey] " +
+                //"LEFT OUTER JOIN Speedcharts SC ON SC.KeyChargedAgainst = LK.[LicenseKey] " +
                 "WHERE ExpirationDate > CURRENT_TIMESTAMP AND (LK.KeyHolder = '' OR LK.KeyHolder IS NULL) " +
                 orderBy;
 
@@ -332,11 +333,11 @@ namespace SQLiteDataHelpers
                 : "NULL AS [Organization],";
 
             string SQL =
-                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], DATE(ExpirationDate) AS ExpirationDate , COALESCE([SpeedChart], \" \") AS Speedchart " +
+                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], DATE(ExpirationDate) AS ExpirationDate , [SpeedChart] " +
                 "FROM LicenseKeys LK " +
                 "INNER JOIN Providers P ON S.Provider = P.ID " +
                 "INNER JOIN Software S ON S.ID = LK.SoftwareID " +
-                "LEFT OUTER JOIN Speedcharts SC ON SC.KeyChargedAgainst = LK.[LicenseKey] " +
+                //"LEFT OUTER JOIN Speedcharts SC ON SC.KeyChargedAgainst = LK.[LicenseKey] " +
                 "WHERE ExpirationDate > CURRENT_TIMESTAMP " +
                 "AND ExpirationDate < DATE(CURRENT_TIMESTAMP, '+"+ months +" month')" +
                 orderBy;
@@ -357,11 +358,11 @@ namespace SQLiteDataHelpers
                 : "NULL AS [Organization],";
 
             string SQL =
-                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], DATE(ExpirationDate) AS ExpirationDate, COALESCE([SpeedChart], \" \") AS Speedchart " +
+                "SELECT " + provider + " S.[SoftwareName], LK.[LicenseKey], DATE(ExpirationDate) AS ExpirationDate, [SpeedChart] " +
                 "FROM LicenseKeys LK " +
                 "INNER JOIN Providers P ON S.Provider = P.ID " +
                 "INNER JOIN Software S ON S.ID = LK.SoftwareID " +
-                "LEFT OUTER JOIN Speedcharts SC ON SC.KeyChargedAgainst = LK.[LicenseKey] " +
+                //"LEFT OUTER JOIN Speedcharts SC ON SC.KeyChargedAgainst = LK.[LicenseKey] " +
                 "WHERE ExpirationDate < CURRENT_TIMESTAMP " +
                 orderBy;
 
@@ -372,10 +373,10 @@ namespace SQLiteDataHelpers
 
         public DataTable getManagersLicenseHolders(string Manager)
         {
-            string SQL = "SELECT KeyHolder, SoftwareName, DATE(ExpirationDate) AS ExpirationDate, COALESCE(Speedchart, ' ') AS Speedchart " +
+            string SQL = "SELECT KeyHolder, SoftwareName, DATE(ExpirationDate) AS ExpirationDate, Speedchart " +
                          "FROM LicenseKeys " +
                          "INNER JOIN Software S ON S.ID = SoftwareID " +
-                         "LEFT OUTER JOIN Speedcharts ON SpeedChartID = SpeedChart " +
+                         //"LEFT OUTER JOIN Speedcharts ON SpeedChartID = SpeedChart " +
                          "WHERE KeyManager = '" + Manager + "' ORDER BY KeyHolder";
 
             return SQLiteDataHelper.GetDataTable(SQL);
@@ -426,7 +427,7 @@ namespace SQLiteDataHelpers
             License["ChargebackComplete"] = Convert.ToInt32(LK.ChargebackComplete).ToString();
             License["ProviderID"] = LK.Provider.ToString();
             License["AssignmentStatus"] = LK.Assignment.ToString();
-            License["SpeedChartID"] = LK.Speedchart;
+            License["SpeedChart"] = LK.Speedchart;
             License["DateAssigned"] = LK.DateAssigned.ToString("s");
             License["DateRemoved"] = LK.DateRemoved.ToString("s");
             License["DateExpiring"] = LK.DateExpiring.ToString("s");
@@ -585,7 +586,7 @@ namespace SQLiteDataHelpers
             License["ChargebackComplete"] = Convert.ToInt32(LK.ChargebackComplete).ToString();
             License["ProviderID"] = LK.Provider.ToString();
             License["AssignmentStatus"] = LK.Assignment.ToString();
-            License["SpeedChartID"] = LK.Speedchart;
+            License["SpeedChart"] = LK.Speedchart;
             License["DateAssigned"] = LK.DateAssigned.ToString("s");
             License["DateRemoved"] = LK.DateRemoved.ToString("s");
             License["DateExpiring"] = LK.DateExpiring.ToString("s");

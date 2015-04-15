@@ -285,6 +285,8 @@ namespace SRNS_Capstone
             btnSubmit.Visible = true;
             btnUpdate.Visible = false;
             pnlWarningAttach.Visible = false;
+            lblLink.Visible = false;
+            lnkFileLink.Visible = false;
         }
 
         protected void btnLookupKey_OnClick(object sender, EventArgs e)
@@ -334,7 +336,24 @@ namespace SRNS_Capstone
 
         protected void btnDelete_OnClick(object sender, EventArgs e)
         {
-            //TODO: Delete associated files when deleting key
+            //TODO: Test block wrapped in "//--Test--" tags
+
+            //--Test--
+            Guid g = Guid.Empty;
+
+            if (!String.IsNullOrEmpty(hdnGuid.Value))
+            {
+                g = new Guid(hdnGuid.Value);
+            }
+
+            if (g != Guid.Empty)
+            {
+                string path = Directory.GetFiles(directoryPath + hdnGuid.Value).First();
+               
+                File.Delete(path);
+            }
+            //--Test--
+
             if (new DBConnector().DeleteKey(txtLiKey.Text))
             {
                 pnlSuccess.Visible = true;
@@ -389,7 +408,6 @@ namespace SRNS_Capstone
                             softID = Convert.ToInt32(result);
                         }
                     }
-
 
                     Guid g = Guid.NewGuid();
                     if (fileUpload.HasFile)
@@ -590,7 +608,6 @@ namespace SRNS_Capstone
                 }
                 //string response = new DBConnector().InsertSoftware(software);
                 //clearForm();
-
             }
             else
             {
@@ -616,7 +633,7 @@ namespace SRNS_Capstone
             txtSoftDescription.Text = row["Description"].ToString();
             txtProvider.Text = row["Organization"].ToString();
             txtLiKey.Text = row["LicenseKey"].ToString();
-            txtSpeedchart.Text = row["SpeedChartID"].ToString();
+            txtSpeedchart.Text = row["SpeedChart"].ToString();
             var date = Convert.ToDateTime(row["DateModified"].ToString());
             txtDateUpdated.Text = date.ToShortDateString();
             ddlLicHolder.SelectedValue = row["HolderLoginID"].ToString();
@@ -652,6 +669,7 @@ namespace SRNS_Capstone
             lblEditor.Text = "Document Created By/Last Updated By: " + row["LastModifiedBy"];
 
             lnkFileLink.Visible = true;
+            lblLink.Visible = true;
             if (!String.IsNullOrEmpty(hdnGuid.Value))
             {
                 //StreamReader stream = new StreamReader(directoryPath + @"\" + hdnGuid.Value);

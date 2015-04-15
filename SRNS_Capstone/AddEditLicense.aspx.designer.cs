@@ -193,22 +193,22 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.TextBox txtSpeedchart;
         
         /// <summary>
-        /// Label1 control.
+        /// lblDateExpiring control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
+        protected global::System.Web.UI.WebControls.Label lblDateExpiring;
         
         /// <summary>
-        /// txtDateUpdated control.
+        /// txtDateExpiring control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDateUpdated;
+        protected global::System.Web.UI.WebControls.TextBox txtDateExpiring;
         
         /// <summary>
         /// lblLiHold control.
@@ -256,24 +256,6 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.DropDownList ddlHolderManager;
         
         /// <summary>
-        /// Label2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label2;
-        
-        /// <summary>
-        /// txtDateAssigned control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDateAssigned;
-        
-        /// <summary>
         /// lblLiHoldUserId control.
         /// </summary>
         /// <remarks>
@@ -292,94 +274,49 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.TextBox txtLiHoldUserId;
         
         /// <summary>
-        /// lblLiCost control.
+        /// pnlAssign control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblLiCost;
+        protected global::System.Web.UI.WebControls.Panel pnlAssign;
         
         /// <summary>
-        /// txtLiCost control.
+        /// lblAssignStatus control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtLiCost;
+        protected global::System.Web.UI.WebControls.Label lblAssignStatus;
         
         /// <summary>
-        /// Label5 control.
+        /// radioBtnAssign control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label5;
+        protected global::System.Web.UI.WebControls.RadioButton radioBtnAssign;
         
         /// <summary>
-        /// txtDateRemoved control.
+        /// radioBtnRemove control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDateRemoved;
+        protected global::System.Web.UI.WebControls.RadioButton radioBtnRemove;
         
         /// <summary>
-        /// lblReqNum control.
+        /// radioBtnAvailable control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblReqNum;
-        
-        /// <summary>
-        /// txtReqNum control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtReqNum;
-        
-        /// <summary>
-        /// lblChargeback control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblChargeback;
-        
-        /// <summary>
-        /// ddlChargeback control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlChargeback;
-        
-        /// <summary>
-        /// lblDateExpiring control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblDateExpiring;
-        
-        /// <summary>
-        /// txtDateExpiring control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDateExpiring;
+        protected global::System.Web.UI.WebControls.RadioButton radioBtnAvailable;
         
         /// <summary>
         /// pnlHolders control.
@@ -436,49 +373,112 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.RadioButton radiobtnCen;
         
         /// <summary>
-        /// pnlAssign control.
+        /// lblLiCost control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlAssign;
+        protected global::System.Web.UI.WebControls.Label lblLiCost;
         
         /// <summary>
-        /// lblAssignStatus control.
+        /// txtLiCost control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblAssignStatus;
+        protected global::System.Web.UI.WebControls.TextBox txtLiCost;
         
         /// <summary>
-        /// radioBtnAssign control.
+        /// lblChargeback control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton radioBtnAssign;
+        protected global::System.Web.UI.WebControls.Label lblChargeback;
         
         /// <summary>
-        /// radioBtnRemove control.
+        /// ddlChargeback control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton radioBtnRemove;
+        protected global::System.Web.UI.WebControls.DropDownList ddlChargeback;
         
         /// <summary>
-        /// radioBtnAvailable control.
+        /// lblReqNum control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton radioBtnAvailable;
+        protected global::System.Web.UI.WebControls.Label lblReqNum;
+        
+        /// <summary>
+        /// txtReqNum control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtReqNum;
+        
+        /// <summary>
+        /// Label1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label1;
+        
+        /// <summary>
+        /// txtDateUpdated control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDateUpdated;
+        
+        /// <summary>
+        /// Label2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label2;
+        
+        /// <summary>
+        /// txtDateAssigned control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDateAssigned;
+        
+        /// <summary>
+        /// Label5 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label5;
+        
+        /// <summary>
+        /// txtDateRemoved control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDateRemoved;
         
         /// <summary>
         /// lblComments control.

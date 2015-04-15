@@ -27,7 +27,7 @@ namespace SQLiteDataHelpers
                         {"ChargebackComplete",""},
                         {"ProviderID",""},
                         {"AssignmentStatus",""},
-                        {"SpeedChartID",""},
+                        {"SpeedChart",""},
                         {"DateAssigned",""},
                         {"DateRemoved",""},
                         {"DateExpiring",""},
@@ -87,20 +87,6 @@ namespace SQLiteDataHelpers
                     {
                         {"SoftwareName", ""},
                         {"Provider", ""}
-                    };
-                    return columns;
-                }
-            }
-
-            public static Dictionary<String, String> Speedcharts
-            {
-                get
-                {
-                    var columns = new Dictionary<String, String>()
-                    {
-                        {"KeyChargedAgainst",""},
-                        {"SpeedChart",""},
-                        {"OrganizationID",""}
                     };
                     return columns;
                 }
