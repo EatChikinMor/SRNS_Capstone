@@ -59,29 +59,39 @@ namespace SRNS_Capstone
         private void buildGridCount()
         {
             bool showProvider = chkShowProvider.Checked;
-            if (isWholeNumeric(txtCount.Text))
+            if (!String.IsNullOrEmpty(txtCount.Text))
             {
-                pnlError.Visible = false;
-                var dt = new DBConnector().getExpiringLicensesReport(showProvider, Convert.ToInt32(txtCount.Text));
-
-                if (dt.Rows.Count == 0)
+                if (isWholeNumeric(txtCount.Text))
                 {
-                    lblSoftwareCount.Text = "No Keys Exist";
-                    lblSoftwareCount.ForeColor = Color.Red;
-                    gridCounts.Visible = false;
+                    pnlError.Visible = false;
+                    var dt = new DBConnector().getExpiringLicensesReport(showProvider, Convert.ToInt32(txtCount.Text));
+
+                    if (dt.Rows.Count == 0)
+                    {
+                        lblSoftwareCount.Text = "No Keys Exist";
+                        lblSoftwareCount.ForeColor = Color.Red;
+                        gridCounts.Visible = false;
+                    }
+                    else
+                    {
+                        gridCounts.Visible = true;
+                        lblSoftwareCount.ForeColor = Color.Black;
+                        lblSoftwareCount.Text = dt.Rows.Count.ToString();
+                        gridCounts.DataSource = dt;
+                        gridCounts.Columns[0].Visible = showProvider;
+                        gridCounts.DataBind();
+                    }
                 }
                 else
                 {
-                    lblSoftwareCount.Text = dt.Rows.Count.ToString();
-                    gridCounts.DataSource = dt;
-                    gridCounts.Columns[0].Visible = showProvider;
-                    gridCounts.DataBind();
+                    pnlError.Visible = true;
+                    lblError.Text = "Only whole numbers allowed";
                 }
             }
             else
             {
                 pnlError.Visible = true;
-                lblError.Text = "Only whole numbers allowed";
+                lblError.Text = "Please enter a whole value";
             }
 
             pnlExpired.Visible = false;
@@ -91,8 +101,8 @@ namespace SRNS_Capstone
         private bool isWholeNumeric(string text)
         {
             double num;
-            double.TryParse(text, out num);
-            return num == (int)num;
+            bool pass = double.TryParse(text, out num);
+            return pass && (num == (int)num);
         }
 
         protected void chkShowProvider_OnCheckedChanged(object sender, EventArgs e)

@@ -266,7 +266,7 @@ namespace SQLiteDataHelpers
             string SQL =
                 "SELECT [SoftwareName],[LicenseKey], [DateModified], [ExpirationDate], [KeyHolder],[KeyManager]," +
                 "[HolderLoginID], [LicenseCost], [RequisitionNumber], [ChargebackComplete], [Organization], " +
-                "[AssignmentStatus],[SpeedChart], [DateAssigned], [DateRemoved], [DateExpiring], [LicenseHolderCompany], " +
+                "[AssignmentStatus],[SpeedChart], [DateAssigned], [DateRemoved], [LicenseHolderCompany], " +
                 "[Description], [Comments], [FileSubPath], [LastModifiedBy] " +
                 "FROM LicenseKeys LK " +
                 "INNER JOIN Software S ON [SoftwareID] = S.ID " +
@@ -319,8 +319,6 @@ namespace SQLiteDataHelpers
 
             return result;
         }
-
-
 
         public DataTable getExpiringLicensesReport(bool showProvider, int months = 3)
         {
@@ -380,6 +378,42 @@ namespace SQLiteDataHelpers
                          "WHERE KeyManager = '" + Manager + "' ORDER BY KeyHolder";
 
             return SQLiteDataHelper.GetDataTable(SQL);
+        }
+
+        public DataTable getMyLicensesReport(string keyHolder, string loginID, bool showProvider)
+        {
+            string orderBy = showProvider
+                ? "ORDER BY Provider, SoftwareName, ExpirationDate DESC"
+                : "ORDER BY SoftwareName, ExpirationDate DESC";
+
+            string provider = showProvider
+                ? "[Organization],"
+                : "NULL AS [Organization],";
+
+            string SQL =
+                "SELECT " + provider + " [SoftwareName], [LicenseKey], DATE(ExpirationDate) AS ExpirationDate " +
+                "FROM LicenseKeys " +
+                "INNER JOIN Providers P ON S.Provider = P.ID " +
+                "INNER JOIN Software S ON S.ID = SoftwareID " +
+                "WHERE KeyHolder = '" + keyHolder + "' AND HolderLoginID = '"+ loginID +"' " +
+                orderBy;
+
+            return SQLiteDataHelper.GetDataTable(SQL);
+        }
+
+        public DataTable getPendingChargebackReport()
+        {
+            string SQL =
+                "SELECT [SpeedChart], [SoftwareName], [LicenseKey], [KeyHolder], [KeyManager], [LicenseCost], [Organization] " +
+                "FROM LicenseKeys LK " +
+                "INNER JOIN Software S ON [SoftwareID] = S.ID " +
+                "INNER JOIN Providers P ON ProviderID = P.ID " +
+                "WHERE [ChargebackComplete] = 0 " +
+                "ORDER BY SpeedChart";
+
+            DataTable result = SQLiteDataHelper.GetDataTable(SQL);
+
+            return result;
         }
 
         #endregion

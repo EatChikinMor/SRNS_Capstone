@@ -53,7 +53,7 @@ select.form-control {
         background: #fcfcfc url(assets/img/grd_alt.png) repeat-x top;
     }
 
-    .dGrid .hdr {
+    .dGrid .hdr td {
         padding: 4px 2px;
         color: #fff;
         background: #424242 url(assets/img/grd_head.png) repeat-x top;

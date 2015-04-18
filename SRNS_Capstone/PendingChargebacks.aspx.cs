@@ -10,7 +10,7 @@ using SQLiteDataHelpers;
 
 namespace SRNS_Capstone
 {
-    public partial class AvailableCount : System.Web.UI.Page
+    public partial class PendingChargebacks : System.Web.UI.Page
     {
         private User _user
         {
@@ -57,12 +57,12 @@ namespace SRNS_Capstone
 
         private void buildGridCount()
         {
-            bool showProvider = chkShowProvider.Checked;
-            var dt = new DBConnector().getAvailableLicensesReport(showProvider);
+            var dt = new DBConnector().getPendingChargebackReport();
 
             if (dt.Rows.Count == 0)
             {
-                lblSoftwareCount.Text = "No Keys Exist";
+
+                lblSoftwareCount.Text = "No licenses exist with a pending chargeback";
                 lblSoftwareCount.ForeColor = Color.Red;
                 gridCounts.Visible = false;
             }
@@ -72,7 +72,6 @@ namespace SRNS_Capstone
                 gridCounts.Visible = true;
                 lblSoftwareCount.Text = dt.Rows.Count.ToString();
                 gridCounts.DataSource = dt;
-                gridCounts.Columns[0].Visible = showProvider;
                 gridCounts.DataBind();
             }
         }

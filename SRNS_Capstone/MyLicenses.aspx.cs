@@ -10,7 +10,7 @@ using SQLiteDataHelpers;
 
 namespace SRNS_Capstone
 {
-    public partial class AvailableCount : System.Web.UI.Page
+    public partial class MyLicenses : System.Web.UI.Page
     {
         private User _user
         {
@@ -46,6 +46,7 @@ namespace SRNS_Capstone
                 {
                     _user = user;
                     ((Capstone)Page.Master).showMenuOptions(user.IsAdmin);
+                    lblUserNameHead.Text = _user.FirstName + " " + _user.LastName + " - " + _user.LoginID;
                     buildGridCount();
                 }
                 else
@@ -58,11 +59,12 @@ namespace SRNS_Capstone
         private void buildGridCount()
         {
             bool showProvider = chkShowProvider.Checked;
-            var dt = new DBConnector().getAvailableLicensesReport(showProvider);
+            var dt = new DBConnector().getMyLicensesReport(_user.FirstName + " " + _user.LastName, _user.LoginID, showProvider);
 
             if (dt.Rows.Count == 0)
             {
-                lblSoftwareCount.Text = "No Keys Exist";
+
+                lblSoftwareCount.Text = _user.IsAdmin ? "Only Active Directory users can hold licenses - please login with your windows credentials." : "You currently have no license keys assigned to you.";
                 lblSoftwareCount.ForeColor = Color.Red;
                 gridCounts.Visible = false;
             }

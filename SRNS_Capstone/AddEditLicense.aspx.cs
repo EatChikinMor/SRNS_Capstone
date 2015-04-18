@@ -18,7 +18,7 @@ namespace SRNS_Capstone
     {
         #region Private Members
 
-        private string directoryPath = AppDomain.CurrentDomain.BaseDirectory + "attachmentsDirectory\\";
+        private readonly string directoryPath = AppDomain.CurrentDomain.BaseDirectory + "attachmentsDirectory\\";
 
         private User _user
         {
@@ -43,22 +43,6 @@ namespace SRNS_Capstone
                 return (List<Tuple<String, String, String>>)ViewState["ActiveUsers"];
             }
             set { ViewState["ActiveUsers"] = value; }
-        }
-
-        private DataTable VSconflictingTable
-        {
-            get
-            {
-                if (ViewState["conflictingTable"] == null)
-                {
-                    ViewState["conflictingTable"] = new DataTable();
-                }
-                return (DataTable)ViewState["conflictingTable"];
-            }
-            set
-            {
-                ViewState["conflictingTable"] = value;
-            }
         }
 
         #endregion
@@ -646,7 +630,7 @@ namespace SRNS_Capstone
             txtDateRemoved.Text = date == DateTime.MinValue ? "" : date.ToShortDateString();
             txtReqNum.Text = row["RequisitionNumber"].ToString();
             ddlChargeback.SelectedIndex = Convert.ToInt32(row["ChargebackComplete"]);
-            date = Convert.ToDateTime(row["DateExpiring"].ToString());
+            date = Convert.ToDateTime(row["ExpirationDate"].ToString());
             txtDateExpiring.Text = date == DateTime.MinValue ? "" : date.ToShortDateString();
 
             if (!String.IsNullOrEmpty(row["LicenseHolderCompany"].ToString()))

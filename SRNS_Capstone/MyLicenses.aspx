@@ -1,6 +1,9 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Capstone.Master" CodeBehind="AvailableCount.aspx.cs" Inherits="SRNS_Capstone.AvailableCount" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="MyLicenses.aspx.cs" MasterPageFile="~/Capstone.Master" Inherits="SRNS_Capstone.MyLicenses" %>
 
 <asp:Content ContentPlaceHolderID="head" runat="server">
+    <style>
+        
+    </style>
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
@@ -9,7 +12,7 @@
     <div class="container">
         <div class="row text-center">
             <h2>
-                Licenses Available for Assignment
+                Licenses Held By <asp:Label runat="server" ID="lblUserNameHead"></asp:Label>
             </h2>
         </div>
         <div class="row text-center">
@@ -41,8 +44,8 @@
                             <asp:BoundColumn HeaderText="Provider" DataField="Organization" />
                             <asp:BoundColumn HeaderText="Software" DataField="SoftwareName" />
                             <asp:BoundColumn HeaderText="Expires" DataField="ExpirationDate" />
-                            <asp:BoundColumn HeaderText="Key" DataField="LicenseKey" />
-                            <asp:BoundColumn HeaderText="Speedchart" DataField="Speedchart" />
+                            <%--<asp:BoundColumn HeaderText="Key" DataField="LicenseKey" />--%>
+                            <asp:BoundColumn HeaderText="License Key" DataField="LicenseKey" />
                         </Columns>
                     </asp:DataGrid>
                 </div>

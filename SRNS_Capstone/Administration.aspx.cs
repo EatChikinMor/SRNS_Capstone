@@ -13,7 +13,6 @@ namespace SRNS_Capstone
 {
     public partial class Administration : System.Web.UI.Page
     {
-
         #region Private Members
         
         private int _userID
@@ -82,14 +81,14 @@ namespace SRNS_Capstone
 
         protected void ddlManagersPopulate()
         {
-            ddlManagers.Items.Clear();
-            DataTable dt = new DBConnector().getManagers();
-            ddlManagers.Items.Add(new ListItem("", ""));
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                ListItem item = new ListItem((string)dt.Rows[i]["FirstName"] + " " + (string)dt.Rows[i]["LastName"], dt.Rows[i]["ID"].ToString());
-                ddlManagers.Items.Add(item);
-            }
+            //ddlManagers.Items.Clear();
+            //DataTable dt = new DBConnector().getManagers();
+            //ddlManagers.Items.Add(new ListItem("", ""));
+            //for (int i = 0; i < dt.Rows.Count; i++)
+            //{
+            //    ListItem item = new ListItem((string)dt.Rows[i]["FirstName"] + " " + (string)dt.Rows[i]["LastName"], dt.Rows[i]["ID"].ToString());
+            //    ddlManagers.Items.Add(item);
+            //}
         }
 
 
@@ -98,7 +97,7 @@ namespace SRNS_Capstone
             txtFirstName.Text = txtLastName.Text = txtLoginID.Text = txtPassword.Text = "";
             //rdManagerTrue.Checked = rdManagerFalse.Checked = false;
             //rdAdminFalse.Checked = rdAdminTrue.Checked = false;
-            ddlManagers.SelectedIndex = 0;
+            //ddlManagers.SelectedIndex = 0;
             ddlUserSelect.SelectedIndex = 0;
         }
 
@@ -132,22 +131,6 @@ namespace SRNS_Capstone
             //rdManagerFalse.Checked = IsManager != 1;
             hdnIsAdmin.Value = IsAdmin == 1 ? "true" : "false";
             hdnIsManager.Value = IsManager == 1 ? "true" : "false";
-            int manager = Convert.ToInt32(user["ManagerID"].ToString());
-            if (manager > 0)
-            {
-                try
-                {
-                    ddlManagers.SelectedValue = manager.ToString();
-                }
-                catch(ArgumentOutOfRangeException)
-                {
-                    ddlManagers.SelectedIndex = 0;
-                }
-            }
-            else
-            {
-                ddlManagers.SelectedIndex = 0;
-            }
 
             //chkRequests.Checked = (access["Requests"].ToString() == "1");
             //chkAddLicense.Checked = (access["AddLicense"].ToString() == "1");
@@ -179,7 +162,7 @@ namespace SRNS_Capstone
         {
             txtFirstName.Text = txtLastName.Text = txtLoginID.Text = txtPassword.Text = "";
             hdnIsAdmin.Value = hdnIsManager.Value = "false";
-            ddlManagers.SelectedIndex = 0;
+            //ddlManagers.SelectedIndex = 0;
             pnlForm.Visible = false;
             pnlSelection.Visible = true;
         }
@@ -197,7 +180,7 @@ namespace SRNS_Capstone
                     LoginID = txtLoginID.Text,
                     //IsAdmin = rdAdminTrue.Checked,
                     //IsManager = rdManagerTrue.Checked,
-                    ManagerID = rdManagerTrue.Checked ? 0 : Convert.ToInt32(ddlManagers.SelectedItem.Value),
+                    //ManagerID = rdManagerTrue.Checked ? 0 : Convert.ToInt32(ddlManagers.SelectedItem.Value),
                     PassHash = txtPassword.Text //Converted to hash on insert to DB
                 };
 
@@ -247,9 +230,9 @@ namespace SRNS_Capstone
                     FirstName = txtFirstName.Text,
                     LastName = txtLastName.Text,
                     LoginID = txtLoginID.Text,
-                    IsAdmin = rdAdminTrue.Checked,
-                    IsManager = rdManagerTrue.Checked,
-                    ManagerID = Convert.ToInt32(ddlManagers.SelectedItem.Value),
+                    //IsAdmin = rdAdminTrue.Checked,
+                    //IsManager = rdManagerTrue.Checked,
+                    //ManagerID = Convert.ToInt32(ddlManagers.SelectedItem.Value),
                     PassHash = txtPassword.Text //Converted to hash on insert to DB
                 };
 
@@ -321,12 +304,12 @@ namespace SRNS_Capstone
                 lblPassword.ForeColor = Color.Red;
                 errors.Add(errors.Count > 0 ? ", Password Empty" : "Password Empty");
             }
-            if (ddlManagers.SelectedIndex == 0 && !Convert.ToBoolean(hdnIsManager.Value) && !update)
-            {
-                ddlManagers.BackColor = ColorTranslator.FromHtml("#FFD8D8");
-                lblManager.ForeColor = Color.Red;
-                errors.Add(errors.Count > 0 ? ", Select a Manager" : "Select a Manager");
-            }
+            //if (ddlManagers.SelectedIndex == 0 && !Convert.ToBoolean(hdnIsManager.Value) && !update)
+            //{
+            //    ddlManagers.BackColor = ColorTranslator.FromHtml("#FFD8D8");
+            //    lblManager.ForeColor = Color.Red;
+            //    errors.Add(errors.Count > 0 ? ", Select a Manager" : "Select a Manager");
+            //}
 
             pnlError.Visible = true;
 
@@ -373,7 +356,7 @@ namespace SRNS_Capstone
 
         protected void rdManagerTrue_OnCheckedChanged(object sender, EventArgs e)
         {
-            ddlManagers.Enabled = !rdManagerTrue.Checked;
+            //ddlManagers.Enabled = !rdManagerTrue.Checked;
         }
 
         protected void btnDeleteUser_OnClick(object sender, EventArgs e)

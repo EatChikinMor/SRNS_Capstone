@@ -42,14 +42,14 @@
                                     <li runat="server" id="lstAvailLic" ><a href="AvailableCount.aspx">Available Licenses</a></li>
                                     <%--<li runat="server" id="lstManagLic" ><a href="ManagersLicenseHolders.aspx">Manager's License Holders</a></li>--%>
                                     <li runat="server" id="lstLicExp"><a href="LicensesExpiring.aspx">Licenses Expiring</a></li>
-                                    <li runat="server" id="lstPendCharg"><a href="#">Pending Chargebacks</a></li>
+                                    <li runat="server" id="lstPendCharg"><a href="PendingChargebacks.aspx">Pending Chargebacks</a></li>
                                 </ul>
                             </li>
                             
                             <li class="dropdown" runat="server" id="lstUserReports" Visible="false">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Reports <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li runat="server" id="lstMyLicenses" ><a href="AddEditLicense.aspx">My Licenses</a></li>
+                                    <li runat="server" id="lstMyLicenses" ><a href="MyLicenses.aspx">My Licenses</a></li>
                                     <li runat="server" id="lstUserManagLic" ><a href="ManagersLicenseHolders.aspx">Manager's License Holders</a></li>
                                 </ul>
                             </li>

@@ -60,8 +60,9 @@
                         Width="100%"
                         GridLines="None"
                         CssClass="dGrid"
-                        FieldHeaderStyle-CssClass="hdr"
-                        CommandRowStyle-CssClass="ftr">
+                        ShowHeader="True"
+                        HeaderStyle-CssClass="hdr"
+                        FooterStyle-CssClass="ftr">
                         <Columns>
                             <asp:BoundColumn HeaderText="Provider" DataField="Organization" />
                             <asp:BoundColumn HeaderText="Software" DataField="SoftwareName" />

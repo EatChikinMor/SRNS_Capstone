@@ -114,8 +114,9 @@
                             Width="100%" 
                             GridLines="None" 
                             CssClass="dGrid" 
-                            FieldHeaderStyle-CssClass="hdr" 
-                            CommandRowStyle-CssClass="ftr" >
+                            ShowHeader="True"
+                            HeaderStyle-CssClass="hdr"
+                            FooterStyle-CssClass="ftr">
                             <Columns>
                                 <asp:BoundColumn HeaderText="Owner" DataField="Name"/>
                                 <asp:BoundColumn HeaderText="Expires" DataField="ExpirationDate" />
@@ -141,8 +142,9 @@
                             Width="100%" 
                             GridLines="None" 
                             CssClass="dGrid" 
-                            FieldHeaderStyle-CssClass="hdr" 
-                            CommandRowStyle-CssClass="ftr" >
+                            ShowHeader="True"
+                            HeaderStyle-CssClass="hdr"
+                            FooterStyle-CssClass="ftr">
                             <Columns>
                                 <asp:BoundColumn HeaderText="Owner" DataField="Name"/>
                                 <asp:BoundColumn HeaderText="Expired" DataField="ExpirationDate" />

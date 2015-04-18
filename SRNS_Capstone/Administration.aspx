@@ -20,7 +20,7 @@
                 <div class="row">
                     <h3>Select User to Edit</h3>
                     <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4">
-                        <asp:DropDownList runat="server" ID="ddlUserSelect" CssClass="form-control" Style="width: 100%; max-width: 100%;">
+                        <asp:DropDownList runat="server" ID="ddlUserSelect" CssClass="form-control" Style="width: 100%; max-width: 100%;" AutoPostBack="True" OnSelectedIndexChanged="ddlUserSelect_SelectedIndexChanged">
                             <asp:ListItem Enabled="true" Text="" Value="0"></asp:ListItem>
                         </asp:DropDownList>
                     </div>
@@ -72,12 +72,6 @@
                 <br />
                 <div class="row hidden-sm hidden-xs">
                     <div class="col-lg-4 col-md-4">
-                        <label></label>
-                    </div>
-                    <div class="col-lg-4 col-md-4">
-                        <asp:Label runat="server" ID="lblManager">Manager</asp:Label>
-                    </div>
-                    <div class="col-lg-4 col-md-4">
                         <asp:Label runat="server" ID="lblPassword">Password</asp:Label>
                     </div>
                 </div>
@@ -96,18 +90,8 @@
                         </div>
                     </div>--%>
                     <div class="col-lg-4 col-md-4">
-                        <div class="hidden-lg hidden-md col-sm-2 col-xs-5 text-center">
-                            <label>Manager</label>
-                        </div>
-                        <div class="col-lg-12 col-md-12 col-sm-10 col-xs-7">
-                            <asp:DropDownList runat="server" ID="ddlManagers" CssClass="form-control" style="width:100%; max-width:100%;" OnSelectedIndexChanged="ddlManagers_SelectedIndexChanged" TabIndex="8">
-                                <asp:ListItem Enabled="true" Text=""></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4">
                         <asp:TextBox CssClass="form-control" placeholder="Password" runat="server" ID="txtPassword" autocomplete="off" TabIndex="9" ></asp:TextBox>
-                        <span runat="server" id="labelPasswordInfo" visible="false" style="font-size:x-small; color:#051874;">Leaving the password field blank will keep the user's current password</span>
+                        <span runat="server" id="labelPasswordInfo" visible="false" style="font-size:x-small; color:#051874;">Leaving the password field blank will keep the administrator's current password</span>
                     </div>
                 </div>
                 <br />

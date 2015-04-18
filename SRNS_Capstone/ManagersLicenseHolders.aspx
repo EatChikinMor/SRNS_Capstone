@@ -34,8 +34,10 @@
                         Width="100%"
                         GridLines="None"
                         CssClass="dGrid"
-                        FieldHeaderStyle-CssClass="hdr"
-                        CommandRowStyle-CssClass="ftr">
+                        ShowHeader="True"
+                        HeaderStyle-CssClass="hdr"
+                        FooterStyle-CssClass="ftr"
+                        OnItemDataBound="gridCounts_OnItemDataBound">
                         <Columns>
                             <asp:BoundColumn HeaderText="Key Holder" DataField="KeyHolder" />
                             <asp:BoundColumn HeaderText="Software" DataField="SoftwareName" />
