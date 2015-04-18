@@ -101,7 +101,7 @@
                         </div>
                         <asp:Panel runat="server" ID="pnlError" Visible="false">
                             <div class="alert alert-danger" role="alert" style="margin-top:10px;">
-                                <h4>Invalid Username or password</h4>
+                                <h4><asp:Label ID="lblError" runat="server" Text="Invalid Username or password"></asp:Label></h4>
                             </div>
                         </asp:Panel>
                         <%--<a href="#">Forgot your password?</a>--%>

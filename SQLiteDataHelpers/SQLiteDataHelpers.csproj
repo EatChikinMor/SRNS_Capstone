@@ -49,6 +49,7 @@
     <Compile Include="DBConnector.cs" />
     <Compile Include="Objects\ComboboxItem.cs" />
     <Compile Include="Objects\LicenseKey.cs" />
+    <Compile Include="Objects\Request.cs" />
     <Compile Include="Objects\User.cs" />
     <Compile Include="Objects\UserAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

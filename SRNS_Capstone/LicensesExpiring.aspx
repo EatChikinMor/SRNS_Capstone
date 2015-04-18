@@ -34,7 +34,7 @@
                     Expired Licenses
                 </h2>
                 <div class="row">
-                    <asp:Button runat="server" ID="btnExpiring" CssClass="btn btn-danger btn-sm" Text="View Expiring" OnClick="btnExpiring_OnClick"/>
+                    <asp:Button runat="server" ID="btnExpiring" CssClass="btn btn-primary btn-sm" Text="View Expiring" OnClick="btnExpiring_OnClick"/>
                 </div>
             </div>
         </asp:panel>

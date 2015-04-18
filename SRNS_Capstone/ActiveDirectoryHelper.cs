@@ -12,7 +12,7 @@ namespace SRNS_Capstone
 {
     public class ActiveDirectoryHelper
     {
-        private static readonly string _domain = getCurrentDomain();
+        private static string _domain = getCurrentDomain();
 
         public static string getCurrentDomain()
         {
@@ -21,14 +21,29 @@ namespace SRNS_Capstone
             return conn.getSettingValueByName("DOMAIN");
         }
 
-        public static bool AuthenticeUser(string username, string password)
+        public static bool AuthenticeUser(string username, string password, ref string serverError)
         {
-            bool isValid;
-            using (PrincipalContext auth = new PrincipalContext(ContextType.Domain, _domain))
+            try
             {
-                isValid = auth.ValidateCredentials(username, password);
+                string domain = getCurrentDomain();
+
+                if (domain != null && _domain != domain)
+                {
+                    _domain = domain;
+                }
+
+                bool isValid;
+                using (PrincipalContext auth = new PrincipalContext(ContextType.Domain, _domain))
+                {
+                    isValid = auth.ValidateCredentials(username, password);
+                }
+                return isValid;
             }
-            return isValid;
+            catch (PrincipalServerDownException)
+            {
+                serverError = "Could not communicate with LDAP server on domain " + _domain; 
+                return false;
+            }
         }
 
         /// <summary>

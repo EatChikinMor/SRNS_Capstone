@@ -239,26 +239,6 @@ namespace SQLiteDataHelpers
 
         #endregion
 
-        #region Providers
-
-        public int GetProviderIdByName(string name)
-        {
-            string SQL = "SELECT [ID] FROM Providers WHERE [Organization] = '"+ name +"'";
-
-            var result = SQLiteDataHelper.ExecuteScalar(SQL);
-            return String.IsNullOrEmpty(result) ? -1 : Convert.ToInt32(result);
-        }
-
-        public int GetProviderNameById(int id)
-        {
-            string SQL = "SELECT [Organization] FROM Providers WHERE [ID] = '"+ id +"'";
-
-            var result = SQLiteDataHelper.ExecuteScalar(SQL);
-            return result == "" ? -1 : Convert.ToInt32(result);
-        }
-
-        #endregion
-
         #region License Keys
 
         public DataTable getLicenseByKey(string Key)
@@ -278,11 +258,11 @@ namespace SQLiteDataHelpers
 
         public bool doesKeyExist(string Key)
         {
-            string SQL = "SELECT COUNT(LicenseKey) FROM LicenseKeys WHERE LicenseKey = '"+ Key +"'";
+            string SQL = "SELECT COUNT(LicenseKey) FROM LicenseKeys WHERE LicenseKey = '" + Key + "'";
 
             return SQLiteDataHelper.ExecuteScalar(SQL) == "1";
         }
-        
+
         public bool DoesLicenseExist(string LicenseKey, int SoftwareID)
         {
             string SQL = "SELECT Count(SoftwareID) FROM LicenseKeys WHERE SoftwareID = " + SoftwareID +
@@ -290,6 +270,26 @@ namespace SQLiteDataHelpers
             var result = SQLiteDataHelper.ExecuteScalar(SQL);
 
             return result == "1";
+        }
+
+        #endregion
+
+        #region Providers
+
+        public int GetProviderIdByName(string name)
+        {
+            string SQL = "SELECT [ID] FROM Providers WHERE [Organization] = '"+ name +"'";
+
+            var result = SQLiteDataHelper.ExecuteScalar(SQL);
+            return String.IsNullOrEmpty(result) ? -1 : Convert.ToInt32(result);
+        }
+
+        public int GetProviderNameById(int id)
+        {
+            string SQL = "SELECT [Organization] FROM Providers WHERE [ID] = '"+ id +"'";
+
+            var result = SQLiteDataHelper.ExecuteScalar(SQL);
+            return result == "" ? -1 : Convert.ToInt32(result);
         }
 
         #endregion
@@ -418,6 +418,22 @@ namespace SQLiteDataHelpers
 
         #endregion
 
+        #region Requests
+
+        public DataTable getPendingRequests(string User = "", string Name = "", bool all = true)
+        {
+            string WHERE = all ? "" : " WHERE RequestingUser = '" + Name + "' AND RequestingUserLogin = '" + User + "'";
+
+            string SQL =
+                "SELECT [ID], [RequestTitle], [Request], DATE([RequestDate]) AS RequestDate, [RequestingUser], [RequestingUserLogin], 'Delete' AS [Delete] " +
+                "FROM Requests "
+                + WHERE;
+
+            return SQLiteDataHelper.GetDataTable(SQL);
+        }
+
+        #endregion
+
         #region Table Settings
 
         public string getSettingValueByName(string settingName)
@@ -464,7 +480,6 @@ namespace SQLiteDataHelpers
             License["SpeedChart"] = LK.Speedchart;
             License["DateAssigned"] = LK.DateAssigned.ToString("s");
             License["DateRemoved"] = LK.DateRemoved.ToString("s");
-            License["DateExpiring"] = LK.DateExpiring.ToString("s");
             License["LicenseHolderCompany"] = LK.LicenseHolderCompany.ToString();
             License["Description"] = LK.Description;
             License["Comments"] = LK.Comments;
@@ -498,6 +513,27 @@ namespace SQLiteDataHelpers
 
             success = true;
             return GetMaxId("Providers").ToString();
+        }
+
+        #endregion
+
+        #region Table Requests
+
+        public string insertRequest(Request req, ref bool success)
+        {
+            var Request = SQLTables.TableColumns.Requests;
+
+            Request["RequestTitle"] = req.RequestTitle;
+            Request["Request"] = req.RequestContent;
+            Request["RequestDate"] = req.RequestDate.ToString("s");
+            Request["RequestingUser"] = req.Name;
+            Request["RequestingUserLogin"] = req.LoginID;
+
+            string error = "";
+
+            success = SQLiteDataHelper.Insert("Requests", Request, ref error);
+
+            return success ? "Request submitted successfully!" : error;
         }
 
         #endregion
@@ -553,7 +589,7 @@ namespace SQLiteDataHelpers
             //Users["IsAdmin"] = Convert.ToInt32(user.IsAdmin).ToString();
             Users["LoginID"] = user.LoginID;
             Users["PassHash"] = user.PassHash;
-            Users["ManagerID"] = Convert.ToInt32(user.ManagerID).ToString();
+            //Users["ManagerID"] = Convert.ToInt32(user.ManagerID).ToString();
             Users["Salt"] = user.Salt;
             //Users["IsManager"] = Convert.ToInt32(user.IsManager).ToString();
 
@@ -602,6 +638,8 @@ namespace SQLiteDataHelpers
             SQLiteDataHelper.ExecuteNonQuery(SQL);
         }
 
+        #endregion
+
         #region Table License Keys
 
         public bool UpdateLicenseKey(LicenseKey LK)
@@ -623,7 +661,6 @@ namespace SQLiteDataHelpers
             License["SpeedChart"] = LK.Speedchart;
             License["DateAssigned"] = LK.DateAssigned.ToString("s");
             License["DateRemoved"] = LK.DateRemoved.ToString("s");
-            License["DateExpiring"] = LK.DateExpiring.ToString("s");
             License["LicenseHolderCompany"] = LK.LicenseHolderCompany.ToString();
             License["Description"] = LK.Description;
             License["Comments"] = LK.Comments;
@@ -635,8 +672,6 @@ namespace SQLiteDataHelpers
 
             return SQLiteDataHelper.Update("LicenseKeys", License, WHERE);
         }
-
-        #endregion
 
         #endregion
 
@@ -660,6 +695,17 @@ namespace SQLiteDataHelpers
             string WHERE = "LicenseKey = '" + Key + "'";
 
             return SQLiteDataHelper.Delete("LicenseKeys", WHERE);
+        }
+
+        #endregion
+
+        #region Table Requests
+
+        public bool DeleteRequest(string ID)
+        {
+            string WHERE = "ID = '" + ID + "'";
+
+            return SQLiteDataHelper.Delete("Requests", WHERE);
         }
 
         #endregion

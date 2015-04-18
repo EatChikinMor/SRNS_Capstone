@@ -27,7 +27,8 @@ namespace SRNS_Capstone
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            bool ua = ActiveDirectoryHelper.AuthenticeUser(txtUsername.Text, txtPassword.Text);
+            string serverError = "";
+            bool ua = ActiveDirectoryHelper.AuthenticeUser(txtUsername.Text, txtPassword.Text, ref serverError);
 
             DataTable user = new DataTable();
 
@@ -47,9 +48,10 @@ namespace SRNS_Capstone
             else
             {
                 pnlError.Visible = true;
+                lblError.Text = String.IsNullOrEmpty(serverError) ? "Invalid Username or password" : serverError;
                 //pnlFailedLogin.Update();
             }
-            
+
             //Response.Redirect("~/Home.aspx");
         }
 

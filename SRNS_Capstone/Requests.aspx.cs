@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -25,17 +26,19 @@ namespace SRNS_Capstone
             }
         }
 
-        private int _userID
+        private User _user
         {
             get
             {
-                return (int)ViewState["userID"];
+                return (User)ViewState["User"];
             }
             set
             {
-                ViewState["userID"] = value;
+                ViewState["User"] = value;
             }
         }
+
+        private static readonly DBConnector connector = new DBConnector();
 
         #endregion
 
@@ -53,24 +56,28 @@ namespace SRNS_Capstone
                 //}
                 //Remove before release
 
-                    if (user != null)
+                if (user != null)
+                {
+                    _user = user;
+                    _IsAdmin = user.IsAdmin;
+                    //_userID = user.ID;
+
+                    ((Capstone)Page.Master).showMenuOptions(_IsAdmin);
+
+                    if (_IsAdmin)
                     {
-                        _IsAdmin = user.IsAdmin;
-                        //_userID = user.ID;
-
-                        ((Capstone)Page.Master).showMenuOptions(_IsAdmin);
-
-                        if (_IsAdmin)
-                        {
-                            pnlPendingRequests.Visible = true;
-                            IsAdmin();
-                        }
+                        IsAdmin();
                     }
                     else
                     {
-                        Response.Redirect("~/Default.aspx");
+                        IsNotAdmin();
                     }
-                //anything here
+                }
+                else
+                {
+                    Response.Redirect("~/Default.aspx");
+                }
+
             }
 
             //This will run everytime the page loads
@@ -78,21 +85,94 @@ namespace SRNS_Capstone
 
         protected void IsAdmin()
         {
-            int RequestCount = new DBConnector().getTableRowCount("Requests");
+            pnlInputRequest.Visible = false;
+            getAllPendingRequests();
+        }
 
-            switch (RequestCount)
+        protected void IsNotAdmin()
+        {
+            pnlInputRequest.Visible = true;
+            lblLogin.Text = _user.LoginID;
+            lblName.Text = _user.FirstName + " " + _user.LastName;
+            getUserPendingRequests();
+        }
+
+        protected void btnSubmit_OnClick(object sender, EventArgs e)
+        {
+            Request req = new Request()
             {
-                case 0:
-                    lblPendingRequests.Text = "There are no pending requests";
-                    break;
+                Name = lblName.Text,
+                LoginID = lblLogin.Text,
+                RequestTitle = txtRequestTitle.Text,
+                RequestContent = (txtRequest.Text.Replace("'", "")).Replace("\"", ""),
+                RequestDate = DateTime.Now
+            };
 
-                case 1:
-                    lblPendingRequests.Text = "There is 1 pending software request";
-                    break;
-                default:
-                    lblPendingRequests.Text = "There are " + RequestCount.ToString() + " pending software request";
-                    break;
+            bool success = false;
+            string result = connector.insertRequest(req, ref success);
 
+            if (success)
+            {
+                pnlSuccess.Visible = true;
+                pnlError.Visible = false;
+                lblSuccess.Text = result;
+                txtRequestTitle.Text =
+                    txtRequest.Text= "";
+            }
+            else
+            {
+                pnlError.Visible = true;
+                pnlSuccess.Visible = false;
+                lblError.Text = result;
+            }
+        }
+
+        protected void getUserPendingRequests()
+        {
+            DataTable dt = connector.getPendingRequests(_user.LoginID, _user.FirstName + " " + _user.LastName,
+                false);
+            if (dt.Rows.Count > 0)
+            {
+                pnlPendingRequests.Visible = true;
+                gridCounts.DataSource = dt;
+                gridCounts.DataBind();
+                int RequestCount = dt.Rows.Count;
+
+                lblPendingRequests.Text = RequestCount == 1
+                    ? "You have 1 pending software request"
+                    : "You have " + RequestCount + " pending software requests";
+            }
+        }
+
+        protected void getAllPendingRequests()
+        {
+            DataTable dt = connector.getPendingRequests();
+            if (dt.Rows.Count > 0)
+            {
+                pnlPendingRequests.Visible = true;
+                gridCounts.DataSource = dt;
+                gridCounts.DataBind();
+                int RequestCount = dt.Rows.Count;
+
+                lblPendingRequests.Text = RequestCount == 1
+                    ? "There is 1 pending software request"
+                    : "There are " + RequestCount + " pending software requests";
+            }
+        }
+
+        protected void gridCounts_OnItemCommand(object source, DataGridCommandEventArgs e)
+        {
+            string ID = e.Item.Cells[0].Text;
+            
+            connector.DeleteRequest(ID);
+
+            if (_user.IsAdmin)
+            {
+                getAllPendingRequests();
+            }
+            else
+            {
+                getUserPendingRequests();
             }
         }
     }

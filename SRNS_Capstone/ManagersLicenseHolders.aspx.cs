@@ -107,5 +107,10 @@ namespace SRNS_Capstone
                 }
             }
         }
+
+        protected void gridCounts_OnItemCommand(object source, DataGridCommandEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

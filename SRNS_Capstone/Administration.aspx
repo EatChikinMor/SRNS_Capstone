@@ -16,7 +16,7 @@
                     </div>
             </asp:Panel>
             <div class="col-lg-12 col-md-12 text-center">
-                <h1 style="margin-top: 10vh;">User Management</h1>
+                <h1 style="margin-top: 5vh;">User Management</h1>
                 <div class="row">
                     <h3>Select User to Edit</h3>
                     <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4">
