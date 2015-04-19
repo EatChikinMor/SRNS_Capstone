@@ -50,6 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSVhandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DBConnector.cs" />
     <Compile Include="Objects\ComboboxItem.cs" />
     <Compile Include="Objects\LicenseKey.cs" />
@@ -57,7 +60,6 @@
     <Compile Include="Objects\User.cs" />
     <Compile Include="Objects\UserAccess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CSVhandler.cs" />
     <Compile Include="SQLiteHelper.cs" />
     <Compile Include="SQLTables.cs" />
   </ItemGroup>
@@ -66,7 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ReferenceLibrary\LumenWorks.Framework.IO.dll" />
-    <Content Include="ReferenceLibrary\LumenWorks.Framework.IO.XML" />
     <Content Include="ReferenceLibrary\SQLiteDataHelpers.DLL" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
