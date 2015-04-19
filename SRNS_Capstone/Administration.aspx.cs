@@ -307,12 +307,6 @@ namespace SRNS_Capstone
                 lblPassword.ForeColor = Color.Red;
                 errors.Add(errors.Count > 0 ? ", Password Empty" : "Password Empty");
             }
-            //if (ddlManagers.SelectedIndex == 0 && !Convert.ToBoolean(hdnIsManager.Value) && !update)
-            //{
-            //    ddlManagers.BackColor = ColorTranslator.FromHtml("#FFD8D8");
-            //    lblManager.ForeColor = Color.Red;
-            //    errors.Add(errors.Count > 0 ? ", Select a Manager" : "Select a Manager");
-            //}
 
             pnlError.Visible = true;
 
@@ -421,6 +415,11 @@ namespace SRNS_Capstone
                                 actual = actual + 1;
                             }
                         }
+                    }
+                    else
+                    {
+                        pnlError.Visible = true;
+                        lblError.Text = "File must be a .csv";
                     }
                 }
                 catch

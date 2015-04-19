@@ -151,39 +151,39 @@ namespace SRNS_Capstone
             {
                 ShowTextError(txtProvider);
                 ShowLabelError(lblProvider);
-                errors.Add(errors.Count > 0 ? ", " + lblProvider.Text : lblProvider.Text);
+                errors.Add(errors.Count > 0 ? ", " + lblProvider.Text + " Required" : lblProvider.Text + " Required");
                 valid[1] = false;
             }
             if (String.IsNullOrEmpty(txtLiKey.Text))
             {
                 ShowTextError(txtLiKey);
                 ShowLabelError(lblLiNum);
-                errors.Add(errors.Count > 0 ? ", " + lblLiNum.Text : lblLiNum.Text);
+                errors.Add(errors.Count > 0 ? ", " + lblLiNum.Text + " Required" : lblLiNum.Text + " Required");
                 valid[2] = false;
             }
             if (String.IsNullOrEmpty(txtLiCost.Text))
             {
                 ShowTextError(txtLiCost);
                 ShowLabelError(lblLiCost);
-                errors.Add(errors.Count > 0 ? ", " + lblLiCost.Text : lblLiCost.Text);
+                errors.Add(errors.Count > 0 ? ", " + lblLiCost.Text + " Required" : lblLiCost.Text + " Required");
             }
             if (String.IsNullOrEmpty(txtDateExpiring.Text))
             {
                 ShowTextError(txtDateExpiring);
                 ShowLabelError(lblDateExpiring);
-                errors.Add(errors.Count > 0 ? ", " + lblDateExpiring.Text : lblDateExpiring.Text);
+                errors.Add(errors.Count > 0 ? ", " + lblDateExpiring.Text + " Required" : lblDateExpiring.Text + " Required");
             }
 
             if (!radiobtnSRNS.Checked && !radiobtnCen.Checked && !radiobtnDOE.Checked && !radiobtnSRR.Checked)
             {
                 ShowLabelError(lblLiComp);
-                errors.Add(errors.Count > 0 ? ", " + lblLiComp.Text : lblLiComp.Text);
+                errors.Add(errors.Count > 0 ? ", " + lblLiComp.Text + " Required" : lblLiComp.Text + " Required");
             }
 
             if (!radioBtnAssign.Checked && !radioBtnAvailable.Checked && !radioBtnRemove.Checked)
             {
                 ShowLabelError(lblAssignStatus);
-                errors.Add(errors.Count > 0 ? ", " + lblAssignStatus.Text : lblAssignStatus.Text);
+                errors.Add(errors.Count > 0 ? ", " + lblAssignStatus.Text + " Required" : lblAssignStatus.Text + " Required");
             }
 
             return errors;
@@ -206,7 +206,12 @@ namespace SRNS_Capstone
                 ShowLabelError(lblAssignStatus);
                 errors.Add(errors.Count > 0 ? ", License Availablility not marked" : " License Availablility not marked");
             }
-
+            if (!(new DBConnector().doesSpeedchartExist(txtSpeedchart.Text)))
+            {
+                ShowLabelError(lblSpeedchart);
+                errors.Add(errors.Count > 0 ? ", Speedchart not valid against current Speedchart list" : "Speedchart not valid against current Speedchart list");
+            }
+            
             return errors;
         }
 
@@ -464,7 +469,7 @@ namespace SRNS_Capstone
                     E.Append(error);
                 }
 
-                lblError.Text = E + " is required.";
+                lblError.Text = E.ToString();
                 pnlError.Visible = true;
             }
 
