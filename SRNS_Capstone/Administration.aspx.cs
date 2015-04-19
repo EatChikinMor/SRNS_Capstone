@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web.UI.WebControls;
@@ -14,6 +15,8 @@ namespace SRNS_Capstone
     public partial class Administration : System.Web.UI.Page
     {
         #region Private Members
+
+        private readonly string directoryPath = AppDomain.CurrentDomain.BaseDirectory + "attachmentsDirectory\\";
         
         private int _userID
         {
@@ -373,6 +376,118 @@ namespace SRNS_Capstone
                 ddlUsersPopulate();
                 ddlManagersPopulate();
             }
+        }
+
+        protected void btnSpeedChartAdmin_OnClick(object sender, EventArgs e)
+        {
+            pnlSpeedchart.Visible = true;
+            pnlAdminOptions.Visible = false;
+        }
+
+        protected void btnAdmins_OnClick(object sender, EventArgs e)
+        {
+            pnlSelection.Visible = true;
+            pnlAdminOptions.Visible = false;
+        }
+
+        protected void btnUploadSpeedcharts_OnClick(object sender, EventArgs e)
+        {
+            string error = "";
+            StringBuilder errors = new StringBuilder();
+            int Total = 0, actual = 0;
+            if (fileUpload.HasFile)
+            {
+                try
+                {
+                    if (Path.GetExtension(fileUpload.FileName) == ".csv")
+                    {
+                        StreamReader read = new StreamReader(fileUpload.FileContent);
+                        var Speedcharts = CSVhandler.readCSV(read, false);
+
+                        Total = Speedcharts.Count;
+
+                        DBConnector conn = new DBConnector();
+
+                        if (conn.DeleteSpeedcharts())
+                        {
+                            foreach (var speedchart in Speedcharts)
+                            {
+                                conn.insertSpeedchart(speedchart, ref error);
+                                if (!String.IsNullOrEmpty(error))
+                                {
+                                    errors.Append(error + ",");
+                                    actual = actual - 1;
+                                }
+                                actual = actual + 1;
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    // ignored
+                }
+                if (errors.Length > 0)
+                {
+                    pnlSuccess.Visible = false;
+                    pnlError.Visible = true;
+                    lblError.Text = errors.ToString().Substring(0, errors.Length - 2);
+                    if (actual > 0)
+                    {
+                        pnlSuccess.Visible = true;
+                        lblSuccess.Text = String.Format("{0}/{1} Speedcharts Uploaded Succesfully", actual, Total);
+                    }
+                }
+                else
+                {
+                    pnlSuccess.Visible = true;
+                    lblSuccess.Text = String.Format("{0}/{1} Speedcharts Uploaded Succesfully", actual, Total);
+                    pnlError.Visible = false;
+                }
+            }
+        }
+
+        protected void btnSingleSpeedchart_OnClick(object sender, EventArgs e)
+        {
+            string error = "";
+            new DBConnector().insertSpeedchart(txtSpeedChart.Text, ref error);
+            if (String.IsNullOrEmpty(error))
+            {
+                pnlError.Visible = false;
+                pnlSuccess.Visible = true;
+                lblSuccess.Text = "Speedchart added successfully";
+                txtSpeedChart.Text = "";
+            }
+            else
+            {
+                pnlSuccess.Visible = false;
+                pnlError.Visible = true;
+                lblError.Text = error;
+            }
+        }
+
+        protected void btnRemoveSpeedchart_OnClick(object sender, EventArgs e)
+        {
+            if (new DBConnector().DeleteSpeedcharts(txtSpeedChart.Text, false))
+            {
+                pnlSuccess.Visible = true;
+                lblSuccess.Text = "Speedchart deleted successfully";
+                txtSpeedChart.Text = "";
+            }
+            else
+            {
+                pnlError.Visible = true;
+                lblError.Text = "An Unknown error occurred - Speedchart not deleted";
+            }
+           
+        }
+
+        protected void btnBack_OnClick(object sender, EventArgs e)
+        {
+            pnlSpeedchart.Visible = false;
+            pnlError.Visible = false;
+            pnlAdminOptions.Visible = true;
+            pnlSuccess.Visible = false;
         }
     }
 }

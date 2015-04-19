@@ -283,7 +283,7 @@ namespace SRNS_Capstone
             if (String.IsNullOrEmpty(txtEnterKeyToEdit.Text))
             {
                 pnlSuccess.Visible = true;
-                lblSuccess.Text = "No keys Exist for the entered value";
+                lblSuccess.Text = "No key exists for the entered value";
             }
             else
             {
@@ -292,7 +292,7 @@ namespace SRNS_Capstone
                 if (dt.Rows.Count == 0)
                 {
                     pnlSuccess.Visible = true;
-                    lblSuccess.Text = "No keys Exist for the entered value";   
+                    lblSuccess.Text = "No key exists for the entered value";   
                 }
                 else
                 {

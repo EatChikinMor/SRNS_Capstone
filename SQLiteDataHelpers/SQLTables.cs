@@ -9,6 +9,15 @@ namespace SQLiteDataHelpers
     {
         public static class TableColumns
         {
+            public static Dictionary<String, String> CurrentSpeedcharts
+            {
+                get
+                {
+                    var columns = new Dictionary<String, String>() { { "Speedchart", "" } };
+                    return columns;
+                }
+            }
+
             public static Dictionary<String, String> LicenseKeys
             {
                 get

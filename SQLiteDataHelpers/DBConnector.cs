@@ -42,7 +42,20 @@ namespace SQLiteDataHelpers
             return result;
         }
 
-        #region Table Users
+        #region Current Speedcharts
+
+        public bool doesSpeedchartExist(string speedchart)
+        {
+            string SQL = "SELECT COUNT(Speedchart) FROM CurrentSpeedcharts WHERE Speedchart = '" + speedchart + "'";
+
+            int ret = Convert.ToInt32(SQLiteDataHelper.ExecuteScalar(SQL));
+
+            return ret > 0;
+        }
+
+        #endregion
+
+        #region Users
 
         public bool IsUsernameAvailable(string username)
         {
@@ -158,7 +171,7 @@ namespace SQLiteDataHelpers
         }
         #endregion
 
-        #region Table Software
+        #region Software
 
         public DataTable getSoftwareById(string ID)
         {
@@ -456,6 +469,24 @@ namespace SQLiteDataHelpers
 
         #region INSERTS ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        #region Current Speedcharts
+
+        public bool insertSpeedchart(string speedchart, ref string error)
+        {
+            if (!doesSpeedchartExist(speedchart))
+            {
+                var DictSpeedchart = SQLTables.TableColumns.CurrentSpeedcharts;
+
+                DictSpeedchart["Speedchart"] = speedchart;
+                return SQLiteDataHelper.Insert("CurrentSpeedcharts", DictSpeedchart, ref error);
+            }
+
+            error = "Duplicate Speedchart exists";
+            return false;
+        }
+
+        #endregion
+
         #region License Keys
 
         public string InsertLicense(LicenseKey LK)
@@ -497,7 +528,7 @@ namespace SQLiteDataHelpers
 
         #endregion
 
-        #region Table Providers
+        #region Providers
 
         public string insertProvider(string name, ref bool success)
         {
@@ -517,7 +548,7 @@ namespace SQLiteDataHelpers
 
         #endregion
 
-        #region Table Requests
+        #region Requests
 
         public string insertRequest(Request req, ref bool success)
         {
@@ -538,7 +569,7 @@ namespace SQLiteDataHelpers
 
         #endregion
 
-        #region Table Software
+        #region Software
 
         public string insertSoftware(string name, int Provider, ref bool success)
         {
@@ -559,7 +590,7 @@ namespace SQLiteDataHelpers
 
         #endregion
 
-        #region Table Users
+        #region Users
 
         public string InsertUser(User user)
         {
@@ -629,7 +660,7 @@ namespace SQLiteDataHelpers
                 : "User successfully updated";
         }
 
-        #region Table Settings
+        #region Settings
 
         public void updateSettingValueByName(string settingName,string settingValue)
         {
@@ -640,7 +671,7 @@ namespace SQLiteDataHelpers
 
         #endregion
 
-        #region Table License Keys
+        #region License Keys
 
         public bool UpdateLicenseKey(LicenseKey LK)
         {
@@ -679,6 +710,18 @@ namespace SQLiteDataHelpers
 
         #region DELETES ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        #region CurrentSpeedcharts
+
+        public bool DeleteSpeedcharts(string speedchart = "", bool all = true)
+        {
+            string WHERE = all ? "Speedchart IS NOT NULL" : "Speedchart = '" + speedchart + "'";
+            return SQLiteDataHelper.Delete("CurrentSpeedcharts", WHERE);
+        }
+
+        #endregion
+
+        #region Users
+
         public bool DeleteUser(string UserId)
         {
             string whereUsers = "ID = " + UserId;
@@ -688,7 +731,9 @@ namespace SQLiteDataHelpers
             return SQLiteDataHelper.Delete("Users", whereUsers);
         }
 
-        #region Table License Keys
+        #endregion
+
+        #region License Keys
 
         public bool DeleteKey(string Key)
         {
@@ -699,7 +744,7 @@ namespace SQLiteDataHelpers
 
         #endregion
 
-        #region Table Requests
+        #region Requests
 
         public bool DeleteRequest(string ID)
         {
