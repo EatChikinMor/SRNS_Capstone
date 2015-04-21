@@ -48,6 +48,13 @@
                 <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4">
                     <asp:Button runat="server" ID="btnAddUser" class="btn btn-lg btn-block btn-default" Text="Add Administrator" OnClick="btnAddUser_Click"></asp:Button>
                 </div>
+                <div class="row text-center">
+                    <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4">
+                        <br/>
+                        <br/>
+                        <asp:Button runat="server" ID="btnBack2" OnClick="btnBack_OnClick" CssClass="btn btn-default" Text="Back"/>
+                    <div>
+                </div>
             </div>
         </asp:Panel>
         <asp:Panel runat="server" ID="pnlForm" Visible="false">

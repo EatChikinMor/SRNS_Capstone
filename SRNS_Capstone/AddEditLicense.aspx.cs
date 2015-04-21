@@ -477,6 +477,7 @@ namespace SRNS_Capstone
 
         protected void btnUpdate_OnClick(object sender, EventArgs e)
         {
+            pnlError.Visible = false;
             var errors = ValidateInput();
 
             if (errors.Count == 0)
@@ -516,6 +517,8 @@ namespace SRNS_Capstone
                         softID = Convert.ToInt32(result);
                     }
                 }
+
+                conn.updateSoftwareProvider(softID, provID);
 
                 Guid g = Guid.Empty;
 
@@ -610,7 +613,7 @@ namespace SRNS_Capstone
                     E.Append(error);
                 }
 
-                lblError.Text = E + " is required.";
+                lblError.Text = E.ToString();
                 pnlError.Visible = true;
             }
 
@@ -661,12 +664,26 @@ namespace SRNS_Capstone
             lblLink.Visible = true;
             if (!String.IsNullOrEmpty(hdnGuid.Value))
             {
-                //StreamReader stream = new StreamReader(directoryPath + @"\" + hdnGuid.Value);
-                string Path = Directory.GetFiles(directoryPath + @"\" + hdnGuid.Value).First();
-                string File = System.IO.Path.GetFileName(Path);
-                lnkFileLink.Text = File;
-                lnkFileLink.NavigateUrl = @"\attachmentsDirectory\" + hdnGuid.Value + @"\" + File;
+                if (Directory.Exists(directoryPath + @"\" + hdnGuid.Value) && !IsDirectoryEmpty(directoryPath + @"\" + hdnGuid.Value))
+                {
+                    //StreamReader stream = new StreamReader(directoryPath + @"\" + hdnGuid.Value);
+                    string Path = Directory.GetFiles(directoryPath + @"\" + hdnGuid.Value).First();
+                    string File = System.IO.Path.GetFileName(Path);
+                    lnkFileLink.Text = File;
+                    lnkFileLink.NavigateUrl = @"\attachmentsDirectory\" + hdnGuid.Value + @"\" + File;
+                }
+                else
+                {
+                    new DBConnector().ClearFileAssoc(row["LicenseKey"].ToString());
+                    lblError.Text = IsDirectoryEmpty(directoryPath + @"\" + hdnGuid.Value)? "" : "File attachment directory not found - ["+ directoryPath + hdnGuid.Value +"]";
+                    pnlError.Visible = !String.IsNullOrEmpty(lblError.Text);
+                }
             }
+        }
+
+        protected bool IsDirectoryEmpty(string path)
+        {
+            return !Directory.EnumerateFileSystemEntries(path).Any();
         }
     }
 }

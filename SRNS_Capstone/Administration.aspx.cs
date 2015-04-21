@@ -106,6 +106,8 @@ namespace SRNS_Capstone
 
         protected void btnAddUser_Click(object sender, EventArgs e)
         {
+            pnlSuccess.Visible = false;
+            pnlError.Visible = false;
             labelPasswordInfo.Visible = false;
             pnlSelection.Visible = false;
             pnlForm.Visible = true;
@@ -118,6 +120,8 @@ namespace SRNS_Capstone
 
         protected void ddlUserSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
+            pnlSuccess.Visible = false;
+            pnlError.Visible = false;
             DataRow user = new DBConnector().getUserByID(Convert.ToInt32(ddlUserSelect.SelectedValue)).Rows[0];
             //DataRow access = new DBConnector().getUserPrivileges(Convert.ToInt32(user["ID"].ToString())).Rows[0];
 
@@ -308,8 +312,6 @@ namespace SRNS_Capstone
                 errors.Add(errors.Count > 0 ? ", Password Empty" : "Password Empty");
             }
 
-            pnlError.Visible = true;
-
             return errors;
         }
 
@@ -386,6 +388,7 @@ namespace SRNS_Capstone
 
         protected void btnUploadSpeedcharts_OnClick(object sender, EventArgs e)
         {
+            pnlError.Visible = pnlSuccess.Visible = false;
             string error = "";
             StringBuilder errors = new StringBuilder();
             int Total = 0, actual = 0;
@@ -448,6 +451,7 @@ namespace SRNS_Capstone
 
         protected void btnSingleSpeedchart_OnClick(object sender, EventArgs e)
         {
+            pnlError.Visible = pnlSuccess.Visible = false;
             string error = "";
             new DBConnector().insertSpeedchart(txtSpeedChart.Text, ref error);
             if (String.IsNullOrEmpty(error))
@@ -467,6 +471,7 @@ namespace SRNS_Capstone
 
         protected void btnRemoveSpeedchart_OnClick(object sender, EventArgs e)
         {
+            pnlError.Visible = pnlSuccess.Visible = false;
             if (new DBConnector().DeleteSpeedcharts(txtSpeedChart.Text, false))
             {
                 pnlSuccess.Visible = true;
@@ -483,6 +488,7 @@ namespace SRNS_Capstone
 
         protected void btnBack_OnClick(object sender, EventArgs e)
         {
+            pnlSelection.Visible = false;
             pnlSpeedchart.Visible = false;
             pnlError.Visible = false;
             pnlAdminOptions.Visible = true;

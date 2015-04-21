@@ -639,18 +639,27 @@ namespace SQLiteDataHelpers
             if (!IsUsernameAvailable(user.LoginID) && !IsThisTheCurrentUsername(user.LoginID, UserID))
                 return "The chosen username already exists.";
 
-            user.Salt = GenerateRandomString();
+            string SQL = "SELECT Salt FROM USERS WHERE LoginID = '" + user.LoginID + "'";
 
-            user.PassHash = GenerateMd5Hash(user.Salt + user.PassHash);
+            user.Salt = SQLiteDataHelper.ExecuteScalar(SQL);
+
+            user.PassHash = String.IsNullOrEmpty(user.PassHash) ? "" : GenerateMd5Hash(user.Salt + user.PassHash);
 
             var Users = SQLTables.TableColumns.Users;
+            Users.Remove("Salt");
             Users["FirstName"] = user.FirstName;
             Users["LastName"] = user.LastName;
             //Users["IsAdmin"] = user.IsAdmin.ToString();
             Users["LoginID"] = user.LoginID;
-            Users["PassHash"] = user.PassHash;
+            if (String.IsNullOrEmpty(user.PassHash))
+            {
+                Users.Remove("PassHash");
+            }
+            else
+            {
+                Users["PassHash"] = user.PassHash;
+            }
             Users["ManagerID"] = user.ManagerID.ToString();
-            Users["Salt"] = user.Salt;
             //Users["IsManager"] = user.IsManager.ToString();
 
             string where = "ID = " + UserID;
@@ -702,6 +711,25 @@ namespace SQLiteDataHelpers
             string WHERE = "LicenseKey = '" + LK.Key + "'";
 
             return SQLiteDataHelper.Update("LicenseKeys", License, WHERE);
+        }
+
+        public string ClearFileAssoc(string Key)
+        {
+            string SQL = 
+                "UPDATE LicenseKeys SET FileSubpath = NULL WHERE LicenseKey = '" + Key + "'";
+
+            return SQLiteDataHelper.ExecuteScalar(SQL);
+        }
+
+        #endregion
+
+        #region Providers
+
+        public bool updateSoftwareProvider(int softwareID, int newProvider)
+        {
+            string SQL = "UPDATE Software SET Provider = " + newProvider + " WHERE ID = " + softwareID;
+
+            return SQLiteDataHelper.ExecuteNonQuery(SQL) > 0;
         }
 
         #endregion
