@@ -638,7 +638,7 @@ namespace SRNS_Capstone
             date = Convert.ToDateTime(row["DateRemoved"].ToString());
             txtDateRemoved.Text = date == DateTime.MinValue ? "" : date.ToShortDateString();
             txtReqNum.Text = row["RequisitionNumber"].ToString();
-            ddlChargeback.SelectedIndex = Convert.ToInt32(row["ChargebackComplete"]);
+            ddlChargeback.SelectedIndex = Convert.ToInt32(!Convert.ToBoolean(row["ChargebackComplete"]));
             date = Convert.ToDateTime(row["ExpirationDate"].ToString());
             txtDateExpiring.Text = date == DateTime.MinValue ? "" : date.ToShortDateString();
 
