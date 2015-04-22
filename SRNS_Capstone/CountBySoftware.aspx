@@ -50,6 +50,24 @@
     </style>
 
     <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-lg-offset-4">
+                <asp:Panel runat="server" ID="pnlError" Visible="false">
+                    <div class="alert alert-danger" role="alert" style="margin-top: 10px;">
+                        <h4>
+                            <asp:Label runat="server" ID="lblError" Text="Changes not made"></asp:Label>
+                        </h4>
+                    </div>
+                </asp:Panel>
+                <asp:Panel runat="server" ID="pnlSuccess" Visible="false">
+                    <div class="alert alert-success" role="alert" style="margin-top: 10px;">
+                        <h4>
+                            <asp:Label runat="server" ID="lblSuccess" Text="Software successfully removed"></asp:Label>
+                        </h4>
+                    </div>
+                </asp:Panel>
+            </div>
+        </div>
         <div class="row"> <%--Permitting Time - Alphabet Subsections - http://stackoverflow.com/questions/2923137/repeater-in-repeater 
                             IE -  Heading Label for "A" then all Software provided by "A" Companies then Adobe, AMD etc. THen another Letter header "B"  --%>
             <asp:Panel runat="server" ID="pnlSelect">
@@ -98,6 +116,9 @@
                         Showing:
                         <asp:Label runat="server" ID="lblSoftwareHeader" Visible="true"></asp:Label>
                     </h1>
+                </div>
+                <div class="row text-center">
+                    <asp:Button runat="server" ID="btnDeleteSoftware" OnClick="btnDeleteSoftware_OnClick" CssClass="btn btn-danger" Text="Delete This Software" />
                 </div>
                 <div class="row text-center">
                     <h3>
@@ -161,4 +182,9 @@
             </asp:Panel>
         </div>
     </div>
+    <script>
+        $('#<%=btnDeleteSoftware.ClientID%>').click(function (e) {
+            return confirm("Are you sure you want to delete this Software? All associated keys will be removed - To retain these keys they must be re-assigned to other software.");
+        });
+    </script>
 </asp:Content>

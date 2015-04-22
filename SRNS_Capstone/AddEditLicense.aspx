@@ -65,18 +65,23 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-4 col-md-4">
-                  <span style="color:red">*</span> Required Fields  
+            <div class="col-lg-2 col-md-2">
+                  <span style="color:red">* Required Fields </span>
+                <br/>
+                <br/>
+            </div>
+            <div class="col-lg-8 col-md-8 text-center">
+                <h2><asp:Label runat="server" ID="lblHeader"></asp:Label></h2>
             </div>
         </div>
         <div class="row">
             <div class="col-lg-4 col-md-4">
                 <asp:Label runat="server" ID="lblSoftName"><span style="color:red">*</span>Software Name</asp:Label>
-                <asp:TextBox CssClass="form-control" runat="server" ID="txtSoftName"></asp:TextBox>
+                <asp:TextBox CssClass="form-control" runat="server" ID="txtSoftName" ></asp:TextBox>
             </div>
             <div class="col-lg-4 col-md-4">
                 <asp:Label runat="server" ID="lblSoftDescription">Software Description</asp:Label>
-                <asp:TextBox CssClass="form-control" runat="server" ID="txtSoftDescription"></asp:TextBox>
+                <asp:TextBox CssClass="form-control" runat="server" ID="txtSoftDescription" ></asp:TextBox>
             </div>
             <div class="col-lg-4 col-md-4">
                 <asp:Label runat="server" ID="lblProvider"><span style="color:red">*</span>Software Provider/Manufacturer</asp:Label>
@@ -179,24 +184,9 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-lg-4 col-md-4">
-
-            </div>
-            <div class="col-lg-4 col-md-4">
-                
-            </div>
-            <div class="col-lg-4 col-md-4">
-                
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-lg-4 col-md-4">
-
-            </div>
-            <div class="col-lg-3 col-md-3">
                 <asp:Label runat="server" ID="Label2">Date Assigned</asp:Label>
                 <div class="input-group date">
                     <asp:TextBox type="text" ID="txtDateAssigned" class="form-control" runat="server" />
@@ -211,6 +201,9 @@
                         <i class="glyphicon glyphicon-th"></i>
                     </span>
                 </div>
+            </div>
+            <div class="col-lg-3 col-md-1">
+
             </div>
             <div class="col-lg-5 col-md-5">
                 <br/>
@@ -250,7 +243,8 @@
                 <br/>
                 <strong><asp:Label runat="server" ID="lblEditor"></asp:Label></strong>
                 <br/>
-                <asp:Button runat="server" CssClass="btn btn-danger btn-md pull-left" ID="btnDelete" Text="Delete License" OnClick="btnDelete_OnClick" Visible="False"/>
+                <br/>
+                <asp:Button runat="server" CssClass="btn btn-danger pull-left" ID="btnDelete" Text="Delete License" OnClick="btnDelete_OnClick" Visible="False"/>
                 <asp:Button CssClass="btn btn-lg btn-primary pull-right" runat="server" ID="btnSubmit" Text="Submit" OnClick="btnSubmit_Click" />
                 <asp:Button CssClass="btn btn-lg btn-primary pull-right" runat="server" ID="btnUpdate" Text="Update" OnClick="btnUpdate_OnClick" />
             </div>

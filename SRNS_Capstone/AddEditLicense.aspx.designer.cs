@@ -103,6 +103,15 @@ namespace SRNS_Capstone {
         protected global::System.Web.UI.WebControls.Label lblError;
         
         /// <summary>
+        /// lblHeader control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblHeader;
+        
+        /// <summary>
         /// lblSoftName control.
         /// </summary>
         /// <remarks>

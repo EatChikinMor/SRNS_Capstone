@@ -32,6 +32,22 @@ namespace SRNS_Capstone.Reports
             }
         }
 
+        private int _softCode
+        {
+            get
+            {
+                if (ViewState["softCode"] == null)
+                {
+                    ViewState["softCode"] = 0;
+                }
+                return (int)ViewState["softCode"];
+            }
+            set
+            {
+                ViewState["softCode"] = value;
+            }
+        }
+
         #endregion
 
         protected void Page_Load(object sender, EventArgs e)
@@ -58,6 +74,7 @@ namespace SRNS_Capstone.Reports
                     if (softCode != null)
                     {
                         string[] codes = softCode.Split('_');
+                        _softCode = Convert.ToInt32(codes[1]);
                         buildData(codes[1]);
                     }
                     else
@@ -131,6 +148,29 @@ namespace SRNS_Capstone.Reports
             gridExpired.DataSource = dt;
             gridExpired.DataBind();
             return true;
+        }
+
+        protected void btnDeleteSoftware_OnClick(object sender, EventArgs e)
+        {
+            string error = "";
+            var success = new DBConnector().DeleteSoftwareByID(_softCode.ToString(), ref error);
+            if (success)
+            {
+                pnlData.Visible = false;
+                pnlSelect.Visible = true;
+                RepeatAllSoftware();
+                pnlSuccess.Visible = true;
+                pnlError.Visible = false;
+            }
+            else
+            {
+                pnlData.Visible = false;
+                pnlSelect.Visible = true;
+                RepeatAllSoftware();
+                pnlError.Visible = true;
+                pnlSuccess.Visible = false;
+                lblError.Text = error.Length > 0 ? error : lblError.Text;
+            }
         }
     }
 }

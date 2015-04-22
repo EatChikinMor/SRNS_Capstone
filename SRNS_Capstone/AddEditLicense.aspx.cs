@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using SQLiteDataHelpers.Objects;
 using SQLiteDataHelpers;
@@ -206,7 +204,7 @@ namespace SRNS_Capstone
                 ShowLabelError(lblAssignStatus);
                 errors.Add(errors.Count > 0 ? ", License Availablility not marked" : " License Availablility not marked");
             }
-            if (!(new DBConnector().doesSpeedchartExist(txtSpeedchart.Text)))
+            if (!(new DBConnector().doesSpeedchartExist(txtSpeedchart.Text)) && !String.IsNullOrEmpty(txtSpeedchart.Text))
             {
                 ShowLabelError(lblSpeedchart);
                 errors.Add(errors.Count > 0 ? ", Speedchart not valid against current Speedchart list" : "Speedchart not valid against current Speedchart list");
@@ -264,6 +262,7 @@ namespace SRNS_Capstone
 
         protected void btnAddKey_OnClick(object sender, EventArgs e)
         {
+            lblHeader.Text = "Add a new License";
             lblEditor.Text = "Document Created By/Last Updated By: " + _user.FirstName + " " + _user.LastName;
             txtLiKey.Enabled = true;
             pnlSuccess.Visible = false;
@@ -280,6 +279,7 @@ namespace SRNS_Capstone
 
         protected void btnLookupKey_OnClick(object sender, EventArgs e)
         {
+            lblHeader.Text = "Update Key " + txtEnterKeyToEdit.Text;
             pnlSuccess.Visible = false;
             btnDelete.Visible = true;
             btnSubmit.Visible = false;
@@ -386,7 +386,7 @@ namespace SRNS_Capstone
 
                     passed = false;
 
-                    int softID = conn.GetSoftwareIdByName(txtSoftName.Text);
+                    int softID = conn.GetSoftwareIdByName(txtSoftName.Text, provID.ToString());
 
                     if (softID < 0)
                     {
@@ -398,11 +398,12 @@ namespace SRNS_Capstone
                         }
                     }
 
-                    Guid g = Guid.NewGuid();
+                    Guid g = Guid.Empty;
                     if (fileUpload.HasFile)
                     {
                         try
                         {
+                            g = Guid.NewGuid();
                             Directory.CreateDirectory(directoryPath + g);
                             string filename = Path.GetFileName(fileUpload.FileName);
                             fileUpload.SaveAs(directoryPath + g + @"\" + filename);
@@ -506,7 +507,7 @@ namespace SRNS_Capstone
 
                 passed = false;
 
-                int softID = conn.GetSoftwareIdByName(txtSoftName.Text);
+                int softID = conn.GetSoftwareIdByName(txtSoftName.Text, provID.ToString());
 
                 if (softID < 0)
                 {
@@ -569,7 +570,7 @@ namespace SRNS_Capstone
                     Provider = provID,
                     Assignment = assignmentStatus,
                     Speedchart = txtSpeedchart.Text,
-                    DateUpdated = Convert.ToDateTime(txtDateUpdated.Text), //Validate empty
+                    DateUpdated = DateTime.Now.Date, //Validate empty
                     DateAssigned =
                         txtDateAssigned.Text.Length > 0
                             ? Convert.ToDateTime(txtDateUpdated.Text)
@@ -675,7 +676,7 @@ namespace SRNS_Capstone
                 else
                 {
                     new DBConnector().ClearFileAssoc(row["LicenseKey"].ToString());
-                    lblError.Text = IsDirectoryEmpty(directoryPath + @"\" + hdnGuid.Value)? "" : "File attachment directory not found - ["+ directoryPath + hdnGuid.Value +"]";
+                    lblError.Text = IsDirectoryEmpty(directoryPath + @"\" + hdnGuid.Value) ? "" : "File attachment directory not found - [" + directoryPath + hdnGuid.Value + "]";
                     pnlError.Visible = !String.IsNullOrEmpty(lblError.Text);
                 }
             }
@@ -683,7 +684,17 @@ namespace SRNS_Capstone
 
         protected bool IsDirectoryEmpty(string path)
         {
-            return !Directory.EnumerateFileSystemEntries(path).Any();
+            try
+            {
+                return !Directory.EnumerateFileSystemEntries(path).Any();
+            }
+            catch (Exception)
+            {
+                pnlError.Visible = true;
+                lblError.Text = "Directory " + path + " not found";
+            }
+
+            return false;
         }
     }
 }

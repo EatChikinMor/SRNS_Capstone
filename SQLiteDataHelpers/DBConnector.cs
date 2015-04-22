@@ -184,13 +184,12 @@ namespace SQLiteDataHelpers
             return SQLiteDataHelper.GetDataTable(SQL);
         }
 
-        public int GetSoftwareIdByName(string Name)
+        public int GetSoftwareIdByName(string Name, string provider)
         {
-            string SQL = "SELECT [ID] FROM Software WHERE [SoftwareName] = '" + Name + "'";
+            string SQL = "SELECT [ID] FROM Software WHERE [SoftwareName] = '" + Name + "' AND Provider = '" + provider + "'" ;
 
             var result = SQLiteDataHelper.ExecuteScalar(SQL);
             return String.IsNullOrEmpty(result) ? -1 : Convert.ToInt32(result);
-            return Convert.ToInt32(result);
         }
 
         public DataTable getAllSoftware()
@@ -770,6 +769,45 @@ namespace SQLiteDataHelpers
             return SQLiteDataHelper.Delete("LicenseKeys", WHERE);
         }
 
+        public bool DeleteAllKeysBySoftID(string SoftID)
+        {
+            string SQL = "SELECT [FileSubpath] FROM LicenseKeys WHERE SoftwareID = '" + SoftID + "'";
+
+            DataTable dt = SQLiteDataHelper.GetDataTable(SQL);
+
+            foreach (DataRow row in dt.Rows)
+            {
+                string subpath = row["FileSubpath"].ToString();
+
+                if (!String.IsNullOrEmpty(subpath))
+                {
+                    try
+                    {
+                        DeleteAttachment(subpath);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                }
+
+            }
+
+            string WHERE = "SoftwareID = '" + SoftID +"'";
+
+            return SQLiteDataHelper.Delete("LicenseKeys", WHERE);
+        }
+        #endregion
+
+        #region Providers
+
+        public bool DeleteProviderByID(string ID)
+        {
+            string WHERE = "ID = '" + ID + "'";
+
+            return SQLiteDataHelper.Delete("Providers", WHERE);
+        }
+
         #endregion
 
         #region Requests
@@ -779,6 +817,38 @@ namespace SQLiteDataHelpers
             string WHERE = "ID = '" + ID + "'";
 
             return SQLiteDataHelper.Delete("Requests", WHERE);
+        }
+
+        #endregion
+
+        #region Software
+
+        public bool DeleteSoftwareByID(string ID, ref string error)
+        {
+            if (DeleteAllKeysBySoftID(ID))
+            {
+                string SQL = "SELECT [Provider] FROM Software WHERE ID = '" + ID + "'";
+                string provider = SQLiteDataHelper.ExecuteScalar(SQL);
+                string WHERE = "ID = '" + ID + "'";
+
+                bool success = (SQLiteDataHelper.Delete("Software", WHERE));
+
+                if (success)
+                {
+                    SQL = "SELECT COUNT([ID]) FROM Software WHERE Provider = '" + provider + "'";
+                    if (SQLiteDataHelper.ExecuteScalar(SQL) == "0")
+                    {
+                        DeleteProviderByID(provider);
+                    }
+                }
+
+                return success;
+            }
+            else
+            {
+                error = "Associated keys could not be deleted";
+                return false;
+            }
         }
 
         #endregion
@@ -832,6 +902,17 @@ namespace SQLiteDataHelpers
                     i--;
             }
             return randomString;
+        }
+
+        public void DeleteAttachment(string guidPath)
+        {
+            string directoryPath = AppDomain.CurrentDomain.BaseDirectory + "attachmentsDirectory\\";
+
+            string path = Directory.GetFiles(directoryPath + guidPath).First();
+
+            File.Delete(path);
+
+            Directory.Delete(directoryPath + guidPath);
         }
     }
 }
